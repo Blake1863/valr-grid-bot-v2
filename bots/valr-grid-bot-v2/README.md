@@ -2,6 +2,8 @@
 
 Production-grade grid trading bot for VALR perpetual futures. Built from first principles against the documented VALR API.
 
+**Pair-agnostic:** Works with any VALR perpetual futures pair (SOLUSDTPERP, BTCUSDTPERP, ETHUSDTPERP, etc.). Configure the pair in `config.json`.
+
 ## Architecture
 
 ```
@@ -85,6 +87,41 @@ Headers: `X-VALR-API-KEY`, `X-VALR-SIGNATURE`, `X-VALR-TIMESTAMP`, `X-VALR-SUB-A
 WebSocket: same three headers (no sub-account header), sign `timestamp + "GET" + "/ws/account"`.
 
 ## Grid Level Calculation
+
+### neutral (Symmetric grid — default)
+Places BUY orders below reference price AND SELL orders above reference price.
+
+**BUY orders (below reference):**
+```
+level_i price = ref * (1 - spacing_pct/100)^i
+```
+
+**SELL orders (above reference):**
+```
+level_i price = ref * (1 + spacing_pct/100)^i
+```
+
+**Example:** ref=$80, spacing=0.4%, levels=3:
+- BUY 1: $80 × 0.996 = $79.68
+- BUY 2: $80 × 0.996² = $79.36
+- BUY 3: $80 × 0.996³ = $79.04
+- SELL 1: $80 × 1.004 = $80.32
+- SELL 2: $80 × 1.004² = $80.64
+- SELL 3: $80 × 1.004³ = $80.96
+
+**How neutral mode works:**
+1. Grid orders act as natural take-profits for each other
+2. When a BUY fills → you're long → existing SELL orders above close the position
+3. When a SELL fills → you're short → existing BUY orders below close the position
+4. After each fill, bot replenishes the filled side one level deeper
+5. Stop-loss placed as conditional order (3% default)
+6. **Market-neutral when flat** — no directional bias
+7. **Effective leverage** when one side fills: `(levels × qty × price) / (balance × allocation)`
+
+**With 10x leverage config:**
+- Total grid notional: balance × 0.9 × 10
+- When one side fills (3 orders): ~5x effective exposure
+- Example: $35 balance, 0.67 SOL/level, $80 price → 3 × 0.67 × $80 = ~$160 = ~5x
 
 ### long_only (BUY orders below reference price)
 **Percent spacing:**
@@ -184,32 +221,44 @@ If the bot crashed mid-order-placement, some orders may be on exchange but not i
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `pair` | string | e.g. `"SOLUSDTPERP"` |
-| `subaccountId` | string | VALR sub-account ID |
-| `mode` | `long_only` \| `short_only` | Grid direction |
-| `levels` | number | Number of grid levels (1-20) |
+| `pair` | string | Any VALR perpetual futures pair (e.g. `"SOLUSDTPERP"`, `"BTCUSDTPERP"`, `"ETHUSDTPERP"`) — **pair-agnostic** |
+| `subaccountId` | string | VALR sub-account ID (empty string `""` for main account) |
+| `mode` | `neutral` \| `long_only` \| `short_only` | **`neutral`**: symmetric grid (buys + sells), market-neutral when flat. **`long_only`**: buys below price (bullish). **`short_only`**: sells above price (bearish) |
+| `levels` | number | Number of grid levels per side (1-20). In `neutral` mode: total orders = `levels × 2` |
 | `spacingMode` | `percent` \| `absolute` | Spacing calculation method |
 | `spacingValue` | string | Decimal string (e.g. `"0.4"` for 0.4%) |
-| `quantityPerLevel` | string | Base quantity per grid level |
-| `maxNetPosition` | string | Hard cap on net position |
+| `quantityPerLevel` | string | Quantity per grid level (e.g. `"0.67"` SOL). Determines total notional: `qty × levels × 2 × price` |
 | `stopLossMode` | `percent` \| `absolute` | SL distance mode |
-| `stopLossValue` | string | SL distance value |
-| `tpMode` | `one_level` \| `fixed` \| `disabled` | TP strategy |
-| `triggerType` | `MARK_PRICE` \| `LAST_TRADED` | Trigger for TPSL |
-| `referencePriceSource` | `mark_price` \| `mid_price` \| `last_traded` \| `manual` | Grid center |
-| `postOnly` | boolean | Use postOnly for entries (0% maker fee) |
-| `allowMargin` | boolean | Required `true` for futures subaccount |
-| `cooldownAfterStopSecs` | number | Pause after stop-loss trigger |
+| `stopLossValue` | string | SL distance (e.g. `"3.0"` for 3%) |
+| `tpMode` | `disabled` | TP strategy. In `neutral` mode: grid orders are TPs, so set to `disabled` |
+| `triggerType` | `MARK_PRICE` \| `LAST_TRADED` | Trigger for TPSL conditional |
+| `referencePriceSource` | `mark_price` \| `mid_price` \| `last_traded` \| `manual` | Grid center price source |
+| `leverage` | number | Account leverage (informational only — set account-side on VALR) |
+| `postOnly` | boolean | Use postOnly for entries (0% maker fee on VALR futures) |
+| `allowMargin` | boolean | Required `true` for futures orders |
+| `cooldownAfterStopSecs` | number | Pause after stop-loss trigger (default: 300s) |
 | `dryRun` | boolean | Simulate without placing orders |
+
+**Sizing formula for neutral mode:**
+```
+target_notional = balance × allocation × leverage
+qty_per_level = (target_notional / levels) / price
+```
+
+Example: $35 balance, 90% allocation, 10x leverage, $80 price, 3 levels:
+- Total notional: $35 × 0.9 × 10 = $315
+- Qty per level: $315 / 3 / $80 = 0.67 SOL
+- Effective leverage when one side fills: ~5x
 
 ## Known Limitations and TODOs
 
 1. **Recentering not yet implemented** — bot places grid around startup reference price only. TODO: add recentering logic when price drifts beyond N levels from grid center.
-2. **No leverage setting** — VALR leverage is set account-side, not per-order. The config `leverage` field is informational only.
-3. **No margin check** — `MARGIN_INFO` subscription exists in WS but bot doesn't yet stop entries on low margin.
+2. **No leverage setting** — VALR leverage is set account-side, not per-order. The config `leverage` field is informational only. Set leverage on VALR account settings.
+3. **No margin check** — `MARGIN_INFO` subscription exists in WS but bot doesn't yet stop entries on low margin. TODO: add margin monitoring.
 4. **No partial fill tracking** — orders that partially fill are treated as pending until full fill. For grid trading this is acceptable.
 5. **Batch orders don't include `allowMargin`** — the batch PLACE_LIMIT data field doesn't document `allowMargin` in the batch schema. If batch orders fail, check if `allowMargin` needs to be set differently in batch context.
 6. **202 race condition** — between placing a conditional and receiving WS confirmation, the bot could see "no TPSL" in DB during periodic reconcile. Guarded by `conditionalOrderId` in DB.
+7. **Pair-specific testing** — bot is pair-agnostic but primarily tested on SOLUSDTPERP. TODO: test on BTCUSDTPERP, ETHUSDTPERP with different tick sizes.
 
 ## Running
 
