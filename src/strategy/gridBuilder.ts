@@ -190,7 +190,8 @@ export function calcSlPrice(
 
 /**
  * Calculate TP trigger price for a given position.
- * Returns null if tpMode === 'disabled' or mode is neutral (grid is its own TP).
+ * For long_only/short_only: always returns a TP price (never null in directional modes).
+ * For neutral mode: returns null (uses symmetric grid orders as closing mechanism).
  */
 export function calcTpPrice(
   config: BotConfig,
@@ -198,13 +199,21 @@ export function calcTpPrice(
   spacing: Decimal,
   positionSide?: 'buy' | 'sell'
 ): Decimal | null {
-  // In neutral mode, the grid levels are the TP — no separate TP conditional needed
+  // In neutral mode, the grid levels serve as closing orders — no separate TP conditional needed
   if (config.mode === 'neutral') return null;
-  if (config.tpMode === 'disabled') return null;
 
   const isLong = positionSide
     ? positionSide === 'buy'
     : config.mode === 'long_only';
+
+  // For directional modes, always calculate a TP price
+  // Default to one_level spacing if tpMode is disabled
+  if (config.tpMode === 'disabled') {
+    // Use grid spacing as default TP distance
+    return isLong
+      ? averageEntryPrice.plus(spacing)
+      : averageEntryPrice.minus(spacing);
+  }
 
   if (config.tpMode === 'one_level') {
     return isLong
@@ -229,4 +238,68 @@ export function getSpacingAmount(config: BotConfig, referencePrice: Decimal): De
     return referencePrice.mul(spacing.div(100));
   }
   return spacing;
+}
+
+/**
+ * Build symmetric closing orders for neutral mode.
+ *
+ * When a position has a net long exposure (more BUYs filled than SELLs),
+ * create SELL orders above the average entry price to close the excess.
+ *
+ * When a position has a net short exposure (more SELLs filled than BUYs),
+ * create BUY orders below the average entry price to close the excess.
+ *
+ * The closing orders mirror the entry grid structure but on the opposite side.
+ */
+export function buildClosingOrders(
+  config: BotConfig,
+  referencePrice: Decimal,
+  averageEntryPrice: Decimal,
+  constraints: PairConstraints,
+  quantity: Decimal,  // net position quantity to close
+  seed: string
+): GridLevel[] {
+  if (config.mode !== 'neutral' || quantity.isZero()) {
+    return [];
+  }
+
+  const spacing = new Decimal(config.spacingValue);
+  const closingOrders: GridLevel[] = [];
+
+  // Determine if we're closing a long (net positive) or short (net negative) position
+  const isClosingLong = quantity.gt(0);
+  const closingQty = quantity.abs();
+  const closingQtyStr = qtyToString(closingQty, constraints.baseDecimalPlaces);
+
+  // Number of closing orders to distribute across
+  const numClosingOrders = Math.min(config.levels, Math.ceil(closingQty.div(new Decimal(config.quantityPerLevel)).toNumber()));
+
+  // For net long position: place SELL orders above entry (closing side)
+  // For net short position: place BUY orders below entry (closing side)
+  for (let i = 1; i <= numClosingOrders; i++) {
+    let closingPrice: Decimal;
+    let closingSide: 'BUY' | 'SELL';
+
+    if (isClosingLong) {
+      // Closing a long: sell above entry
+      closingSide = 'SELL';
+      closingPrice = sellLevelPrice(averageEntryPrice, spacing, config.spacingMode, i);
+    } else {
+      // Closing a short: buy below entry
+      closingSide = 'BUY';
+      closingPrice = buyLevelPrice(averageEntryPrice, spacing, config.spacingMode, i);
+    }
+
+    closingOrders.push({
+      level: i,
+      side: closingSide,
+      price: closingPrice,
+      priceStr: priceToString(closingPrice, constraints.tickSize),
+      quantity: closingQty.div(numClosingOrders),
+      quantityStr: qtyToString(closingQty.div(numClosingOrders), constraints.baseDecimalPlaces),
+      customerOrderId: buildCOID(closingSide, i, `close-${seed}`).slice(0, 50),
+    });
+  }
+
+  return closingOrders;
 }

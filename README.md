@@ -194,13 +194,29 @@ If the bot crashed mid-order-placement, some orders may be on exchange but not i
 | `maxNetPosition` | string | Hard cap on net position |
 | `stopLossMode` | `percent` \| `absolute` | SL distance mode |
 | `stopLossValue` | string | SL distance value |
-| `tpMode` | `one_level` \| `fixed` \| `disabled` | TP strategy |
-| `triggerType` | `MARK_PRICE` \| `LAST_TRADED` | Trigger for TPSL |
+| `tpMode` | `one_level` \| `fixed` \| `disabled` | TP strategy (directional modes only; neutral mode uses grid orders) |
+| `tpFixedValue` | string | Fixed TP distance (required if `tpMode = 'fixed'`) |
+| `triggerType` | `MARK_PRICE` \| `LAST_TRADED` | Trigger for TPSL conditionals |
 | `referencePriceSource` | `mark_price` \| `mid_price` \| `last_traded` \| `manual` | Grid center |
 | `postOnly` | boolean | Use postOnly for entries (0% maker fee) |
 | `allowMargin` | boolean | Required `true` for futures subaccount |
 | `cooldownAfterStopSecs` | number | Pause after stop-loss trigger |
 | `dryRun` | boolean | Simulate without placing orders |
+
+## Closing Order Strategy
+
+### Long Only & Short Only Modes
+- **Always have TP orders** — even if `tpMode` is set to `disabled`, bot defaults to grid spacing as the TP distance
+- TP is placed as a conditional market order that closes the entire position
+- SL is placed as a complementary conditional (OCO with TP)
+
+### Neutral Mode
+- **No separate conditional TP** — the grid itself generates profit on each price oscillation
+- **Symmetric closing orders** are automatically placed when net position accumulates:
+  - If net long: SELL orders above average entry price (closing the excess)
+  - If net short: BUY orders below average entry price (closing the excess)
+- **SL still placed** for emergency protection (triggers entire position close)
+- Closing orders mirror the grid structure on the opposite side
 
 ## Known Limitations and TODOs
 
