@@ -10,7 +10,11 @@ export const ConfigSchema = z.object({
   spacingMode: z.enum(['absolute', 'percent']),
   spacingValue: z.string().min(1), // Decimal string
 
-  quantityPerLevel: z.string().min(1), // Decimal string
+  quantityPerLevel: z.string().min(1), // Decimal string — used when dynamicSizing is false
+
+  dynamicSizing: z.boolean().default(false), // Calculate qty from balance when true
+  targetLeverage: z.number().int().min(1).max(100).optional(), // Effective leverage for dynamic sizing
+  capitalAllocationPercent: z.number().min(1).max(100).default(90), // % of balance to allocate
 
   stopLossMode: z.enum(['absolute', 'percent']),
   stopLossValue: z.string().min(1), // Decimal string

@@ -29,6 +29,56 @@ import { priceToString, qtyToString } from '../exchange/pairMetadata.js';
 import type { PairConstraints } from '../exchange/pairMetadata.js';
 import type { BotConfig } from '../config/schema.js';
 
+/**
+ * Calculate dynamic quantity per level based on available balance.
+ *
+ * Formula:
+ *   totalNotional = availableBalance × (targetLeverage / 100) × (capitalAllocationPercent / 100)
+ *   notionalPerLevel = totalNotional / totalLevels
+ *   quantityPerLevel = notionalPerLevel / referencePrice
+ *
+ * For neutral mode: totalLevels = levels × 2 (both sides)
+ * For long_only/short_only: totalLevels = levels (one side)
+ */
+export function calculateDynamicQuantity(
+  config: BotConfig,
+  availableBalance: Decimal,
+  referencePrice: Decimal,
+  constraints: PairConstraints
+): Decimal {
+  const targetLeverage = new Decimal(config.targetLeverage ?? config.leverage ?? 1);
+  const allocationPercent = new Decimal(config.capitalAllocationPercent ?? 90);
+
+  // Calculate total notional we want to deploy
+  const totalNotional = availableBalance
+    .mul(targetLeverage)
+    .mul(allocationPercent.div(100));
+
+  // Total grid levels (both sides for neutral, one side for directional)
+  const totalLevels = config.mode === 'neutral'
+    ? config.levels * 2
+    : config.levels;
+
+  // Notional per level
+  const notionalPerLevel = totalNotional.div(totalLevels);
+
+  // Quantity per level in base currency
+  let quantity = notionalPerLevel.div(referencePrice);
+
+  // Round down to baseDecimalPlaces (conservative — never over-allocate)
+  const baseDecimals = constraints.baseDecimalPlaces;
+  const truncationFactor = new Decimal(10).pow(baseDecimals);
+  quantity = quantity.mul(truncationFactor).floor().div(truncationFactor);
+
+  // Ensure minimum order size
+  const minQty = new Decimal(constraints.minBaseAmount);
+  if (quantity.lessThan(minQty)) {
+    quantity = minQty;
+  }
+
+  return quantity;
+}
+
 export interface GridLevel {
   level: number;       // 1-indexed distance from reference
   side: 'BUY' | 'SELL';
@@ -68,15 +118,27 @@ function sellLevelPrice(ref: Decimal, spacing: Decimal, spacingMode: 'percent' |
  * - long_only:  N BUY levels below ref
  * - short_only: N SELL levels above ref
  * - neutral:    N BUY levels below + N SELL levels above
+ *
+ * When dynamicSizing is enabled, quantity is calculated from available balance.
+ * Otherwise, uses the fixed quantityPerLevel from config.
  */
 export function buildGridLevels(
   config: BotConfig,
   referencePrice: Decimal,
   constraints: PairConstraints,
-  seed: string
+  seed: string,
+  availableBalance?: Decimal  // Required when dynamicSizing is true
 ): GridLevel[] {
   const spacing = new Decimal(config.spacingValue);
-  const qty = new Decimal(config.quantityPerLevel);
+
+  // Calculate quantity — dynamic or fixed
+  let qty: Decimal;
+  if (config.dynamicSizing && availableBalance) {
+    qty = calculateDynamicQuantity(config, availableBalance, referencePrice, constraints);
+  } else {
+    qty = new Decimal(config.quantityPerLevel);
+  }
+
   const levels: GridLevel[] = [];
 
   const makeBuy = (i: number): GridLevel => {
@@ -122,6 +184,8 @@ export function buildGridLevels(
  * When a SELL fills → place a new SELL one level deeper (further above ref)
  *
  * "nextLevel" = current deepest active level for that side + 1
+ *
+ * When dynamicSizing is enabled, quantity is recalculated from current balance.
  */
 export function buildReplenishLevel(
   config: BotConfig,
@@ -129,10 +193,18 @@ export function buildReplenishLevel(
   constraints: PairConstraints,
   side: 'BUY' | 'SELL',
   nextLevel: number,
-  seed: string
+  seed: string,
+  availableBalance?: Decimal  // Required when dynamicSizing is true
 ): GridLevel {
   const spacing = new Decimal(config.spacingValue);
-  const qty = new Decimal(config.quantityPerLevel);
+
+  // Calculate quantity — dynamic or fixed
+  let qty: Decimal;
+  if (config.dynamicSizing && availableBalance) {
+    qty = calculateDynamicQuantity(config, availableBalance, referencePrice, constraints);
+  } else {
+    qty = new Decimal(config.quantityPerLevel);
+  }
 
   let rawPrice: Decimal;
   if (side === 'BUY') {

@@ -110,10 +110,18 @@ async function main(): Promise<void> {
   const usdtBalance = balances.find(
     (b) => b.currency === 'USDT' || b.currency === 'usdt'
   );
+  const availableBalance = usdtBalance ? new Decimal(usdtBalance.available) : new Decimal(0);
   log.info(
     { available: usdtBalance?.available ?? 'N/A', total: usdtBalance?.total ?? 'N/A' },
     'Account USDT balance'
   );
+
+  if (config.dynamicSizing) {
+    log.info(
+      { targetLeverage: config.targetLeverage, allocationPercent: config.capitalAllocationPercent },
+      'Dynamic sizing enabled — order sizes will adjust with balance'
+    );
+  }
 
   // ─── 5. Build strategy components ─────────────────────────────────────────
   const positionManager = new PositionManager(config.pair, store);
@@ -180,7 +188,7 @@ async function main(): Promise<void> {
 
                 // Replenish the filled side
                 const replenish = buildReplenishLevel(
-                  config, refPrice, constraints, filledSide, nextLevel, seed
+                  config, refPrice, constraints, filledSide, nextLevel, seed, availableBalance
                 );
                 log.info(
                   { side: filledSide, level: nextLevel, price: replenish.priceStr },
@@ -217,7 +225,7 @@ async function main(): Promise<void> {
 
                 if (activeOrders.length < config.levels) {
                   const nextLevel = activeOrders.length + 1;
-                  const newLevels = buildGridLevels(config, refPrice, constraints, seed);
+                  const newLevels = buildGridLevels(config, refPrice, constraints, seed, availableBalance);
                   const nextLevelData = newLevels.find((l) => l.level === nextLevel);
                   if (nextLevelData) {
                     try {
@@ -298,7 +306,7 @@ async function main(): Promise<void> {
     try {
       riskManager.checkCooldown(store);
       const seed = Date.now().toString(36);
-      const allGridLevels = buildGridLevels(config, refPrice, constraints, seed);
+      const allGridLevels = buildGridLevels(config, refPrice, constraints, seed, availableBalance);
 
       let gridLevels = allGridLevels;
       if (config.mode === 'neutral' && positionManager.position) {
