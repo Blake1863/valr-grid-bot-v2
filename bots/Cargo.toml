@@ -1,0 +1,6 @@
+[workspace]
+members = ["chart-maintenance-rust",
+    "valr-common",
+    "valr-grid-bot",
+]
+resolver = "2"

@@ -1,0 +1,16 @@
+[Unit]
+Description=VALR Auto Buy & Sweep Bot
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/.openclaw/workspace/bots/valr-auto-sweep
+ExecStart=/usr/bin/python3 /home/admin/.openclaw/workspace/bots/valr-auto-sweep/main.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/admin/.openclaw/workspace/bots/valr-auto-sweep/logs/auto-sweep.stdout
+StandardError=append:/home/admin/.openclaw/workspace/bots/valr-auto-sweep/logs/auto-sweep.stderr
+
+[Install]
+WantedBy=default.target

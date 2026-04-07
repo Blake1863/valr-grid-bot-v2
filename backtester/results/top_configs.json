@@ -1,0 +1,92 @@
+[
+  {
+    "rank": 1,
+    "profile": "balanced",
+    "params": {
+      "levels": 3,
+      "spacing_pct": 2.5,
+      "max_loss_pct": 8.0,
+      "leverage": 10,
+      "balance_usage_pct": 90
+    },
+    "metrics": {
+      "sharpe": 2.47,
+      "total_pnl": 113000.94,
+      "max_drawdown": 0.8407,
+      "win_rate": 0.4108,
+      "num_trades": 2040
+    }
+  },
+  {
+    "rank": 2,
+    "profile": "balanced",
+    "params": {
+      "levels": 3,
+      "spacing_pct": 2.5,
+      "max_loss_pct": 8.0,
+      "leverage": 10,
+      "balance_usage_pct": 70
+    },
+    "metrics": {
+      "sharpe": 2.17,
+      "total_pnl": 87889.62,
+      "max_drawdown": 0.7302,
+      "win_rate": 0.4108,
+      "num_trades": 2040
+    }
+  },
+  {
+    "rank": 3,
+    "profile": "balanced",
+    "params": {
+      "levels": 3,
+      "spacing_pct": 1.0,
+      "max_loss_pct": 8.0,
+      "leverage": 10,
+      "balance_usage_pct": 90
+    },
+    "metrics": {
+      "sharpe": 2.03,
+      "total_pnl": 128619.49,
+      "max_drawdown": 0.8328,
+      "win_rate": 0.4425,
+      "num_trades": 5627
+    }
+  },
+  {
+    "rank": 4,
+    "profile": "balanced",
+    "params": {
+      "levels": 3,
+      "spacing_pct": 0.75,
+      "max_loss_pct": 8.0,
+      "leverage": 10,
+      "balance_usage_pct": 90
+    },
+    "metrics": {
+      "sharpe": 1.87,
+      "total_pnl": 118720.91,
+      "max_drawdown": 0.8433,
+      "win_rate": 0.45,
+      "num_trades": 7047
+    }
+  },
+  {
+    "rank": 5,
+    "profile": "balanced",
+    "params": {
+      "levels": 5,
+      "spacing_pct": 0.75,
+      "max_loss_pct": 8.0,
+      "leverage": 10,
+      "balance_usage_pct": 90
+    },
+    "metrics": {
+      "sharpe": 1.81,
+      "total_pnl": 120604.7,
+      "max_drawdown": 0.8459,
+      "win_rate": 0.4462,
+      "num_trades": 8706
+    }
+  }
+]

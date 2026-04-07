@@ -1,0 +1,3561 @@
+{
+  "spot": [
+    {
+      "symbol": "BTCZAR",
+      "base": "BTC",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.000008",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ETHZAR",
+      "base": "ETH",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.0002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ETHBTC",
+      "base": "ETH",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "0.0002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LTCBTC",
+      "base": "LTC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "0.0043",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "LTCETH",
+      "base": "LTC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0237",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ADAETH",
+      "base": "ADA",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "3.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XEMBTC",
+      "base": "XEM",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "69",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XEMETH",
+      "base": "XEM",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "23",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ADABTC",
+      "base": "ADA",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ANTBTC",
+      "base": "ANT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "8",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ANTETH",
+      "base": "ANT",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BATBTC",
+      "base": "BAT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BATETH",
+      "base": "BAT",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BNTBTC",
+      "base": "BNT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "6",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BNTETH",
+      "base": "BNT",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "CVCBTC",
+      "base": "CVC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "55",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "CVCETH",
+      "base": "CVC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "18",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BCHBTC",
+      "base": "BCH",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "0.009",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BCHETH",
+      "base": "BCH",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0069",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DCRBTC",
+      "base": "DCR",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.1633",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DGBBTC",
+      "base": "DGB",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "305",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DGBETH",
+      "base": "DGB",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "94",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DNTBTC",
+      "base": "DNT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "247",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ETCBTC",
+      "base": "ETC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "0.018",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ETCETH",
+      "base": "ETC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.2074",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "EXPBTC",
+      "base": "EXP",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "32",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GAMEBTC",
+      "base": "GAME",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "45",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GNOBTC",
+      "base": "GNO",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.2356",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GNOETH",
+      "base": "GNO",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0703",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GNTBTC",
+      "base": "GNT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "47",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GNTETH",
+      "base": "GNT",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "15",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "LSKBTC",
+      "base": "LSK",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MONABTC",
+      "base": "MONA",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "6",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "OMGBTC",
+      "base": "OMG",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "OMGETH",
+      "base": "OMG",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.7354",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PAYBTC",
+      "base": "PAY",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "16",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PAYETH",
+      "base": "PAY",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PIVXBTC",
+      "base": "PIVX",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "6",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "QTUMBTC",
+      "base": "QTUM",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1.4334",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "QTUMETH",
+      "base": "QTUM",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.4445",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "RCNBTC",
+      "base": "RCN",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "251",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "RLCBTC",
+      "base": "RLC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "12",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SCBTC",
+      "base": "SC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1300",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SCETH",
+      "base": "SC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "370",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SNTBTC",
+      "base": "SNT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "146",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SNTETH",
+      "base": "SNT",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "45",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "STORJBTC",
+      "base": "STORJ",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "20",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "WAVESBTC",
+      "base": "WAVES",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "WAVESETH",
+      "base": "WAVES",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.298",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "TRXBTC",
+      "base": "TRX",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "135",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "TRXETH",
+      "base": "TRX",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "31",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "TUSDBTC",
+      "base": "TUSD",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "TUSDETH",
+      "base": "TUSD",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.8013",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XLMBTC",
+      "base": "XLM",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "12",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XLMETH",
+      "base": "XLM",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "8.2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XRPBTC",
+      "base": "XRP",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "13",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XRPETH",
+      "base": "XRP",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ZRXBTC",
+      "base": "ZRX",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "13",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ZRXETH",
+      "base": "ZRX",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "VIBBTC",
+      "base": "VIB",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "120",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "VIBETH",
+      "base": "VIB",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "36",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DOGEBTC",
+      "base": "DOGE",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3.8",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "VTCBTC",
+      "base": "VTC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "10",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "KMDBTC",
+      "base": "KMD",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BSVBTC",
+      "base": "BSV",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0432",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BSVETH",
+      "base": "BSV",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0131",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XRPZAR",
+      "base": "XRP",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.8",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "DAIBTC",
+      "base": "DAI",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "EOSBTC",
+      "base": "EOS",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1.15",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "LINKBTC",
+      "base": "LINK",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.15",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "VETBTC",
+      "base": "VET",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "824.92",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XTZBTC",
+      "base": "XTZ",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DAIETH",
+      "base": "DAI",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3.018",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "EOSETH",
+      "base": "EOS",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.00594",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XTZETH",
+      "base": "XTZ",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "QNTBTC",
+      "base": "QNT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1.32619",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XTPBTC",
+      "base": "XTP",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "151",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "CROBTC",
+      "base": "CRO",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "92.6",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.00001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "base": "ETH",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.0002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XRPUSDT",
+      "base": "XRP",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.8",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "STMXBTC",
+      "base": "STMX",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1200",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "STMXETH",
+      "base": "STMX",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "304",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "REPV2BTC",
+      "base": "REPV2",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.25",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "REPV2ETH",
+      "base": "REPV2",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0597",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "CELOBTC",
+      "base": "CELO",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "CELOETH",
+      "base": "CELO",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ALGOBTC",
+      "base": "ALGO",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "COMPBTC",
+      "base": "COMP",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "0.03",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "COMPETH",
+      "base": "COMP",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.015",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DOTBTC",
+      "base": "DOT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.0000001",
+      "minTradeSize": "0.2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DOTETH",
+      "base": "DOT",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PAXBTC",
+      "base": "PAX",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "2.97",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "USDCBTC",
+      "base": "USDC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "USDCETH",
+      "base": "USDC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SALTBTC",
+      "base": "SALT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "15",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SALTETH",
+      "base": "SALT",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "RLCETH",
+      "base": "RLC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SLRBTC",
+      "base": "SLR",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "101",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "POLYETH",
+      "base": "POLY",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "10",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GRSBTC",
+      "base": "GRS",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "13",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GUPBTC",
+      "base": "GUP",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "190",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MLNBTC",
+      "base": "MLN",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.8",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "NMRBTC",
+      "base": "NMR",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.7776",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SWTBTC",
+      "base": "SWT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "30",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "FCTBTC",
+      "base": "FCT",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.4489",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "WINGSBTC",
+      "base": "WINGS",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "100",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "OCNBTC",
+      "base": "OCN",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1600",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "OCNETH",
+      "base": "OCN",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "383",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "POLYBTC",
+      "base": "POLY",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "50",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "REPBTC",
+      "base": "REP",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.25",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "REPETH",
+      "base": "REP",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0597",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DASHBTC",
+      "base": "DASH",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0348",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DASHETH",
+      "base": "DASH",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0119",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "STORMBTC",
+      "base": "STORM",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1200",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "STORMETH",
+      "base": "STORM",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "304",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ZECBTC",
+      "base": "ZEC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0521",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ZECETH",
+      "base": "ZEC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0168",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XMRBTC",
+      "base": "XMR",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0572",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XMRETH",
+      "base": "XMR",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0189",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "GRINBTC",
+      "base": "GRIN",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3.8",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MATICBTC",
+      "base": "MATIC",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "1.2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MATICETH",
+      "base": "MATIC",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "4",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "AAVEBTC",
+      "base": "AAVE",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "0.02",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "AAVEETH",
+      "base": "AAVE",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.0125",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "UNIBTC",
+      "base": "UNI",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.0000001",
+      "minTradeSize": "0.1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "UNIETH",
+      "base": "UNI",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "0.2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ENJBTC",
+      "base": "ENJ",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ENJETH",
+      "base": "ENJ",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MANABTC",
+      "base": "MANA",
+      "quote": "BTC",
+      "type": "SPOT",
+      "tickSize": "0.0000001",
+      "minTradeSize": "2.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MANAETH",
+      "base": "MANA",
+      "quote": "ETH",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "7",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SOLZAR",
+      "base": "SOL",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BTCUSDC",
+      "base": "BTC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.000008",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "USDCZAR",
+      "base": "USDC",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BNBZAR",
+      "base": "BNB",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.0008",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SHIBZAR",
+      "base": "SHIB",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0000001",
+      "minTradeSize": "44600",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AVAXZAR",
+      "base": "AVAX",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.1",
+      "minTradeSize": "0.0128",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ETHUSDC",
+      "base": "ETH",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.0002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BNBUSDC",
+      "base": "BNB",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.1",
+      "minTradeSize": "0.0008",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XRPUSDC",
+      "base": "XRP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.8",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SOLUSDC",
+      "base": "SOL",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AVAXUSDC",
+      "base": "AVAX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.01225438",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SHIBUSDC",
+      "base": "SHIB",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "44600",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ETHWZAR",
+      "base": "ETHW",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.11511",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BTCZMW",
+      "base": "BTC",
+      "quote": "ZMW",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.0001",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "USDCZMW",
+      "base": "USDC",
+      "quote": "ZMW",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "FLRUSDC",
+      "base": "FLR",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "USDTZAR",
+      "base": "USDT",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "USDTZMW",
+      "base": "USDT",
+      "quote": "ZMW",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "USDTUSDC",
+      "base": "USDT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "0.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BTCINR",
+      "base": "BTC",
+      "quote": "INR",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.00005",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ENJUSDC",
+      "base": "ENJ",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "3.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BNTUSDC",
+      "base": "BNT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "DAIUSDC",
+      "base": "DAI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.99",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "DNTUSDC",
+      "base": "DNT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "50",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "GNTUSDC",
+      "base": "GNT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "QNTUSDC",
+      "base": "QNT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.02",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "RLCUSDC",
+      "base": "RLC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.89",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SNTUSDC",
+      "base": "SNT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "50",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ZRXUSDC",
+      "base": "ZRX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "STORJUSDC",
+      "base": "STORJ",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "YFIUSDC",
+      "base": "YFI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.00022",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LDOUSDC",
+      "base": "LDO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.8",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MKRUSDC",
+      "base": "MKR",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.0017",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "CRVUSDC",
+      "base": "CRV",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "4.68",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "HFTUSDC",
+      "base": "HFT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "5.6",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "APEUSDC",
+      "base": "APE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "5.67",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BANDUSDC",
+      "base": "BAND",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.22",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "FILUSDC",
+      "base": "FIL",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "APTUSDC",
+      "base": "APT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.24",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "GRTUSDC",
+      "base": "GRT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "18.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SUIUSDC",
+      "base": "SUI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.8",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SNXUSDC",
+      "base": "SNX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.625",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "OPUSDC",
+      "base": "OP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ARBUSDC",
+      "base": "ARB",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BONKUSDC",
+      "base": "BONK",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "126822",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "FETUSDC",
+      "base": "FET",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ILVUSDC",
+      "base": "ILV",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.0225",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "INJUSDC",
+      "base": "INJ",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.67",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SEIUSDC",
+      "base": "SEI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "9.6",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TIAUSDC",
+      "base": "TIA",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "4.06",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ATOMUSDC",
+      "base": "ATOM",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.28",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "RNDRUSDC",
+      "base": "RNDR",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.6",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "STXUSDC",
+      "base": "STX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "API3USDC",
+      "base": "API3",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "6",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AXSUSDC",
+      "base": "AXS",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.16",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BICOUSDC",
+      "base": "BICO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "18.35",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BLURUSDC",
+      "base": "BLUR",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "5.4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "CHZUSDC",
+      "base": "CHZ",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "27",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ENSUSDC",
+      "base": "ENS",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.05",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "GALUSDC",
+      "base": "GAL",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.78",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "IMXUSDC",
+      "base": "IMX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2.7",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "KSMUSDC",
+      "base": "KSM",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.1534",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LRCUSDC",
+      "base": "LRC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MAGICUSDC",
+      "base": "MAGIC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.7",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MASKUSDC",
+      "base": "MASK",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.7",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MINAUSDC",
+      "base": "MINA",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "OGNUSDC",
+      "base": "OGN",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "11.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "OSMOUSDC",
+      "base": "OSMO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PYRUSDC",
+      "base": "PYR",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SANDUSDC",
+      "base": "SAND",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "4.92",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SKLUSDC",
+      "base": "SKL",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "45",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SUPERUSDC",
+      "base": "SUPER",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "13",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SUSHIUSDC",
+      "base": "SUSHI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.74",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TRBUSDC",
+      "base": "TRB",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.15",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "UNFIUSDC",
+      "base": "UNFI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.13",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DOGEUSDC",
+      "base": "DOGE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "24",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ICPUSDC",
+      "base": "ICP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ONDOUSDC",
+      "base": "ONDO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.76",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PYUSDUSDT",
+      "base": "PYUSD",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "0.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PYUSDZAR",
+      "base": "PYUSD",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "JTOUSDC",
+      "base": "JTO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AAVEUSDC",
+      "base": "AAVE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.015",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "base": "DOGE",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TRXUSDT",
+      "base": "TRX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SOLUSDT",
+      "base": "SOL",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "API3USDT",
+      "base": "API3",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.12987013",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "LDOUSDT",
+      "base": "LDO",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.15873016",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MKRUSDT",
+      "base": "MKR",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.1",
+      "minTradeSize": "0.00015634",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SNXUSDT",
+      "base": "SNX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.10204082",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "base": "AVAX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.02",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "APTUSDT",
+      "base": "APT",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "OPUSDT",
+      "base": "OP",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SUIUSDT",
+      "base": "SUI",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "STXUSDT",
+      "base": "STX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "WIFUSDT",
+      "base": "WIF",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.17",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "1MPEPEUSDT",
+      "base": "1MPEPE",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "1MSHIBUSDT",
+      "base": "1MSHIB",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "TONUSDT",
+      "base": "TON",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ADAUSDC",
+      "base": "ADA",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BATUSDC",
+      "base": "BAT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "6",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ALGOUSDC",
+      "base": "ALGO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "8",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BCHUSDC",
+      "base": "BCH",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "CELOUSDC",
+      "base": "CELO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "COMPUSDC",
+      "base": "COMP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.02",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "DOTUSDC",
+      "base": "DOT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.25",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "EOSUSDC",
+      "base": "EOS",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "3.2",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ETCUSDC",
+      "base": "ETC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.05",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LINKUSDC",
+      "base": "LINK",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LTCUSDC",
+      "base": "LTC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.015",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MANAUSDC",
+      "base": "MANA",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MATICUSDC",
+      "base": "MATIC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "4.1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "UNIUSDC",
+      "base": "UNI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XLMUSDC",
+      "base": "XLM",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "13",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XTZUSDC",
+      "base": "XTZ",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "NEONUSDC",
+      "base": "NEON",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "3.11",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "OMNIUSDC",
+      "base": "OMNI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.36",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SHDWUSDC",
+      "base": "SHDW",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2.36",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TNSRUSDC",
+      "base": "TNSR",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ARKMUSDC",
+      "base": "ARKM",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2.26",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AKTUSDC",
+      "base": "AKT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.53",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "STRKUSDC",
+      "base": "STRK",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "7.22",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "JUPUSDT",
+      "base": "JUP",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.45",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BOMEUSDT",
+      "base": "BOME",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "39",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PYTHUSDT",
+      "base": "PYTH",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1.2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "WUSDT",
+      "base": "W",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "1MBONKUSDT",
+      "base": "1MBONK",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "EURCUSDC",
+      "base": "EURC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AVAILUSDT",
+      "base": "AVAIL",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "10",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "MEMEUSDT",
+      "base": "MEME",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "33",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "EURCZAR",
+      "base": "EURC",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BTCEURC",
+      "base": "BTC",
+      "quote": "EURC",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.000008",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ORDERUSDT",
+      "base": "ORDER",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "RENDERUSDC",
+      "base": "RENDER",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.73",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "FDUSDZAR",
+      "base": "FDUSD",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "FDUSDUSDT",
+      "base": "FDUSD",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "0.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BTCFDUSD",
+      "base": "BTC",
+      "quote": "FDUSD",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.000008",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "KARRATUSDC",
+      "base": "KARRAT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "8.82",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "GUSDC",
+      "base": "G",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "241",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MOBILEUSDC",
+      "base": "MOBILE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2305",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ZROUSDT",
+      "base": "ZRO",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.12",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "HBARUSDC",
+      "base": "HBAR",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "24.7",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BOMEUSDC",
+      "base": "BOME",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "39",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "FDUSDUSDC",
+      "base": "FDUSD",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "0.5",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "JUPUSDC",
+      "base": "JUP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.45",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MEMEUSDC",
+      "base": "MEME",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "33",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ORDERUSDC",
+      "base": "ORDER",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PYTHUSDC",
+      "base": "PYTH",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1.2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PYUSDUSDC",
+      "base": "PYUSD",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "0.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TRXUSDC",
+      "base": "TRX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "WUSDC",
+      "base": "W",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "0.9",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "WIFUSDC",
+      "base": "WIF",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.17",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ZROUSDC",
+      "base": "ZRO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.12",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SHIBUSDT",
+      "base": "SHIB",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00000001",
+      "minTradeSize": "44600",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BNBUSDT",
+      "base": "BNB",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.1",
+      "minTradeSize": "0.0008",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XAUTZAR",
+      "base": "XAUT",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "1",
+      "minTradeSize": "0.0002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "IOUSDC",
+      "base": "IO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.71",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "EIGENUSDC",
+      "base": "EIGEN",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.41",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "EURCUSDT",
+      "base": "EURC",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.47",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "DOGEZAR",
+      "base": "DOGE",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AGRIUSDT",
+      "base": "AGRI",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "10",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PEPEUSDC",
+      "base": "PEPE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "266175",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "POPCATUSDT",
+      "base": "POPCAT",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PNUTUSDT",
+      "base": "PNUT",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "GOATUSDT",
+      "base": "GOAT",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "NEIROUSDT",
+      "base": "NEIRO",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0000001",
+      "minTradeSize": "256",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "FLOKIUSDC",
+      "base": "FLOKI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "13193",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "POPCATUSDC",
+      "base": "POPCAT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PNUTUSDC",
+      "base": "PNUT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.4",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "NEIROUSDC",
+      "base": "NEIRO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0000001",
+      "minTradeSize": "256",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "GOATUSDC",
+      "base": "GOAT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "AGRIUSDC",
+      "base": "AGRI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "10",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PENGUUSDT",
+      "base": "PENGU",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "19",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PENGUUSDC",
+      "base": "PENGU",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "19",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SWEATUSDT",
+      "base": "SWEAT",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "69",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SWEATUSDC",
+      "base": "SWEAT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "69",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TRUMPUSDT",
+      "base": "TRUMP",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.02",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TRUMPUSDC",
+      "base": "TRUMP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.12",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TRXZAR",
+      "base": "TRX",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SUSDT",
+      "base": "S",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1.3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SUSDC",
+      "base": "S",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1.3",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XAUTUSDC",
+      "base": "XAUT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.1",
+      "minTradeSize": "0.0002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XAUTUSDT",
+      "base": "XAUT",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.1",
+      "minTradeSize": "0.0002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BERAUSDC",
+      "base": "BERA",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.33",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "IPUSDC",
+      "base": "IP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.31",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LTCZAR",
+      "base": "LTC",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.1",
+      "minTradeSize": "0.005",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LTCUSDT",
+      "base": "LTC",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.006",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "RLUSDUSDC",
+      "base": "RLUSD",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "RLUSDUSDT",
+      "base": "RLUSD",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "0.5",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "RLUSDZAR",
+      "base": "RLUSD",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "USDT0USDC",
+      "base": "USDT0",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LINKZAR",
+      "base": "LINK",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.04",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "LINKUSDT",
+      "base": "LINK",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "0.04",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "USDPCUSDC",
+      "base": "USDPC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XLMZAR",
+      "base": "XLM",
+      "quote": "ZAR",
+      "type": "SPOT",
+      "tickSize": "0.001",
+      "minTradeSize": "1.2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "XLMUSDT",
+      "base": "XLM",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "1.1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TSLAXUSDC",
+      "base": "TSLAX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.002",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "CRCLXUSDC",
+      "base": "CRCLX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "HOODXUSDC",
+      "base": "HOODX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.005",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "COINXUSDC",
+      "base": "COINX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "NVDAXUSDC",
+      "base": "NVDAX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TSLAXUSDT",
+      "base": "TSLAX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "CRCLXUSDT",
+      "base": "CRCLX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "HOODXUSDT",
+      "base": "HOODX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.005",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "COINXUSDT",
+      "base": "COINX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "NVDAXUSDT",
+      "base": "NVDAX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.003",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ADAUSDT",
+      "base": "ADA",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.6",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "FARTCOINUSDT",
+      "base": "FARTCOIN",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.0001",
+      "minTradeSize": "0.3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "1000PEPEUSDT",
+      "base": "1000PEPE",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "40",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "PUMPUSDC",
+      "base": "PUMP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PUMPUSDT",
+      "base": "PUMP",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.000001",
+      "minTradeSize": "135",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MSTRXUSDC",
+      "base": "MSTRX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MSTRXUSDT",
+      "base": "MSTRX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SKYUSDC",
+      "base": "SKY",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "18",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "WLFIUSDC",
+      "base": "WLFI",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "WLFIUSDT",
+      "base": "WLFI",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "USDPCUSDT",
+      "base": "USDPC",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ZECUSDC",
+      "base": "ZEC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.01",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "POLUSDC",
+      "base": "POL",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "10",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "VALR10USDT",
+      "base": "VALR10",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.005",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SPYXUSDC",
+      "base": "SPYX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SPYXUSDT",
+      "base": "SPYX",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AEROUSDC",
+      "base": "AERO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "4.1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MANTLEUSDC",
+      "base": "MANTLE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.9",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SYRUPUSDC",
+      "base": "SYRUP",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "6.1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "PENDLEUSDC",
+      "base": "PENDLE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "1.1",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ZORAUSDC",
+      "base": "ZORA",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "48",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "DASHUSDC",
+      "base": "DASH",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.03",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "HNTUSDC",
+      "base": "HNT",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "METUSDC",
+      "base": "MET",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "7",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "MONUSDC",
+      "base": "MON",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "109",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "TAOUSDC",
+      "base": "TAO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.008",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "HYPEUSDC",
+      "base": "HYPE",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.067",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "BITGOLDUSDT",
+      "base": "BITGOLD",
+      "quote": "USDT",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "0.005",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ZARSCUSDC",
+      "base": "ZARSC",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.00001",
+      "minTradeSize": "8",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "2ZUSDC",
+      "base": "2Z",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "26.32",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "EULUSDC",
+      "base": "EUL",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "2.164",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "KMNOUSDC",
+      "base": "KMNO",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "100.2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SAPIENUSDC",
+      "base": "SAPIEN",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "26",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SPXUSDC",
+      "base": "SPX",
+      "quote": "USDC",
+      "type": "SPOT",
+      "tickSize": "0.01",
+      "minTradeSize": "6.55",
+      "status": "ACTIVE"
+    }
+  ],
+  "futures": [
+    {
+      "symbol": "BTCUSDCPERP",
+      "base": "BTC",
+      "quote": "USDC",
+      "type": "FUTURES",
+      "tickSize": "1",
+      "minTradeSize": "0.0001",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ETHUSDCPERP",
+      "base": "ETH",
+      "quote": "USDC",
+      "type": "FUTURES",
+      "tickSize": "0.01",
+      "minTradeSize": "0.01",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BTCZARPERP",
+      "base": "BTC",
+      "quote": "ZAR",
+      "type": "FUTURES",
+      "tickSize": "1",
+      "minTradeSize": "0.0001",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "BTCUSDTPERP",
+      "base": "BTC",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "1",
+      "minTradeSize": "0.0001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "ETHUSDTPERP",
+      "base": "ETH",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.1",
+      "minTradeSize": "0.001",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "USDTZARPERP",
+      "base": "USDT",
+      "quote": "ZAR",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "XRPUSDTPERP",
+      "base": "XRP",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "2",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "DOGEUSDTPERP",
+      "base": "DOGE",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.00001",
+      "minTradeSize": "6",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "SOLUSDTPERP",
+      "base": "SOL",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.01",
+      "minTradeSize": "0.01",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "AVAXUSDTPERP",
+      "base": "AVAX",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.001",
+      "minTradeSize": "0.03",
+      "status": "ACTIVE"
+    },
+    {
+      "symbol": "APTUSDTPERP",
+      "base": "APT",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "OPUSDTPERP",
+      "base": "OP",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "SUIUSDTPERP",
+      "base": "SUI",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "STXUSDTPERP",
+      "base": "STX",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "WIFUSDTPERP",
+      "base": "WIF",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "1MPEPEUSDTPERP",
+      "base": "1MPEPE",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "1MSHIBUSDTPERP",
+      "base": "1MSHIB",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.001",
+      "minTradeSize": "0.1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "TONUSDTPERP",
+      "base": "TON",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.001",
+      "minTradeSize": "0.3",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "1MBONKUSDTPERP",
+      "base": "1MBONK",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.001",
+      "minTradeSize": "0.1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "AVAILUSDTPERP",
+      "base": "AVAIL",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.00001",
+      "minTradeSize": "10",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ETHZARPERP",
+      "base": "ETH",
+      "quote": "ZAR",
+      "type": "FUTURES",
+      "tickSize": "1",
+      "minTradeSize": "0.001",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ORDERUSDTPERP",
+      "base": "ORDER",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.00001",
+      "minTradeSize": "10",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "ADAUSDTPERP",
+      "base": "ADA",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "FARTCOINUSDTPERP",
+      "base": "FARTCOIN",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.0001",
+      "minTradeSize": "1",
+      "status": "INACTIVE"
+    },
+    {
+      "symbol": "1000PEPEUSDTPERP",
+      "base": "1000PEPE",
+      "quote": "USDT",
+      "type": "FUTURES",
+      "tickSize": "0.000001",
+      "minTradeSize": "80",
+      "status": "INACTIVE"
+    }
+  ]
+}

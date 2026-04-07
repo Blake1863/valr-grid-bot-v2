@@ -1,0 +1,27 @@
+[package]
+name = "cm-bot-spot"
+version = "1.0.0"
+edition = "2021"
+
+[workspace]
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tungstenite = { version = "0.29", features = ["native-tls"] }
+tokio-tungstenite = { version = "0.29", features = ["native-tls"] }
+native-tls = "0.2"
+futures-util = "0.3"
+chrono = "0.4"
+rand = "0.8"
+uuid = { version = "1", features = ["v4"] }
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+anyhow = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true

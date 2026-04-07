@@ -1,0 +1,34 @@
+{
+  "test_pair": "SOLUSDTPERP",
+  "test_spot_pair": "LINKZAR",
+  "all_pairs_mode": false,
+  "phase1_pairs": [
+    "BTCUSDTPERP",
+    "ETHUSDTPERP", 
+    "XRPUSDTPERP",
+    "DOGEUSDTPERP",
+    "SOLUSDTPERP",
+    "AVAXUSDTPERP"
+  ],
+  "phase2_pairs_enabled": [
+    "LINKZAR"
+  ],
+  "phase2_pairs_disabled": [
+    "BTCZAR", "ETHZAR", "ETHBTC", "XRPZAR", "BTCUSDT", "ETHUSDT", "XRPUSDT",
+    "SOLZAR", "BTCUSDC", "USDCZAR", "BNBZAR", "SHIBZAR", "AVAXZAR", "ETHUSDC",
+    "XRPUSDC", "SOLUSDC", "AVAXUSDC", "USDTZAR", "USDTUSDC", "DOGEUSDT",
+    "TRXUSDT", "SOLUSDT", "AVAXUSDT", "WIFUSDT", "JUPUSDT", "BOMEUSDT", "PYTHUSDT"
+  ],
+  "cycle_interval_seconds": 15,
+  "rebalance_interval_seconds": 3600,
+  "qty_range_min_multiplier": 1.1,
+  "qty_range_max_multiplier": 3.0,
+  "cycles_before_role_switch": 3,
+  "inventory_cycles_buffer": 4,
+  "rebalance_threshold_cycles": 4,
+  "maker_order_delay_ms": 10,
+  "usdt_per_account": 500,
+  "api_base_url": "https://api.valr.com/v1",
+  "ws_trade_url": "wss://api.valr.com/ws/trade",
+  "ws_account_url": "wss://api.valr.com/ws/account"
+}

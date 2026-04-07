@@ -1,0 +1,14 @@
+/home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/deps/serde-c6aaf3af656ba670.d: /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/build/serde-d2d4a54c94447d42/out/private.rs
+
+/home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/deps/libserde-c6aaf3af656ba670.rlib: /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/build/serde-d2d4a54c94447d42/out/private.rs
+
+/home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/deps/libserde-c6aaf3af656ba670.rmeta: /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/build/serde-d2d4a54c94447d42/out/private.rs
+
+/home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/home/admin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/build/serde-d2d4a54c94447d42/out/private.rs:
+
+# env-dep:OUT_DIR=/home/admin/.openclaw/workspace/bots/cm-bot-spot-src/target/release/build/serde-d2d4a54c94447d42/out

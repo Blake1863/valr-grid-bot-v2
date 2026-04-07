@@ -1,0 +1,323 @@
+{
+  "days": [
+    {
+      "date": "2026-03-15",
+      "net_pnl": 0.4618,
+      "realised_pnl": 0.4621,
+      "trading_fees": 0.2258,
+      "funding": -0.0003,
+      "positions_closed": 2,
+      "closing_balance": 35.1306,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-15",
+          "realised_pnl": 0.462081,
+          "trading_fees": 0.225819,
+          "funding": -0.0003,
+          "net_pnl": 0.461781,
+          "positions_closed": 2,
+          "funding_payments": 2,
+          "avg_funding_rate": -5e-06
+        }
+      }
+    },
+    {
+      "date": "2026-03-16",
+      "net_pnl": 4.4713,
+      "realised_pnl": 4.4727,
+      "trading_fees": 0.2334,
+      "funding": -0.0014,
+      "positions_closed": 7,
+      "closing_balance": 39.4831,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-16",
+          "realised_pnl": 4.472693,
+          "trading_fees": 0.233407,
+          "funding": -0.0014,
+          "net_pnl": 4.471293,
+          "positions_closed": 7,
+          "funding_payments": 3,
+          "avg_funding_rate": -2.333333333333333e-06
+        }
+      }
+    },
+    {
+      "date": "2026-03-17",
+      "net_pnl": -5.302,
+      "realised_pnl": -5.3002,
+      "trading_fees": 0.3358,
+      "funding": -0.0018,
+      "positions_closed": 6,
+      "closing_balance": 34.3841,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-17",
+          "realised_pnl": -5.300184,
+          "trading_fees": 0.335784,
+          "funding": -0.0018,
+          "net_pnl": -5.301984,
+          "positions_closed": 6,
+          "funding_payments": 10,
+          "avg_funding_rate": 1e-07
+        }
+      }
+    },
+    {
+      "date": "2026-03-18",
+      "net_pnl": 1.2291,
+      "realised_pnl": 1.2292,
+      "trading_fees": 0.0295,
+      "funding": -0.0001,
+      "positions_closed": 4,
+      "closing_balance": 19.4514,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-18",
+          "realised_pnl": 1.229216,
+          "trading_fees": 0.029484,
+          "funding": -0.0001,
+          "net_pnl": 1.229116,
+          "positions_closed": 4,
+          "funding_payments": 5,
+          "avg_funding_rate": -1.6e-06
+        }
+      }
+    },
+    {
+      "date": "2026-03-19",
+      "net_pnl": 0.0036,
+      "realised_pnl": 0,
+      "trading_fees": 0,
+      "funding": 0.0036,
+      "positions_closed": 0,
+      "closing_balance": 18.2569,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-19",
+          "realised_pnl": 0,
+          "trading_fees": 0,
+          "funding": 0.0036,
+          "net_pnl": 0.0036,
+          "positions_closed": 0,
+          "funding_payments": 17,
+          "avg_funding_rate": -4e-06
+        }
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "net_pnl": -3.562,
+      "realised_pnl": -3.5562,
+      "trading_fees": 0.0173,
+      "funding": -0.0058,
+      "positions_closed": 2,
+      "closing_balance": 17.0379,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-20",
+          "realised_pnl": -3.556237,
+          "trading_fees": 0.017337,
+          "funding": -0.0058,
+          "net_pnl": -3.562037,
+          "positions_closed": 2,
+          "funding_payments": 23,
+          "avg_funding_rate": -2.826086956521739e-06
+        }
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "net_pnl": -0.0101,
+      "realised_pnl": 0,
+      "trading_fees": 0,
+      "funding": -0.0101,
+      "positions_closed": 0,
+      "closing_balance": 16.2184,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-21",
+          "realised_pnl": 0,
+          "trading_fees": 0,
+          "funding": -0.0101,
+          "net_pnl": -0.0101,
+          "positions_closed": 0,
+          "funding_payments": 24,
+          "avg_funding_rate": -4.208333333333333e-06
+        }
+      }
+    },
+    {
+      "date": "2026-03-22",
+      "net_pnl": 0.6202,
+      "realised_pnl": 0.6169,
+      "trading_fees": 0.0,
+      "funding": 0.0033,
+      "positions_closed": 1,
+      "closing_balance": 17.4783,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-22",
+          "realised_pnl": 0.6169,
+          "trading_fees": 0.0,
+          "funding": 0.0033,
+          "net_pnl": 0.6202,
+          "positions_closed": 1,
+          "funding_payments": 24,
+          "avg_funding_rate": -4.708333333333333e-06
+        }
+      }
+    },
+    {
+      "date": "2026-03-23",
+      "net_pnl": -3.2951,
+      "realised_pnl": -3.3124,
+      "trading_fees": 0.0267,
+      "funding": 0.0173,
+      "positions_closed": 2,
+      "closing_balance": 17.582,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "date": "2026-03-23",
+          "realised_pnl": -3.312375,
+          "trading_fees": 0.026676,
+          "funding": 0.0173,
+          "net_pnl": -3.295075,
+          "positions_closed": 2,
+          "funding_payments": 22,
+          "avg_funding_rate": -8.59090909090909e-06
+        }
+      }
+    },
+    {
+      "date": "2026-04-01",
+      "net_pnl": 5.4046,
+      "realised_pnl": 5.4069,
+      "trading_fees": 0.0,
+      "funding": -0.0023,
+      "positions_closed": 12,
+      "closing_balance": 28.9827,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "realised_pnl": 5.4069,
+          "trading_fees": 0.0,
+          "funding": -0.0023000000000000004,
+          "avg_funding_rate": -1.8823529411764705e-06,
+          "positions_closed": 12,
+          "net_pnl": 5.4046
+        }
+      }
+    },
+    {
+      "date": "2026-04-02",
+      "net_pnl": -2.8296,
+      "realised_pnl": -2.8313,
+      "trading_fees": 0.0,
+      "funding": 0.0017,
+      "positions_closed": 8,
+      "closing_balance": 27.9516,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "realised_pnl": -2.8313,
+          "trading_fees": 0.0,
+          "funding": 0.0017000000000000003,
+          "avg_funding_rate": -3.846153846153846e-07,
+          "positions_closed": 8,
+          "net_pnl": -2.8296
+        }
+      }
+    },
+    {
+      "date": "2026-04-03",
+      "net_pnl": 2.976,
+      "realised_pnl": 2.9814,
+      "trading_fees": 0.0,
+      "funding": -0.0054,
+      "positions_closed": 6,
+      "closing_balance": 30.1846,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "realised_pnl": 2.9814,
+          "trading_fees": 0.0,
+          "funding": -0.0053999999999999986,
+          "avg_funding_rate": -2.1578947368421054e-06,
+          "positions_closed": 6,
+          "net_pnl": 2.976
+        }
+      }
+    },
+    {
+      "date": "2026-04-04",
+      "net_pnl": 0.087,
+      "realised_pnl": 0.0807,
+      "trading_fees": 0.0,
+      "funding": 0.0063,
+      "positions_closed": 6,
+      "closing_balance": 31.3474,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "realised_pnl": 0.08070000000000005,
+          "trading_fees": 0.0,
+          "funding": 0.0063,
+          "avg_funding_rate": -3.3636363636363633e-06,
+          "positions_closed": 6,
+          "net_pnl": 0.08700000000000005
+        }
+      }
+    },
+    {
+      "date": "2026-04-05",
+      "net_pnl": -0.4786,
+      "realised_pnl": -0.4785,
+      "trading_fees": 0.0,
+      "funding": -0.0001,
+      "positions_closed": 6,
+      "closing_balance": 28.8856,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "realised_pnl": -0.47850000000000015,
+          "trading_fees": 0.0,
+          "funding": -9.999999999999948e-05,
+          "avg_funding_rate": -2.217391304347826e-06,
+          "positions_closed": 6,
+          "net_pnl": -0.47860000000000014
+        }
+      }
+    },
+    {
+      "date": "2026-04-06",
+      "net_pnl": 3.3474,
+      "realised_pnl": 3.3495,
+      "trading_fees": 0.0,
+      "funding": -0.0021,
+      "positions_closed": 9,
+      "closing_balance": 33.0358,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "realised_pnl": 3.3495,
+          "trading_fees": 0.0,
+          "funding": -0.0020999999999999994,
+          "avg_funding_rate": -8.260869565217392e-07,
+          "positions_closed": 9,
+          "net_pnl": 3.3474
+        }
+      }
+    }
+  ],
+  "inception_balance": 35.130608876634
+}

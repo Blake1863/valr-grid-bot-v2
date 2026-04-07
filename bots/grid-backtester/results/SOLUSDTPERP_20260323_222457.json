@@ -1,0 +1,6618 @@
+{
+  "pair": "SOLUSDTPERP",
+  "backtest_date": "2026-03-23T14:24:57.669035+00:00",
+  "data_range": {
+    "start": "2026-03-09T14:30:00+00:00",
+    "end": "2026-03-23T14:00:00+00:00",
+    "days": 14,
+    "candles": 865
+  },
+  "best_by_sharpe": {
+    "params": {
+      "levels": 3,
+      "spacing_pct": 1.0,
+      "leverage": 5,
+      "balance_usage_pct": 90.0,
+      "stop_loss_pct": 7.5
+    },
+    "metrics": {
+      "total_pnl": 3701.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 28,
+      "win_rate_pct": 100.0,
+      "avg_fill_pnl": 132.2044,
+      "sharpe_ratio": 2.0911,
+      "final_balance": 3801.72
+    }
+  },
+  "best_by_pnl": {
+    "params": {
+      "levels": 3,
+      "spacing_pct": 0.25,
+      "leverage": 5,
+      "balance_usage_pct": 90.0,
+      "stop_loss_pct": 7.5
+    },
+    "metrics": {
+      "total_pnl": 14085.43,
+      "max_drawdown_pct": 4.03,
+      "total_fills": 630,
+      "win_rate_pct": 100.0,
+      "avg_fill_pnl": 22.3578,
+      "sharpe_ratio": 0.8461,
+      "final_balance": 14185.43
+    }
+  },
+  "best_efficiency": {
+    "params": {
+      "levels": 12,
+      "spacing_pct": 0.25,
+      "leverage": 5,
+      "balance_usage_pct": 90.0,
+      "stop_loss_pct": 7.5
+    },
+    "metrics": {
+      "total_pnl": 5591.02,
+      "max_drawdown_pct": 1.01,
+      "total_fills": 682,
+      "win_rate_pct": 100.0,
+      "avg_fill_pnl": 8.198,
+      "sharpe_ratio": 0.7326,
+      "final_balance": 5691.02
+    }
+  },
+  "all_results": [
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 3701.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 28,
+      "sharpe_ratio": 2.0911
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 3701.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 28,
+      "sharpe_ratio": 2.0911
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 3701.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 28,
+      "sharpe_ratio": 2.0911
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 3701.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 28,
+      "sharpe_ratio": 2.0911
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 3701.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 28,
+      "sharpe_ratio": 2.0911
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 5872.84,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 64,
+      "sharpe_ratio": 2.013
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 5872.84,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 64,
+      "sharpe_ratio": 2.013
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 5872.84,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 64,
+      "sharpe_ratio": 2.013
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 5872.84,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 64,
+      "sharpe_ratio": 2.013
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 5872.84,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 64,
+      "sharpe_ratio": 2.013
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4676.35,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 65,
+      "sharpe_ratio": 1.7328
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 4676.35,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 65,
+      "sharpe_ratio": 1.7328
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 4676.35,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 65,
+      "sharpe_ratio": 1.7328
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4676.35,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 65,
+      "sharpe_ratio": 1.7328
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4676.35,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 65,
+      "sharpe_ratio": 1.7328
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 3145.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 29,
+      "sharpe_ratio": 1.6127
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 3145.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 29,
+      "sharpe_ratio": 1.6127
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 3145.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 29,
+      "sharpe_ratio": 1.6127
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 3145.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 29,
+      "sharpe_ratio": 1.6127
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 3145.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 29,
+      "sharpe_ratio": 1.6127
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 9763.81,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 181,
+      "sharpe_ratio": 1.5109
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 9763.81,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 181,
+      "sharpe_ratio": 1.5109
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 9763.81,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 181,
+      "sharpe_ratio": 1.5109
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 9763.81,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 181,
+      "sharpe_ratio": 1.5109
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 9763.81,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 181,
+      "sharpe_ratio": 1.5109
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4016.87,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 66,
+      "sharpe_ratio": 1.4577
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 4016.87,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 66,
+      "sharpe_ratio": 1.4577
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 4016.87,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 66,
+      "sharpe_ratio": 1.4577
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4016.87,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 66,
+      "sharpe_ratio": 1.4577
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4016.87,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 66,
+      "sharpe_ratio": 1.4577
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 7859.16,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 184,
+      "sharpe_ratio": 1.3715
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 7859.16,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 184,
+      "sharpe_ratio": 1.3715
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 7859.16,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 184,
+      "sharpe_ratio": 1.3715
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 7859.16,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 184,
+      "sharpe_ratio": 1.3715
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 7859.16,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 184,
+      "sharpe_ratio": 1.3715
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 2889.46,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 30,
+      "sharpe_ratio": 1.3144
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 2889.46,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 30,
+      "sharpe_ratio": 1.3144
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 2889.46,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 30,
+      "sharpe_ratio": 1.3144
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 2889.46,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 30,
+      "sharpe_ratio": 1.3144
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 2889.46,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 30,
+      "sharpe_ratio": 1.3144
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 11526.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 278,
+      "sharpe_ratio": 1.2692
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 11526.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 278,
+      "sharpe_ratio": 1.2692
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 11526.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 278,
+      "sharpe_ratio": 1.2692
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 11526.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 278,
+      "sharpe_ratio": 1.2692
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 11526.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 278,
+      "sharpe_ratio": 1.2692
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 6645.32,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 186,
+      "sharpe_ratio": 1.2575
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 6645.32,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 186,
+      "sharpe_ratio": 1.2575
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 6645.32,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 186,
+      "sharpe_ratio": 1.2575
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 6645.32,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 186,
+      "sharpe_ratio": 1.2575
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 6645.32,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 186,
+      "sharpe_ratio": 1.2575
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 3625.9,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 67,
+      "sharpe_ratio": 1.2407
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 3625.9,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 67,
+      "sharpe_ratio": 1.2407
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 3625.9,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 67,
+      "sharpe_ratio": 1.2407
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 3625.9,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 67,
+      "sharpe_ratio": 1.2407
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 3625.9,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 67,
+      "sharpe_ratio": 1.2407
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 9193.17,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 282,
+      "sharpe_ratio": 1.2122
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 9193.17,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 282,
+      "sharpe_ratio": 1.2122
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 9193.17,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 282,
+      "sharpe_ratio": 1.2122
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 9193.17,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 282,
+      "sharpe_ratio": 1.2122
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 9193.17,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 282,
+      "sharpe_ratio": 1.2122
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 5718.91,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 187,
+      "sharpe_ratio": 1.1872
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 5718.91,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 187,
+      "sharpe_ratio": 1.1872
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 5718.91,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 187,
+      "sharpe_ratio": 1.1872
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 5718.91,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 187,
+      "sharpe_ratio": 1.1872
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 5718.91,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 187,
+      "sharpe_ratio": 1.1872
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 7783.58,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 285,
+      "sharpe_ratio": 1.137
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 7783.58,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 285,
+      "sharpe_ratio": 1.137
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 7783.58,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 285,
+      "sharpe_ratio": 1.137
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 7783.58,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 285,
+      "sharpe_ratio": 1.137
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 7783.58,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 285,
+      "sharpe_ratio": 1.137
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 2783.01,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 2783.01,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 2783.01,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 2783.01,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 2783.01,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 1391.5,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 1391.5,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 1391.5,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 1391.5,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 1391.5,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 2087.25,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 2087.25,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 2087.25,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 2087.25,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 2087.25,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 1669.8,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 1669.8,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 1669.8,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 1669.8,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 1669.8,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 1.1334
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 6771.89,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 287,
+      "sharpe_ratio": 1.0753
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 6771.89,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 287,
+      "sharpe_ratio": 1.0753
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 6771.89,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 287,
+      "sharpe_ratio": 1.0753
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 6771.89,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 287,
+      "sharpe_ratio": 1.0753
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 6771.89,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 287,
+      "sharpe_ratio": 1.0753
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4634.49,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 189,
+      "sharpe_ratio": 1.0218
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 4634.49,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 189,
+      "sharpe_ratio": 1.0218
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 4634.49,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 189,
+      "sharpe_ratio": 1.0218
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4634.49,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 189,
+      "sharpe_ratio": 1.0218
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4634.49,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 189,
+      "sharpe_ratio": 1.0218
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 13120.42,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 459,
+      "sharpe_ratio": 1.0092
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 13120.42,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 459,
+      "sharpe_ratio": 1.0092
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 13120.42,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 459,
+      "sharpe_ratio": 1.0092
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 13120.42,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 459,
+      "sharpe_ratio": 1.0092
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 13120.42,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 459,
+      "sharpe_ratio": 1.0092
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 10973.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 471,
+      "sharpe_ratio": 0.9954
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 10973.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 471,
+      "sharpe_ratio": 0.9954
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 10973.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 471,
+      "sharpe_ratio": 0.9954
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 10973.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 471,
+      "sharpe_ratio": 0.9954
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 10973.72,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 471,
+      "sharpe_ratio": 0.9954
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 9284.64,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 476,
+      "sharpe_ratio": 0.9706
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 9284.64,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 476,
+      "sharpe_ratio": 0.9706
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 9284.64,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 476,
+      "sharpe_ratio": 0.9706
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 9284.64,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 476,
+      "sharpe_ratio": 0.9706
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 9284.64,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 476,
+      "sharpe_ratio": 0.9706
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 2163.74,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 2163.74,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 2163.74,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 2163.74,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 2163.74,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 3245.6,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 3245.6,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 3245.6,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 3245.6,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 3245.6,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 2596.48,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 2596.48,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 2596.48,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 2596.48,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 2596.48,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.9679
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 5478.44,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 290,
+      "sharpe_ratio": 0.964
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 5478.44,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 290,
+      "sharpe_ratio": 0.964
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 5478.44,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 290,
+      "sharpe_ratio": 0.964
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 5478.44,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 290,
+      "sharpe_ratio": 0.964
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 5478.44,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 290,
+      "sharpe_ratio": 0.964
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 8055.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 479,
+      "sharpe_ratio": 0.9417
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 8055.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 479,
+      "sharpe_ratio": 0.9417
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 8055.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 479,
+      "sharpe_ratio": 0.9417
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 8055.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 479,
+      "sharpe_ratio": 0.9417
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 8055.75,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 479,
+      "sharpe_ratio": 0.9417
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4061.12,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 191,
+      "sharpe_ratio": 0.8737
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 4061.12,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 191,
+      "sharpe_ratio": 0.8737
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 4061.12,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 191,
+      "sharpe_ratio": 0.8737
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4061.12,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 191,
+      "sharpe_ratio": 0.8737
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4061.12,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 191,
+      "sharpe_ratio": 0.8737
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4662.59,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 292,
+      "sharpe_ratio": 0.8728
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 4662.59,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 292,
+      "sharpe_ratio": 0.8728
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 4662.59,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 292,
+      "sharpe_ratio": 0.8728
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4662.59,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 292,
+      "sharpe_ratio": 0.8728
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4662.59,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 292,
+      "sharpe_ratio": 0.8728
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 6539.33,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 484,
+      "sharpe_ratio": 0.8727
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 6539.33,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 484,
+      "sharpe_ratio": 0.8727
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 6539.33,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 484,
+      "sharpe_ratio": 0.8727
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 6539.33,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 484,
+      "sharpe_ratio": 0.8727
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 6539.33,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 484,
+      "sharpe_ratio": 0.8727
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 12532.34,
+      "max_drawdown_pct": 3.03,
+      "total_fills": 654,
+      "sharpe_ratio": 0.8481
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 12532.34,
+      "max_drawdown_pct": 3.03,
+      "total_fills": 654,
+      "sharpe_ratio": 0.8481
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 12532.34,
+      "max_drawdown_pct": 3.03,
+      "total_fills": 654,
+      "sharpe_ratio": 0.8481
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 12532.34,
+      "max_drawdown_pct": 3.03,
+      "total_fills": 654,
+      "sharpe_ratio": 0.8481
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 12532.34,
+      "max_drawdown_pct": 3.03,
+      "total_fills": 654,
+      "sharpe_ratio": 0.8481
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 14085.43,
+      "max_drawdown_pct": 4.03,
+      "total_fills": 630,
+      "sharpe_ratio": 0.8461
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 14085.43,
+      "max_drawdown_pct": 4.03,
+      "total_fills": 630,
+      "sharpe_ratio": 0.8461
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 14085.43,
+      "max_drawdown_pct": 4.03,
+      "total_fills": 630,
+      "sharpe_ratio": 0.8461
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 14085.43,
+      "max_drawdown_pct": 4.03,
+      "total_fills": 630,
+      "sharpe_ratio": 0.8461
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 14085.43,
+      "max_drawdown_pct": 4.03,
+      "total_fills": 630,
+      "sharpe_ratio": 0.8461
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 10820.92,
+      "max_drawdown_pct": 2.42,
+      "total_fills": 664,
+      "sharpe_ratio": 0.8457
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 10820.92,
+      "max_drawdown_pct": 2.42,
+      "total_fills": 664,
+      "sharpe_ratio": 0.8457
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 10820.92,
+      "max_drawdown_pct": 2.42,
+      "total_fills": 664,
+      "sharpe_ratio": 0.8457
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 10820.92,
+      "max_drawdown_pct": 2.42,
+      "total_fills": 664,
+      "sharpe_ratio": 0.8457
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 10820.92,
+      "max_drawdown_pct": 2.42,
+      "total_fills": 664,
+      "sharpe_ratio": 0.8457
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 9438.82,
+      "max_drawdown_pct": 2.02,
+      "total_fills": 669,
+      "sharpe_ratio": 0.8351
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 9438.82,
+      "max_drawdown_pct": 2.02,
+      "total_fills": 669,
+      "sharpe_ratio": 0.8351
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 9438.82,
+      "max_drawdown_pct": 2.02,
+      "total_fills": 669,
+      "sharpe_ratio": 0.8351
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 9438.82,
+      "max_drawdown_pct": 2.02,
+      "total_fills": 669,
+      "sharpe_ratio": 0.8351
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 9438.82,
+      "max_drawdown_pct": 2.02,
+      "total_fills": 669,
+      "sharpe_ratio": 0.8351
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 5535.34,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 487,
+      "sharpe_ratio": 0.818
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 5535.34,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 487,
+      "sharpe_ratio": 0.818
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 5535.34,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 487,
+      "sharpe_ratio": 0.818
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 5535.34,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 487,
+      "sharpe_ratio": 0.818
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 5535.34,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 487,
+      "sharpe_ratio": 0.818
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 7578.31,
+      "max_drawdown_pct": 1.51,
+      "total_fills": 675,
+      "sharpe_ratio": 0.8023
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 7578.31,
+      "max_drawdown_pct": 1.51,
+      "total_fills": 675,
+      "sharpe_ratio": 0.8023
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 7578.31,
+      "max_drawdown_pct": 1.51,
+      "total_fills": 675,
+      "sharpe_ratio": 0.8023
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 7578.31,
+      "max_drawdown_pct": 1.51,
+      "total_fills": 675,
+      "sharpe_ratio": 0.8023
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 7578.31,
+      "max_drawdown_pct": 1.51,
+      "total_fills": 675,
+      "sharpe_ratio": 0.8023
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4170.37,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 294,
+      "sharpe_ratio": 0.7832
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 4170.37,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 294,
+      "sharpe_ratio": 0.7832
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 4170.37,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 294,
+      "sharpe_ratio": 0.7832
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4170.37,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 294,
+      "sharpe_ratio": 0.7832
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4170.37,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 294,
+      "sharpe_ratio": 0.7832
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4823.14,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 489,
+      "sharpe_ratio": 0.7705
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 4823.14,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 489,
+      "sharpe_ratio": 0.7705
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 4823.14,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 489,
+      "sharpe_ratio": 0.7705
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4823.14,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 489,
+      "sharpe_ratio": 0.7705
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4823.14,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 489,
+      "sharpe_ratio": 0.7705
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 6401.29,
+      "max_drawdown_pct": 1.21,
+      "total_fills": 679,
+      "sharpe_ratio": 0.7673
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 6401.29,
+      "max_drawdown_pct": 1.21,
+      "total_fills": 679,
+      "sharpe_ratio": 0.7673
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 6401.29,
+      "max_drawdown_pct": 1.21,
+      "total_fills": 679,
+      "sharpe_ratio": 0.7673
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 6401.29,
+      "max_drawdown_pct": 1.21,
+      "total_fills": 679,
+      "sharpe_ratio": 0.7673
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 6401.29,
+      "max_drawdown_pct": 1.21,
+      "total_fills": 679,
+      "sharpe_ratio": 0.7673
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 3743.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 193,
+      "sharpe_ratio": 0.7615
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 3743.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 193,
+      "sharpe_ratio": 0.7615
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 3743.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 193,
+      "sharpe_ratio": 0.7615
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 3743.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 193,
+      "sharpe_ratio": 0.7615
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 3743.29,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 193,
+      "sharpe_ratio": 0.7615
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 5591.02,
+      "max_drawdown_pct": 1.01,
+      "total_fills": 682,
+      "sharpe_ratio": 0.7326
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 5591.02,
+      "max_drawdown_pct": 1.01,
+      "total_fills": 682,
+      "sharpe_ratio": 0.7326
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 5591.02,
+      "max_drawdown_pct": 1.01,
+      "total_fills": 682,
+      "sharpe_ratio": 0.7326
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 5591.02,
+      "max_drawdown_pct": 1.01,
+      "total_fills": 682,
+      "sharpe_ratio": 0.7326
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 5591.02,
+      "max_drawdown_pct": 1.01,
+      "total_fills": 682,
+      "sharpe_ratio": 0.7326
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 10313.41,
+      "max_drawdown_pct": 10.15,
+      "total_fills": 922,
+      "sharpe_ratio": 0.7319
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 10313.41,
+      "max_drawdown_pct": 10.15,
+      "total_fills": 922,
+      "sharpe_ratio": 0.7319
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 10313.41,
+      "max_drawdown_pct": 10.15,
+      "total_fills": 922,
+      "sharpe_ratio": 0.7319
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 10313.41,
+      "max_drawdown_pct": 10.15,
+      "total_fills": 922,
+      "sharpe_ratio": 0.7319
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 10313.41,
+      "max_drawdown_pct": 10.15,
+      "total_fills": 922,
+      "sharpe_ratio": 0.7319
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 11469.36,
+      "max_drawdown_pct": 12.17,
+      "total_fills": 910,
+      "sharpe_ratio": 0.7282
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 11469.36,
+      "max_drawdown_pct": 12.17,
+      "total_fills": 910,
+      "sharpe_ratio": 0.7282
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 11469.36,
+      "max_drawdown_pct": 12.17,
+      "total_fills": 910,
+      "sharpe_ratio": 0.7282
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 11469.36,
+      "max_drawdown_pct": 12.17,
+      "total_fills": 910,
+      "sharpe_ratio": 0.7282
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 11469.36,
+      "max_drawdown_pct": 12.17,
+      "total_fills": 910,
+      "sharpe_ratio": 0.7282
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 7886.14,
+      "max_drawdown_pct": 11.32,
+      "total_fills": 181,
+      "sharpe_ratio": 0.7242
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 8300.58,
+      "max_drawdown_pct": 7.61,
+      "total_fills": 931,
+      "sharpe_ratio": 0.7225
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 8300.58,
+      "max_drawdown_pct": 7.61,
+      "total_fills": 931,
+      "sharpe_ratio": 0.7225
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 8300.58,
+      "max_drawdown_pct": 7.61,
+      "total_fills": 931,
+      "sharpe_ratio": 0.7225
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 8300.58,
+      "max_drawdown_pct": 7.61,
+      "total_fills": 931,
+      "sharpe_ratio": 0.7225
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 8300.58,
+      "max_drawdown_pct": 7.61,
+      "total_fills": 931,
+      "sharpe_ratio": 0.7225
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 12368.43,
+      "max_drawdown_pct": 15.22,
+      "total_fills": 886,
+      "sharpe_ratio": 0.7197
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 12368.43,
+      "max_drawdown_pct": 15.22,
+      "total_fills": 886,
+      "sharpe_ratio": 0.7197
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 12368.43,
+      "max_drawdown_pct": 15.22,
+      "total_fills": 886,
+      "sharpe_ratio": 0.7197
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 12368.43,
+      "max_drawdown_pct": 15.22,
+      "total_fills": 886,
+      "sharpe_ratio": 0.7197
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 12368.43,
+      "max_drawdown_pct": 15.22,
+      "total_fills": 886,
+      "sharpe_ratio": 0.7197
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 8204.32,
+      "max_drawdown_pct": 15.09,
+      "total_fills": 181,
+      "sharpe_ratio": 0.7136
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 1794.39,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.713
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 1435.51,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.713
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 2392.52,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.713
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 1196.26,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.713
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 9767.89,
+      "max_drawdown_pct": 9.45,
+      "total_fills": 278,
+      "sharpe_ratio": 0.7126
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 2420.88,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 30,
+      "sharpe_ratio": 0.7058
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 7046.11,
+      "max_drawdown_pct": 6.09,
+      "total_fills": 937,
+      "sharpe_ratio": 0.7026
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 7046.11,
+      "max_drawdown_pct": 6.09,
+      "total_fills": 937,
+      "sharpe_ratio": 0.7026
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 7046.11,
+      "max_drawdown_pct": 6.09,
+      "total_fills": 937,
+      "sharpe_ratio": 0.7026
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 7046.11,
+      "max_drawdown_pct": 6.09,
+      "total_fills": 937,
+      "sharpe_ratio": 0.7026
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 7046.11,
+      "max_drawdown_pct": 6.09,
+      "total_fills": 937,
+      "sharpe_ratio": 0.7026
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 4151.87,
+      "max_drawdown_pct": 19.73,
+      "total_fills": 64,
+      "sharpe_ratio": 0.6981
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 10047.18,
+      "max_drawdown_pct": 12.83,
+      "total_fills": 278,
+      "sharpe_ratio": 0.6967
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 12414.7,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.6899
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 12414.7,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.6899
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 12414.7,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.6899
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 12414.7,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.6899
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 12414.7,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.6899
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 2560.03,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 29,
+      "sharpe_ratio": 0.6889
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 6144.21,
+      "max_drawdown_pct": 5.07,
+      "total_fills": 941,
+      "sharpe_ratio": 0.6825
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 6144.21,
+      "max_drawdown_pct": 5.07,
+      "total_fills": 941,
+      "sharpe_ratio": 0.6825
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 6144.21,
+      "max_drawdown_pct": 5.07,
+      "total_fills": 941,
+      "sharpe_ratio": 0.6825
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 6144.21,
+      "max_drawdown_pct": 5.07,
+      "total_fills": 941,
+      "sharpe_ratio": 0.6825
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 6144.21,
+      "max_drawdown_pct": 5.07,
+      "total_fills": 941,
+      "sharpe_ratio": 0.6825
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 7522.72,
+      "max_drawdown_pct": 11.86,
+      "total_fills": 282,
+      "sharpe_ratio": 0.6653
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 6060.24,
+      "max_drawdown_pct": 14.16,
+      "total_fills": 184,
+      "sharpe_ratio": 0.6636
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 2920.76,
+      "max_drawdown_pct": 3.03,
+      "total_fills": 28,
+      "sharpe_ratio": 0.659
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 11718.58,
+      "max_drawdown_pct": 11.16,
+      "total_fills": 459,
+      "sharpe_ratio": 0.6317
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 8382.16,
+      "max_drawdown_pct": 9.1,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.6267
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 8382.16,
+      "max_drawdown_pct": 9.1,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.6267
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 8382.16,
+      "max_drawdown_pct": 9.1,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.6267
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 8382.16,
+      "max_drawdown_pct": 9.1,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.6267
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 8382.16,
+      "max_drawdown_pct": 9.1,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.6267
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 9775.28,
+      "max_drawdown_pct": 11.37,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.6265
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 9775.28,
+      "max_drawdown_pct": 11.37,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.6265
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 9775.28,
+      "max_drawdown_pct": 11.37,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.6265
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 9775.28,
+      "max_drawdown_pct": 11.37,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.6265
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 9775.28,
+      "max_drawdown_pct": 11.37,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.6265
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 6134.69,
+      "max_drawdown_pct": 14.1,
+      "total_fills": 285,
+      "sharpe_ratio": 0.621
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6199.98,
+      "max_drawdown_pct": 18.98,
+      "total_fills": 184,
+      "sharpe_ratio": 0.6209
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 7333.22,
+      "max_drawdown_pct": 7.58,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.6208
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 7333.22,
+      "max_drawdown_pct": 7.58,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.6208
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 7333.22,
+      "max_drawdown_pct": 7.58,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.6208
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 7333.22,
+      "max_drawdown_pct": 7.58,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.6208
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 7333.22,
+      "max_drawdown_pct": 7.58,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.6208
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 7633.68,
+      "max_drawdown_pct": 16.18,
+      "total_fills": 282,
+      "sharpe_ratio": 0.6206
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 10999.26,
+      "max_drawdown_pct": 15.17,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.6113
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 10999.26,
+      "max_drawdown_pct": 15.17,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.6113
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 10999.26,
+      "max_drawdown_pct": 15.17,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.6113
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 10999.26,
+      "max_drawdown_pct": 15.17,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.6113
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 10999.26,
+      "max_drawdown_pct": 15.17,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.6113
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 4854.16,
+      "max_drawdown_pct": 17.04,
+      "total_fills": 186,
+      "sharpe_ratio": 0.6105
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 4112.42,
+      "max_drawdown_pct": 26.61,
+      "total_fills": 64,
+      "sharpe_ratio": 0.6034
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 11103.44,
+      "max_drawdown_pct": 8.97,
+      "total_fills": 459,
+      "sharpe_ratio": 0.603
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 10283.65,
+      "max_drawdown_pct": 46.95,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.596
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 10283.65,
+      "max_drawdown_pct": 46.95,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.596
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2896.23,
+      "max_drawdown_pct": 26.2,
+      "total_fills": 65,
+      "sharpe_ratio": 0.5937
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 9149.53,
+      "max_drawdown_pct": 9.96,
+      "total_fills": 471,
+      "sharpe_ratio": 0.5927
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 9512.76,
+      "max_drawdown_pct": 13.35,
+      "total_fills": 471,
+      "sharpe_ratio": 0.5917
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 11262.18,
+      "max_drawdown_pct": 18.2,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.5889
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 11262.18,
+      "max_drawdown_pct": 18.2,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.5889
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 11262.18,
+      "max_drawdown_pct": 18.2,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.5889
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 11262.18,
+      "max_drawdown_pct": 18.2,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.5889
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 11262.18,
+      "max_drawdown_pct": 18.2,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.5889
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 11233.17,
+      "max_drawdown_pct": 63.21,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.5866
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 11233.17,
+      "max_drawdown_pct": 63.21,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.5866
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 5110.58,
+      "max_drawdown_pct": 16.44,
+      "total_fills": 287,
+      "sharpe_ratio": 0.5816
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 12723.78,
+      "max_drawdown_pct": 10.71,
+      "total_fills": 630,
+      "sharpe_ratio": 0.5762
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 7552.24,
+      "max_drawdown_pct": 11.74,
+      "total_fills": 476,
+      "sharpe_ratio": 0.5686
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 3900.01,
+      "max_drawdown_pct": 20.42,
+      "total_fills": 187,
+      "sharpe_ratio": 0.564
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 11846.75,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.5634
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 11846.75,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.5634
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 2646.88,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.5628
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 1764.59,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.5628
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 2117.51,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.5628
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 11121.23,
+      "max_drawdown_pct": 12.09,
+      "total_fills": 654,
+      "sharpe_ratio": 0.5621
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6144.33,
+      "max_drawdown_pct": 19.29,
+      "total_fills": 285,
+      "sharpe_ratio": 0.5599
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 2827.61,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 67,
+      "sharpe_ratio": 0.5522
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 4886.45,
+      "max_drawdown_pct": 22.92,
+      "total_fills": 186,
+      "sharpe_ratio": 0.5491
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 10704.29,
+      "max_drawdown_pct": 22.75,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.5482
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 10704.29,
+      "max_drawdown_pct": 22.75,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.5482
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 10704.29,
+      "max_drawdown_pct": 22.75,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.5482
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 10704.29,
+      "max_drawdown_pct": 22.75,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.5482
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 10704.29,
+      "max_drawdown_pct": 22.75,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.5482
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 7764.1,
+      "max_drawdown_pct": 15.82,
+      "total_fills": 476,
+      "sharpe_ratio": 0.5477
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 6364.65,
+      "max_drawdown_pct": 13.59,
+      "total_fills": 479,
+      "sharpe_ratio": 0.5427
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3058.92,
+      "max_drawdown_pct": 5.58,
+      "total_fills": 66,
+      "sharpe_ratio": 0.5407
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 9359.74,
+      "max_drawdown_pct": 14.02,
+      "total_fills": 664,
+      "sharpe_ratio": 0.5356
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3478.91,
+      "max_drawdown_pct": 15.32,
+      "total_fills": 65,
+      "sharpe_ratio": 0.5246
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 11841.95,
+      "max_drawdown_pct": 10.5,
+      "total_fills": 630,
+      "sharpe_ratio": 0.5243
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2290.82,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.516
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1527.21,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.516
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1832.65,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 69,
+      "sharpe_ratio": 0.516
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 3742.49,
+      "max_drawdown_pct": 21.18,
+      "total_fills": 290,
+      "sharpe_ratio": 0.515
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 4630.58,
+      "max_drawdown_pct": 5.19,
+      "total_fills": 290,
+      "sharpe_ratio": 0.5135
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 10266.79,
+      "max_drawdown_pct": 9.91,
+      "total_fills": 654,
+      "sharpe_ratio": 0.5122
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3984.3,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 292,
+      "sharpe_ratio": 0.5114
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1803.88,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.5101
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1352.91,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.5101
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1082.33,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.5101
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 901.94,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 31,
+      "sharpe_ratio": 0.5101
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2141.56,
+      "max_drawdown_pct": 32.63,
+      "total_fills": 66,
+      "sharpe_ratio": 0.5098
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 11298.23,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.5093
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 11298.23,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.5093
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 5052.43,
+      "max_drawdown_pct": 22.53,
+      "total_fills": 287,
+      "sharpe_ratio": 0.5092
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6475.4,
+      "max_drawdown_pct": 18.36,
+      "total_fills": 479,
+      "sharpe_ratio": 0.5078
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 8754.72,
+      "max_drawdown_pct": 10.83,
+      "total_fills": 664,
+      "sharpe_ratio": 0.5073
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5641.41,
+      "max_drawdown_pct": 11.92,
+      "total_fills": 287,
+      "sharpe_ratio": 0.5069
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 7928.02,
+      "max_drawdown_pct": 16.07,
+      "total_fills": 669,
+      "sharpe_ratio": 0.5061
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2352.86,
+      "max_drawdown_pct": 13.71,
+      "total_fills": 67,
+      "sharpe_ratio": 0.506
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 4276.25,
+      "max_drawdown_pct": 23.13,
+      "total_fills": 64,
+      "sharpe_ratio": 0.5058
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3755.9,
+      "max_drawdown_pct": 2.33,
+      "total_fills": 189,
+      "sharpe_ratio": 0.505
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3605.13,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 294,
+      "sharpe_ratio": 0.5033
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3358.26,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 191,
+      "sharpe_ratio": 0.5023
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 4547.47,
+      "max_drawdown_pct": 12.43,
+      "total_fills": 187,
+      "sharpe_ratio": 0.4996
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 6427.0,
+      "max_drawdown_pct": 14.92,
+      "total_fills": 285,
+      "sharpe_ratio": 0.4995
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 11008.33,
+      "max_drawdown_pct": 15.22,
+      "total_fills": 886,
+      "sharpe_ratio": 0.4977
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 4855.07,
+      "max_drawdown_pct": 17.01,
+      "total_fills": 484,
+      "sharpe_ratio": 0.496
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2489.22,
+      "max_drawdown_pct": 25.48,
+      "total_fills": 66,
+      "sharpe_ratio": 0.4954
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 7489.45,
+      "max_drawdown_pct": 12.34,
+      "total_fills": 669,
+      "sharpe_ratio": 0.4943
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5239.58,
+      "max_drawdown_pct": 16.45,
+      "total_fills": 186,
+      "sharpe_ratio": 0.4941
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3157.57,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 193,
+      "sharpe_ratio": 0.494
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 10069.38,
+      "max_drawdown_pct": 13.45,
+      "total_fills": 910,
+      "sharpe_ratio": 0.4932
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 3860.35,
+      "max_drawdown_pct": 27.47,
+      "total_fills": 187,
+      "sharpe_ratio": 0.4881
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 7497.45,
+      "max_drawdown_pct": 17.94,
+      "total_fills": 282,
+      "sharpe_ratio": 0.4866
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2705.73,
+      "max_drawdown_pct": 27.14,
+      "total_fills": 189,
+      "sharpe_ratio": 0.4848
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 6101.99,
+      "max_drawdown_pct": 20.47,
+      "total_fills": 184,
+      "sharpe_ratio": 0.4808
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2766.78,
+      "max_drawdown_pct": 35.37,
+      "total_fills": 65,
+      "sharpe_ratio": 0.4798
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 11094.78,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.4795
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 8873.7,
+      "max_drawdown_pct": 14.91,
+      "total_fills": 922,
+      "sharpe_ratio": 0.479
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 9962.07,
+      "max_drawdown_pct": 46.95,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.4767
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1714.5,
+      "max_drawdown_pct": 5.27,
+      "total_fills": 30,
+      "sharpe_ratio": 0.4764
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 9265.34,
+      "max_drawdown_pct": 20.91,
+      "total_fills": 278,
+      "sharpe_ratio": 0.4686
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 5737.66,
+      "max_drawdown_pct": 15.42,
+      "total_fills": 675,
+      "sharpe_ratio": 0.4638
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 8884.16,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.4635
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 8884.16,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.4635
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 8884.16,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.4635
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 8884.16,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.4635
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 8884.16,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.4635
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 10847.27,
+      "max_drawdown_pct": 63.21,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.4602
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2818.49,
+      "max_drawdown_pct": 26.41,
+      "total_fills": 292,
+      "sharpe_ratio": 0.4602
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 7420.92,
+      "max_drawdown_pct": 24.58,
+      "total_fills": 181,
+      "sharpe_ratio": 0.4597
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 10324.94,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.4589
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 10324.94,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.4589
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 10206.47,
+      "max_drawdown_pct": 15.22,
+      "total_fills": 886,
+      "sharpe_ratio": 0.4585
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 3807.91,
+      "max_drawdown_pct": 20.72,
+      "total_fills": 487,
+      "sharpe_ratio": 0.4555
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 8275.82,
+      "max_drawdown_pct": 12.32,
+      "total_fills": 922,
+      "sharpe_ratio": 0.4545
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 9273.43,
+      "max_drawdown_pct": 12.19,
+      "total_fills": 910,
+      "sharpe_ratio": 0.4539
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 5967.82,
+      "max_drawdown_pct": 20.23,
+      "total_fills": 675,
+      "sharpe_ratio": 0.4526
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1751.04,
+      "max_drawdown_pct": 39.49,
+      "total_fills": 28,
+      "sharpe_ratio": 0.4471
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1754.22,
+      "max_drawdown_pct": 7.35,
+      "total_fills": 69,
+      "sharpe_ratio": 0.4454
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1169.48,
+      "max_drawdown_pct": 7.14,
+      "total_fills": 69,
+      "sharpe_ratio": 0.4454
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1403.38,
+      "max_drawdown_pct": 7.25,
+      "total_fills": 69,
+      "sharpe_ratio": 0.4454
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 10938.24,
+      "max_drawdown_pct": 18.18,
+      "total_fills": 459,
+      "sharpe_ratio": 0.4438
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 4839.0,
+      "max_drawdown_pct": 23.09,
+      "total_fills": 484,
+      "sharpe_ratio": 0.4437
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2262.66,
+      "max_drawdown_pct": 23.11,
+      "total_fills": 191,
+      "sharpe_ratio": 0.4408
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.75,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1637.39,
+      "max_drawdown_pct": 39.0,
+      "total_fills": 67,
+      "sharpe_ratio": 0.44
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6780.5,
+      "max_drawdown_pct": 18.54,
+      "total_fills": 931,
+      "sharpe_ratio": 0.4388
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 10256.87,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.4386
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2920.43,
+      "max_drawdown_pct": 26.54,
+      "total_fills": 189,
+      "sharpe_ratio": 0.4385
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2689.88,
+      "max_drawdown_pct": 13.64,
+      "total_fills": 191,
+      "sharpe_ratio": 0.4374
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 6430.51,
+      "max_drawdown_pct": 14.29,
+      "total_fills": 931,
+      "sharpe_ratio": 0.4361
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1677.06,
+      "max_drawdown_pct": 28.41,
+      "total_fills": 29,
+      "sharpe_ratio": 0.4349
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 4586.38,
+      "max_drawdown_pct": 18.54,
+      "total_fills": 679,
+      "sharpe_ratio": 0.4346
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 9627.56,
+      "max_drawdown_pct": 15.17,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.4323
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2600.59,
+      "max_drawdown_pct": 0.0,
+      "total_fills": 193,
+      "sharpe_ratio": 0.4321
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1061.11,
+      "max_drawdown_pct": 2.32,
+      "total_fills": 31,
+      "sharpe_ratio": 0.431
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 848.89,
+      "max_drawdown_pct": 2.26,
+      "total_fills": 31,
+      "sharpe_ratio": 0.431
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1414.82,
+      "max_drawdown_pct": 2.38,
+      "total_fills": 31,
+      "sharpe_ratio": 0.431
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 707.41,
+      "max_drawdown_pct": 2.2,
+      "total_fills": 31,
+      "sharpe_ratio": 0.431
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 3159.05,
+      "max_drawdown_pct": 20.87,
+      "total_fills": 292,
+      "sharpe_ratio": 0.43
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 3599.01,
+      "max_drawdown_pct": 29.09,
+      "total_fills": 290,
+      "sharpe_ratio": 0.4286
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 11364.37,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.4279
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2424.18,
+      "max_drawdown_pct": 23.5,
+      "total_fills": 294,
+      "sharpe_ratio": 0.4273
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.4,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2917.42,
+      "max_drawdown_pct": 10.96,
+      "total_fills": 294,
+      "sharpe_ratio": 0.4266
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 8344.47,
+      "max_drawdown_pct": 15.85,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.4253
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.5,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2244.57,
+      "max_drawdown_pct": 6.28,
+      "total_fills": 193,
+      "sharpe_ratio": 0.4236
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 9920.63,
+      "max_drawdown_pct": 18.2,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.4231
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 3027.5,
+      "max_drawdown_pct": 24.82,
+      "total_fills": 489,
+      "sharpe_ratio": 0.4197
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 11944.22,
+      "max_drawdown_pct": 17.45,
+      "total_fills": 630,
+      "sharpe_ratio": 0.4195
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 5245.33,
+      "max_drawdown_pct": 16.86,
+      "total_fills": 937,
+      "sharpe_ratio": 0.4156
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 7893.96,
+      "max_drawdown_pct": 12.39,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.4144
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 4691.1,
+      "max_drawdown_pct": 24.41,
+      "total_fills": 679,
+      "sharpe_ratio": 0.4079
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 3760.37,
+      "max_drawdown_pct": 21.73,
+      "total_fills": 682,
+      "sharpe_ratio": 0.4076
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 6610.02,
+      "max_drawdown_pct": 14.02,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.4059
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 8731.28,
+      "max_drawdown_pct": 21.75,
+      "total_fills": 471,
+      "sharpe_ratio": 0.4054
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 10340.71,
+      "max_drawdown_pct": 19.7,
+      "total_fills": 654,
+      "sharpe_ratio": 0.4038
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6891.76,
+      "max_drawdown_pct": 18.41,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.4033
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 5446.29,
+      "max_drawdown_pct": 22.02,
+      "total_fills": 937,
+      "sharpe_ratio": 0.4031
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 8896.15,
+      "max_drawdown_pct": 15.17,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.4028
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3863.48,
+      "max_drawdown_pct": 7.45,
+      "total_fills": 489,
+      "sharpe_ratio": 0.4009
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 9803.49,
+      "max_drawdown_pct": 46.95,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.3987
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 4383.75,
+      "max_drawdown_pct": 13.15,
+      "total_fills": 487,
+      "sharpe_ratio": 0.3977
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 9392.88,
+      "max_drawdown_pct": 22.75,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.3961
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 4362.83,
+      "max_drawdown_pct": 19.56,
+      "total_fills": 941,
+      "sharpe_ratio": 0.395
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 9189.54,
+      "max_drawdown_pct": 18.2,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.3945
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 5613.98,
+      "max_drawdown_pct": 16.01,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.3934
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 3715.27,
+      "max_drawdown_pct": 28.18,
+      "total_fills": 487,
+      "sharpe_ratio": 0.3914
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1247.63,
+      "max_drawdown_pct": 24.69,
+      "total_fills": 30,
+      "sharpe_ratio": 0.3906
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5099.84,
+      "max_drawdown_pct": 18.27,
+      "total_fills": 484,
+      "sharpe_ratio": 0.3899
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 1743.47,
+      "max_drawdown_pct": 47.29,
+      "total_fills": 28,
+      "sharpe_ratio": 0.3862
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 8183.67,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.3853
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 8183.67,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.3853
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 10656.98,
+      "max_drawdown_pct": 63.21,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.3808
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 5783.01,
+      "max_drawdown_pct": 21.13,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.3804
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 8578.24,
+      "max_drawdown_pct": 22.84,
+      "total_fills": 664,
+      "sharpe_ratio": 0.3756
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 4444.39,
+      "max_drawdown_pct": 13.51,
+      "total_fills": 682,
+      "sharpe_ratio": 0.3748
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 6136.43,
+      "max_drawdown_pct": 23.36,
+      "total_fills": 479,
+      "sharpe_ratio": 0.3745
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 4464.16,
+      "max_drawdown_pct": 25.64,
+      "total_fills": 941,
+      "sharpe_ratio": 0.3713
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 3781.14,
+      "max_drawdown_pct": 28.69,
+      "total_fills": 682,
+      "sharpe_ratio": 0.3698
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5025.33,
+      "max_drawdown_pct": 17.88,
+      "total_fills": 679,
+      "sharpe_ratio": 0.3692
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 3099.95,
+      "max_drawdown_pct": 27.95,
+      "total_fills": 489,
+      "sharpe_ratio": 0.369
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 8646.98,
+      "max_drawdown_pct": 22.75,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.3678
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.3,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 6981.46,
+      "max_drawdown_pct": 25.77,
+      "total_fills": 476,
+      "sharpe_ratio": 0.3651
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 10655.06,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.3649
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 10228.8,
+      "max_drawdown_pct": 20.3,
+      "total_fills": 886,
+      "sharpe_ratio": 0.364
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5858.37,
+      "max_drawdown_pct": 22.0,
+      "total_fills": 675,
+      "sharpe_ratio": 0.3603
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 9289.08,
+      "max_drawdown_pct": 21.91,
+      "total_fills": 910,
+      "sharpe_ratio": 0.3568
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 10316.03,
+      "max_drawdown_pct": 20.29,
+      "total_fills": 838,
+      "sharpe_ratio": 0.3509
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 11126.51,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.348
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.25,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 7145.57,
+      "max_drawdown_pct": 26.19,
+      "total_fills": 669,
+      "sharpe_ratio": 0.3463
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 4824.79,
+      "max_drawdown_pct": 18.24,
+      "total_fills": 941,
+      "sharpe_ratio": 0.3423
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 1.0,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 1093.47,
+      "max_drawdown_pct": 51.34,
+      "total_fills": 29,
+      "sharpe_ratio": 0.3412
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 8092.63,
+      "max_drawdown_pct": 24.28,
+      "total_fills": 922,
+      "sharpe_ratio": 0.3399
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 7602.88,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.3381
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5462.81,
+      "max_drawdown_pct": 21.73,
+      "total_fills": 937,
+      "sharpe_ratio": 0.3355
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 8979.64,
+      "max_drawdown_pct": 46.95,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.3324
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.2,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 6321.45,
+      "max_drawdown_pct": 25.38,
+      "total_fills": 931,
+      "sharpe_ratio": 0.3248
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 8847.81,
+      "max_drawdown_pct": 22.97,
+      "total_fills": 1341,
+      "sharpe_ratio": 0.3195
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 9553.13,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.3169
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 9141.46,
+      "max_drawdown_pct": 22.53,
+      "total_fills": 1307,
+      "sharpe_ratio": 0.3153
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 9668.36,
+      "max_drawdown_pct": 63.21,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.3142
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 6813.39,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.3103
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 7563.57,
+      "max_drawdown_pct": 25.81,
+      "total_fills": 1375,
+      "sharpe_ratio": 0.307
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 8614.29,
+      "max_drawdown_pct": 23.94,
+      "total_fills": 1250,
+      "sharpe_ratio": 0.2956
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 20.0
+      },
+      "total_pnl": 4973.02,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": 0.2918
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 25.0
+      },
+      "total_pnl": 4973.02,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": 0.2918
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5439.51,
+      "max_drawdown_pct": 26.96,
+      "total_fills": 1394,
+      "sharpe_ratio": 0.2907
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 10337.9,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.2885
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 9890.74,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.2821
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 6109.7,
+      "max_drawdown_pct": 29.99,
+      "total_fills": 1387,
+      "sharpe_ratio": 0.2818
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 5727.91,
+      "max_drawdown_pct": 27.57,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.2537
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.15,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 6824.88,
+      "max_drawdown_pct": 45.72,
+      "total_fills": 1151,
+      "sharpe_ratio": 0.253
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 7218.91,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.2519
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 9172.55,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.2463
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 6011.77,
+      "max_drawdown_pct": 33.95,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.2414
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6052.35,
+      "max_drawdown_pct": 46.05,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.2391
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6479.56,
+      "max_drawdown_pct": 62.0,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.2309
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 8690.2,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.2256
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 5893.4,
+      "max_drawdown_pct": 64.77,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.2219
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 6289.98,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.2082
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 6743.18,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.1912
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 7195.3,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.1867
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 10.0
+      },
+      "total_pnl": 3686.67,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": 0.1771
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 4071.71,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.1735
+    },
+    {
+      "params": {
+        "levels": 12,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5026.86,
+      "max_drawdown_pct": 46.95,
+      "total_fills": 2300,
+      "sharpe_ratio": 0.1624
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 4375.79,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.1594
+    },
+    {
+      "params": {
+        "levels": 10,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5405.89,
+      "max_drawdown_pct": 63.21,
+      "total_fills": 2270,
+      "sharpe_ratio": 0.1583
+    },
+    {
+      "params": {
+        "levels": 8,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 5143.65,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2212,
+      "sharpe_ratio": 0.1426
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": 4271.63,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.1363
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": 2056.51,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.1353
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 15.0
+      },
+      "total_pnl": 3052.37,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": 0.13
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": 2298.38,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.1228
+    },
+    {
+      "params": {
+        "levels": 6,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 3107.84,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 2095,
+      "sharpe_ratio": 0.1061
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 7.5
+      },
+      "total_pnl": -243.03,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": 0.0806
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": -1667.87,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.0804
+    },
+    {
+      "params": {
+        "levels": 5,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": 932.9,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1996,
+      "sharpe_ratio": 0.0788
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": -1509.51,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.0721
+    },
+    {
+      "params": {
+        "levels": 4,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": -3021.47,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1844,
+      "sharpe_ratio": 0.0407
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 2.0
+      },
+      "total_pnl": -7544.04,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": 0.0142
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 3.0
+      },
+      "total_pnl": -7511.76,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": 0.0125
+    },
+    {
+      "params": {
+        "levels": 3,
+        "spacing_pct": 0.1,
+        "leverage": 5,
+        "balance_usage_pct": 90.0,
+        "stop_loss_pct": 5.0
+      },
+      "total_pnl": -9268.13,
+      "max_drawdown_pct": 100.0,
+      "total_fills": 1626,
+      "sharpe_ratio": -0.0039
+    }
+  ]
+}

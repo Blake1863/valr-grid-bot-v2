@@ -1,0 +1,16 @@
+{
+  "poll_interval_seconds": 300,
+  "split_threshold_zar": 25000,
+  "split_delay_seconds": 10,
+  "max_slippage_bps": 50,
+  "pair": "SOLZAR",
+  "valr_pay_id": "M3Q5AEUP8W99QZR6T3ZS",
+  "max_retries": 3,
+  "retry_delay_seconds": 5,
+  "min_deposit_trigger_zar": 1000,
+  "telegram_alert_topic_id": "21",
+  "auto_transfer": true,
+  "auto_stake": true,
+  "transfer_endpoint": "/v1/pay",
+  "stake_endpoint": "/v1/earn/stake"
+}

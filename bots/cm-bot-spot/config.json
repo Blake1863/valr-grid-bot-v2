@@ -1,0 +1,133 @@
+{
+  "pairs": {
+    "BTCZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "ETHZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "XRPZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "SOLZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "AVAXZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BNBZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "LINKZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BTCUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "ETHUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "XRPUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "SOLUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "AVAXUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BNBUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "LINKUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BTCUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "ETHUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "SOLUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "AVAXUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "EURCUSDC": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "JUPUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "TRUMPUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "SPYXUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "VALR10USDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "BITGOLDUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "MSTRXUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "TSLAXUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "HOODXUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "CRCLXUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "COINXUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "NVDAXUSDT": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "USDPCUSDT": {
+      "enabled": false,
+      "type": "spot"
+    }
+  },
+  "cycle_interval_ms": 15000,
+  "cleanup_interval_ms": 60000,
+  "qty_range_min_multiplier": 1.0,
+  "qty_range_max_multiplier": 3.0,
+  "cleanup_age_threshold_ms": 45000
+}

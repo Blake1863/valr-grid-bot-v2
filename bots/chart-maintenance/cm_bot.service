@@ -1,0 +1,23 @@
+[Unit]
+Description=Chart Maintenance Bot (VALR Spot/Futures)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/admin/.openclaw/workspace/bots/chart-maintenance
+ExecStart=/usr/bin/python3 -u cm_bot.py --phase2
+Restart=always
+RestartSec=10
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+KillMode=mixed
+KillSignal=SIGTERM
+StandardOutput=append:/home/admin/.openclaw/workspace/bots/chart-maintenance/logs/cm_bot.stdout
+StandardError=append:/home/admin/.openclaw/workspace/bots/chart-maintenance/logs/cm_bot.stderr
+Environment=HOME=/home/admin
+Environment=PATH=/home/admin/.local/bin:/home/admin/.npm-global/bin:/home/admin/bin:/home/admin/.volta/bin:/home/admin/.asdf/shims:/home/admin/.bun/bin:/home/admin/.nvm/current/bin:/home/admin/.fnm/current/bin:/home/admin/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=default.target

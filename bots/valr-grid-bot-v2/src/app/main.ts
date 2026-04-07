@@ -237,18 +237,8 @@ async function main(): Promise<void> {
 
       onOpenPositionUpdate: async (data: WsOpenPositionUpdate) => {
         if (data.pair !== config.pair) return;
-        const entryPriceChanged = positionManager.updateFromWs(data);
-
-        // Only rebuild TPSL if average entry price actually changed
-        // (avoid chattering on every position update)
-        if (!positionManager.isFlat && entryPriceChanged) {
-          try {
-            const refPrice = await getReferencePrice(config, tradeWs, rest);
-            await tpslManager.rebuild(positionManager.position!, refPrice);
-          } catch (err) {
-            log.error({ err }, 'CRITICAL: TPSL rebuild failed after position update');
-          }
-        }
+        // Just update position state — TPSL only moves on fills, not on position updates
+        positionManager.updateFromWs(data);
       },
 
       onPositionClosed: async (data: WsPositionClosed) => {
@@ -312,31 +302,31 @@ async function main(): Promise<void> {
 
       let gridLevels = allGridLevels;
       if (config.mode === 'neutral' && positionManager.position) {
-        // Neutral mode with position: place extra orders on opposite side to hedge
+        // Neutral mode with position: only place hedging orders (don't add to position)
+        // This avoids "Insufficient Balance" errors when account is already leveraged
         const activeOrders = orderManager.getActiveOrders();
         const activeBuys = activeOrders.filter((o) => o.side === 'BUY').length;
         const activeSells = activeOrders.filter((o) => o.side === 'SELL').length;
         const qtyPerLevel = new Decimal(config.quantityPerLevel);
         
-        // Calculate how many extra orders needed on hedging side
+        // Calculate how many orders needed to hedge/close the position
         const positionQty = positionManager.netQuantity.abs();
         const ordersNeededToHedge = Math.ceil(positionQty.div(qtyPerLevel).toNumber());
         const isLong = positionManager.netQuantity.gt(0);
         
-        // For long position: need extra sells. For short: need extra buys.
+        // For long position: place SELLs to close. For short: place BUYs to close.
         const hedgeSide = isLong ? 'SELL' : 'BUY';
         const hedgeSideCount = isLong ? activeSells : activeBuys;
-        const oppositeSideCount = isLong ? activeBuys : activeSells;
         
-        // Place full grid on hedging side (up to ordersNeededToHedge + config.levels)
-        // Place normal grid on entry side (config.levels)
+        // Only place orders on hedging side (reduces position, no extra margin needed)
+        // Skip opposite side orders until position is flat (would require more balance)
         gridLevels = allGridLevels.filter((l) => {
           if (l.side === hedgeSide) {
-            // Allow extra levels on hedging side
+            // Place enough orders to hedge the position + normal grid
             return hedgeSideCount < ordersNeededToHedge + config.levels;
           } else {
-            // Normal limit on entry side
-            return oppositeSideCount < config.levels;
+            // Skip opposite side orders when position is open
+            return false;
           }
         });
         

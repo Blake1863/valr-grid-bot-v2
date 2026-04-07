@@ -1,0 +1,144 @@
+{
+  "pairs": {
+    "BTCUSDTPERP": {
+      "enabled": true,
+      "type": "perp"
+    },
+    "ETHUSDTPERP": {
+      "enabled": true,
+      "type": "perp"
+    },
+    "XRPUSDTPERP": {
+      "enabled": true,
+      "type": "perp"
+    },
+    "DOGEUSDTPERP": {
+      "enabled": true,
+      "type": "perp"
+    },
+    "SOLUSDTPERP": {
+      "enabled": true,
+      "type": "perp"
+    },
+    "AVAXUSDTPERP": {
+      "enabled": true,
+      "type": "perp"
+    },
+    "LINKZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BTCZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "ETHZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "ETHBTC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "XRPZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BTCUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "ETHUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "XRPUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "SOLZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BTCUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "USDCZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BNBZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "SHIBZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "AVAXZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "ETHUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "XRPUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "SOLUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "AVAXUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "USDTZAR": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "USDTUSDC": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "DOGEUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "TRXUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "SOLUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "WIFUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "JUPUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "BOMEUSDT": {
+      "enabled": false,
+      "type": "spot"
+    },
+    "PYTHUSDT": {
+      "enabled": false,
+      "type": "spot"
+    }
+  },
+  "cycle_interval_ms": 15000,
+  "cleanup_interval_ms": 60000,
+  "qty_range_min_multiplier": 1.0,
+  "qty_range_max_multiplier": 3.0,
+  "cycles_before_role_switch": 3,
+  "cycles_before_side_swap": 9,
+  "inventory_buffer_cycles": 4,
+  "cleanup_age_threshold_ms": 45000
+}

@@ -1,0 +1,13 @@
+{
+  "capital_per_pair": 100,
+  "leverage": 5,
+  "cycle_interval_seconds": 30,
+  "pairs": {
+    "SOLUSDT": {
+      "enabled": true,
+      "levels": 5,
+      "spacing_pct": 0.4,
+      "stop_loss_pct": 3.0
+    }
+  }
+}

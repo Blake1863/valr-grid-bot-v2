@@ -68,7 +68,10 @@ export async function reconcile(
   );
 
   // 4. Find orphaned exchange orders (exchange has them but local doesn't know about them)
+  // Also detect duplicate orders at same level — keep only the most recent
   const orphanedOrderIds: string[] = [];
+  const ordersByLevelSide = new Map<string, Array<typeof pairOrders[number]>>();
+  
   for (const exOrder of pairOrders) {
     const matchByExchangeId = localExchangeIds.has(exOrder.orderId);
     const matchByCustomerId = exOrder.customerOrderId
@@ -78,27 +81,18 @@ export async function reconcile(
     if (!matchByExchangeId && !matchByCustomerId) {
       // Check if it looks like a grid order we placed (customerOrderId prefix)
       if (exOrder.customerOrderId?.startsWith('grid-')) {
-        // Known grid format — probably from previous run, trust it
+        // Known grid format — probably from previous run
         // Parse level from customerOrderId: grid-B-3-seed or grid-S-2-seed or grid-L-1-seed
         const levelMatch = exOrder.customerOrderId.match(/^grid-[A-Z]-?(\d+)-/);
         const level = levelMatch ? parseInt(levelMatch[1], 10) : 0;
-        log.info(
-          { orderId: exOrder.orderId, customerOrderId: exOrder.customerOrderId, level },
-          'Found grid order from previous run — restoring to local state'
-        );
-        const now = new Date().toISOString();
-        store.upsertGridOrder({
-          pair: config.pair,
-          side: exOrder.side.toUpperCase() as 'BUY' | 'SELL',
-          price: exOrder.price,
-          quantity: exOrder.remainingQuantity,
-          customerOrderId: exOrder.customerOrderId,
-          exchangeOrderId: exOrder.orderId,
-          status: 'placed',
-          level,
-          createdAt: exOrder.createdAt,
-          updatedAt: now,
-        });
+        const side = exOrder.side.toUpperCase() as 'BUY' | 'SELL';
+        const key = `${side}-${level}`;
+        
+        // Group by level+side to detect duplicates
+        if (!ordersByLevelSide.has(key)) {
+          ordersByLevelSide.set(key, []);
+        }
+        ordersByLevelSide.get(key)!.push(exOrder);
       } else {
         // Unknown order — orphaned
         log.warn(
@@ -106,6 +100,66 @@ export async function reconcile(
           'Orphaned order found — will cancel'
         );
         orphanedOrderIds.push(exOrder.orderId);
+      }
+    }
+  }
+  
+  // Process grouped orders — keep only the most recent at each level
+  for (const [key, orders] of ordersByLevelSide.entries()) {
+    if (orders.length === 1) {
+      // Single order — just restore it
+      const exOrder = orders[0];
+      const levelMatch = exOrder.customerOrderId!.match(/^grid-[A-Z]-?(\d+)-/);
+      const level = levelMatch ? parseInt(levelMatch[1], 10) : 0;
+      log.info(
+        { orderId: exOrder.orderId, customerOrderId: exOrder.customerOrderId, level },
+        'Found grid order from previous run — restoring to local state'
+      );
+      const now = new Date().toISOString();
+      store.upsertGridOrder({
+        pair: config.pair,
+        side: exOrder.side.toUpperCase() as 'BUY' | 'SELL',
+        price: exOrder.price,
+        quantity: exOrder.remainingQuantity,
+        customerOrderId: exOrder.customerOrderId,
+        exchangeOrderId: exOrder.orderId,
+        status: 'placed',
+        level,
+        createdAt: exOrder.createdAt,
+        updatedAt: now,
+      });
+    } else {
+      // Duplicates found — keep the most recent (by createdAt), cancel the rest
+      orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const keep = orders[0];
+      const cancel = orders.slice(1);
+      
+      const levelMatch = keep.customerOrderId!.match(/^grid-[A-Z]-?(\d+)-/);
+      const level = levelMatch ? parseInt(levelMatch[1], 10) : 0;
+      log.info(
+        { orderId: keep.orderId, customerOrderId: keep.customerOrderId, level },
+        'Found grid order from previous run — restoring to local state'
+      );
+      const now = new Date().toISOString();
+      store.upsertGridOrder({
+        pair: config.pair,
+        side: keep.side.toUpperCase() as 'BUY' | 'SELL',
+        price: keep.price,
+        quantity: keep.remainingQuantity,
+        customerOrderId: keep.customerOrderId,
+        exchangeOrderId: keep.orderId,
+        status: 'placed',
+        level,
+        createdAt: keep.createdAt,
+        updatedAt: now,
+      });
+      
+      for (const dup of cancel) {
+        log.warn(
+          { orderId: dup.orderId, customerOrderId: dup.customerOrderId, level, reason: 'duplicate at same level' },
+          'Duplicate grid order found — will cancel'
+        );
+        orphanedOrderIds.push(dup.orderId);
       }
     }
   }
@@ -123,8 +177,46 @@ export async function reconcile(
     }
   }
 
-  const hasPosition = !positionManager.isFlat;
+  // 5b. Deduplicate orders at same level — keep only the most recent
   const reconciledActive = store.getActiveGridOrders(config.pair);
+  const localOrdersByLevelSide = new Map<string, Array<typeof reconciledActive[number]>>();
+  
+  for (const order of reconciledActive) {
+    const key = `${order.side}-${order.level}`;
+    if (!localOrdersByLevelSide.has(key)) {
+      localOrdersByLevelSide.set(key, []);
+    }
+    localOrdersByLevelSide.get(key)!.push(order);
+  }
+  
+  for (const [key, orders] of localOrdersByLevelSide.entries()) {
+    if (orders.length > 1) {
+      // Duplicates found — keep the most recent (by updatedAt), cancel the rest
+      orders.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      const keep = orders[0];
+      const cancel = orders.slice(1);
+      
+      for (const dup of cancel) {
+        log.warn(
+          { 
+            customerOrderId: dup.customerOrderId, 
+            exchangeOrderId: dup.exchangeOrderId,
+            level: dup.level,
+            side: dup.side,
+            reason: 'duplicate at same level'
+          },
+          'Duplicate grid order found in local state — will cancel'
+        );
+        if (dup.exchangeOrderId) {
+          orphanedOrderIds.push(dup.exchangeOrderId);
+        }
+        store.updateGridOrderStatus(dup.customerOrderId, 'cancelled');
+      }
+    }
+  }
+
+  const hasPosition = !positionManager.isFlat;
+  // reconciledActive already fetched in step 5b for deduplication
 
   // For neutral mode, grid should hedge the position: position + (sells - buys) ≈ 0
   let needsGridPlacement: boolean;

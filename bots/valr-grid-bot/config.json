@@ -1,0 +1,20 @@
+{
+  "_comment": "Tunable grid bot parameters — MODERATELY AGGRESSIVE (Sharpe >1, max PnL)",
+
+  "pair": "SOLUSDTPERP",
+
+  "leverage": 5,
+  "_leverage_comment": "Backtest default",
+
+  "balance_usage_pct": 90,
+  "_balance_usage_pct_comment": "Deploy 90% of available USDT, keep 10% buffer",
+
+  "levels": 3,
+  "_levels_comment": "Best PnL with Sharpe>1: 3 levels",
+
+  "spacing_pct": 0.4,
+  "_spacing_pct_comment": "Best PnL with Sharpe>1: 0.4% spacing (+$7,281, Sharpe 1.18)",
+
+  "max_loss_pct": 3.0,
+  "_max_loss_pct_comment": "Backtest optimal: 3% stop from entry"
+}
