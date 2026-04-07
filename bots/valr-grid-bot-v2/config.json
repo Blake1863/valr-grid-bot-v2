@@ -1,0 +1,22 @@
+{
+  "pair": "SOLUSDTPERP",
+  "subaccountId": "",
+  "mode": "neutral",
+  "levels": 3,
+  "spacingMode": "percent",
+  "spacingValue": "0.4",
+  "quantityPerLevel": "0.670",
+  "stopLossMode": "percent",
+  "stopLossValue": "3.0",
+  "tpMode": "disabled",
+  "triggerType": "MARK_PRICE",
+  "referencePriceSource": "mark_price",
+  "leverage": 10,
+  "postOnly": true,
+  "allowMargin": true,
+  "cooldownAfterStopSecs": 300,
+  "dryRun": false,
+  "reconcileIntervalSecs": 60,
+  "maxActiveGridOrders": 20,
+  "wsStaleTimeoutSecs": 30
+}
