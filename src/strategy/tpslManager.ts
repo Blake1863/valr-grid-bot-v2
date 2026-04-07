@@ -16,7 +16,7 @@ import type { ValrRestClient } from '../exchange/restClient.js';
 import type { BotConfig } from '../config/schema.js';
 import type { PositionState } from './positionManager.js';
 import type { StateStore } from '../state/store.js';
-import { calcSlPrice, calcTpPrice, getSpacingAmount, buildClosingOrders } from './gridBuilder.js';
+import { calcSlPrice, calcTpPrice, getSpacingAmount } from './gridBuilder.js';
 import { priceToString } from '../exchange/pairMetadata.js';
 import type { PairConstraints } from '../exchange/pairMetadata.js';
 import { createLogger } from '../app/logger.js';

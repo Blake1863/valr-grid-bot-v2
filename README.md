@@ -209,14 +209,15 @@ If the bot crashed mid-order-placement, some orders may be on exchange but not i
 - **Always have TP orders** — even if `tpMode` is set to `disabled`, bot defaults to grid spacing as the TP distance
 - TP is placed as a conditional market order that closes the entire position
 - SL is placed as a complementary conditional (OCO with TP)
+- Both TP and SL use the VALR conditional order type (POST `/v1/orders/conditionals`)
 
 ### Neutral Mode
-- **No separate conditional TP** — the grid itself generates profit on each price oscillation
-- **Symmetric closing orders** are automatically placed when net position accumulates:
-  - If net long: SELL orders above average entry price (closing the excess)
-  - If net short: BUY orders below average entry price (closing the excess)
-- **SL still placed** for emergency protection (triggers entire position close)
-- Closing orders mirror the grid structure on the opposite side
+- **Grid orders ARE the closing mechanism** — symmetric BUY/SELL orders naturally close positions as price oscillates
+- When a BUY fills → net long → existing SELL orders above act as TPs
+- When a SELL fills → net short → existing BUY orders below act as TPs
+- After each fill: replenish the filled side with a new order one level deeper
+- **Only SL conditional is placed** for emergency protection (no separate TP conditional needed)
+- No additional orders are placed after fills (except replenishment of entry side)
 
 ## Known Limitations and TODOs
 

@@ -26,7 +26,7 @@ import { TpslManager } from '../strategy/tpslManager.js';
 import { OrderManager } from '../strategy/orderManager.js';
 import { RiskManager } from '../strategy/riskManager.js';
 import { reconcile } from '../strategy/reconciliation.js';
-import { buildGridLevels, buildReplenishLevel, calcSlPrice, getSpacingAmount, calcTpPrice, buildClosingOrders } from '../strategy/gridBuilder.js';
+import { buildGridLevels, buildReplenishLevel, calcSlPrice, getSpacingAmount, calcTpPrice } from '../strategy/gridBuilder.js';
 import type { WsOrderStatusUpdate, WsOpenPositionUpdate, WsPositionClosed, WsFailedOrder } from '../exchange/types.js';
 import { createLogger } from './logger.js';
 
@@ -171,7 +171,7 @@ async function main(): Promise<void> {
             if (config.mode === 'neutral') {
               // ── NEUTRAL MODE ─────────────────────────────────────────────
               // Replenish the side that just filled with a new deeper order.
-              // Place symmetric closing orders on opposite side to realize profit.
+              // The existing grid orders on the opposite side ARE the closing orders.
               if (filledOrder) {
                 const filledSide = filledOrder.side as 'BUY' | 'SELL';
                 const activeOrders = orderManager.getActiveOrders();
@@ -204,29 +204,8 @@ async function main(): Promise<void> {
                 }
               }
 
-              // Place closing orders if we have a net position
-              // These orders on the opposite side close the accumulated position
+              // Update SL if we have a net position (grid orders are the TPs)
               if (!positionManager.isFlat) {
-                const netQty = positionManager.netQuantity;
-                const entry = positionManager.position!.averageEntryPrice;
-                
-                try {
-                  const closingOrders = buildClosingOrders(
-                    config, refPrice, entry, constraints, netQty, seed
-                  );
-                  
-                  if (closingOrders.length > 0) {
-                    log.info(
-                      { count: closingOrders.length, netQty: netQty.toString() },
-                      'Neutral: placing symmetric closing orders'
-                    );
-                    await orderManager.placeGrid(closingOrders);
-                  }
-                } catch (err) {
-                  log.error({ err }, 'Failed to place closing orders in neutral mode');
-                }
-
-                // Also place SL for emergency protection
                 try {
                   await tpslManager.rebuild(positionManager.position!, refPrice);
                 } catch (err) {
@@ -372,29 +351,10 @@ async function main(): Promise<void> {
 
   if (reconcileResult.needsTpsl && positionManager.position) {
     try {
-      // For neutral mode, also place closing orders on startup if there's a net position
-      if (config.mode === 'neutral' && !positionManager.isFlat) {
-        const netQty = positionManager.netQuantity;
-        const entry = positionManager.position.averageEntryPrice;
-        const seed = Date.now().toString(36);
-        
-        const closingOrders = buildClosingOrders(
-          config, refPrice, entry, constraints, netQty, seed
-        );
-        
-        if (closingOrders.length > 0) {
-          log.info(
-            { count: closingOrders.length, netQty: netQty.toString() },
-            'Placing initial closing orders for neutral mode'
-          );
-          await orderManager.placeGrid(closingOrders);
-        }
-      }
-
-      // Place SL (and TP for directional modes)
+      // Place TPSL conditional (SL for neutral, SL+TP for directional)
       await tpslManager.rebuild(positionManager.position, refPrice);
     } catch (err) {
-      log.error({ err }, 'CRITICAL: Initial TPSL/closing order placement failed');
+      log.error({ err }, 'CRITICAL: Initial TPSL placement failed');
       // Don't exit — let the periodic reconcile handle it
     }
   }
