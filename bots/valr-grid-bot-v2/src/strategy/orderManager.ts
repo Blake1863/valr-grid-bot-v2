@@ -176,9 +176,16 @@ export class OrderManager {
       this.store.clearGridOrdersForPair(this.config.pair);
       return;
     }
-    await this.rest.cancelAllOrdersForPair(this.config.pair);
+    // CRITICAL FIX: Always clear local DB state even if REST call fails
+    // This prevents orphaned orders persisting after restart
+    try {
+      await this.rest.cancelAllOrdersForPair(this.config.pair);
+    } catch (err) {
+      log.error({ err }, 'Failed to cancel all grid orders on exchange — clearing DB anyway');
+      // Don't rethrow — still clear local state to avoid stale orders on restart
+    }
     this.store.clearGridOrdersForPair(this.config.pair);
-    log.info({ pair: this.config.pair }, 'All grid orders cancelled');
+    log.info({ pair: this.config.pair }, 'All grid orders cancelled (DB cleared)');
   }
 
   /**

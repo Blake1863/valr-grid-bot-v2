@@ -238,8 +238,10 @@ export async function reconcile(
     // If short position: need (buys - sells) = positionQty.abs()
     let targetHedge = isLong ? ordersNeededToHedge : -ordersNeededToHedge;
     
-    // Also want full grid on both sides for proper oscillation
-    needsGridPlacement = activeBuys < config.levels || activeSells < config.levels || Math.abs(currentHedge - targetHedge) > 0.5;
+    // CRITICAL FIX: Only check hedge balance, not full grid on both sides
+    // The contradiction was: requiring full grid on both sides, but main.ts only places hedge side
+    // This caused permanent imbalance — one side always "needed" orders that never got placed
+    needsGridPlacement = Math.abs(currentHedge - targetHedge) > 0.5;
     
     if (needsGridPlacement) {
       log.info(
@@ -250,9 +252,9 @@ export async function reconcile(
           targetHedge: targetHedge.toFixed(2),
           positionSide: isLong ? 'LONG' : 'SHORT',
           positionQty: positionQty.toString(),
-          required: config.levels 
+          hedgeImbalance: Math.abs(currentHedge - targetHedge).toFixed(2)
         }, 
-        'Neutral mode: grid needs rebalancing'
+        'Neutral mode: grid needs rebalancing (hedge-focused)'
       );
     }
   } else {

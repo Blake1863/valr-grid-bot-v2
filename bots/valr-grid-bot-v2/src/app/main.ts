@@ -181,6 +181,14 @@ async function main(): Promise<void> {
               // Replenish the side that just filled with a new deeper order.
               // The existing orders on the opposite side ARE the take profits.
               if (filledOrder) {
+                // CRITICAL FIX: Check cooldown before replenishing (prevents orders after position close)
+                try {
+                  riskManager.checkCooldown(store);
+                } catch {
+                  log.info('In cooldown after position close — skipping neutral replenishment');
+                  return; // Don't replenish after position closed
+                }
+
                 const filledSide = filledOrder.side as 'BUY' | 'SELL';
                 const activeOrders = orderManager.getActiveOrders();
                 const activeSameSide = activeOrders.filter((o) => o.side === filledSide);
@@ -256,11 +264,16 @@ async function main(): Promise<void> {
         positionManager.handlePositionClosed(data);
 
         // Cancel all grid orders + TPSL
+        // Note: orderManager.cancelAll() now clears DB even if REST call fails
         try {
           await orderManager.cancelAll();
+        } catch (err) {
+          log.error({ err }, 'Error cancelling grid orders after position close — DB still cleared');
+        }
+        try {
           await tpslManager.cancelAll();
         } catch (err) {
-          log.error({ err }, 'Error cancelling orders after position close');
+          log.error({ err }, 'Error cancelling TPSL after position close');
         }
 
         // Enter cooldown
