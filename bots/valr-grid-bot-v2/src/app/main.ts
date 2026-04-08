@@ -318,6 +318,15 @@ async function main(): Promise<void> {
   if (reconcileResult.needsGridPlacement && !orderManager.isCircuitOpen()) {
     try {
       riskManager.checkCooldown(store);
+      
+      // CRITICAL FIX: If needsFullRebuild, cancel ALL existing grid orders first
+      // This handles asymmetric grids from stale restarts (e.g., only buys or only sells)
+      if (reconcileResult.needsFullRebuild) {
+        log.warn('Full rebuild requested — cancelling all existing grid orders');
+        await orderManager.cancelAll();
+        await tpslManager.cancelAll();
+      }
+      
       const seed = Date.now().toString(36);
       const allGridLevels = buildGridLevels(config, refPrice, constraints, seed, availableBalance);
 

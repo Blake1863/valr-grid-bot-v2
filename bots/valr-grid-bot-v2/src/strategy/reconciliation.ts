@@ -32,6 +32,8 @@ export interface ReconcileResult {
   liveOrderCount: number;
   /** Orphaned exchange order IDs to cancel */
   orphanedOrderIds: string[];
+  /** Whether to cancel ALL grid orders and rebuild fresh (for asymmetric grids) */
+  needsFullRebuild?: boolean;
 }
 
 export async function reconcile(
@@ -220,6 +222,8 @@ export async function reconcile(
 
   // For neutral mode, grid should hedge the position: position + (sells - buys) ≈ 0
   let needsGridPlacement: boolean;
+  let needsFullRebuild = false; // Flag to cancel all and start fresh
+  
   if (config.mode === 'neutral') {
     const activeBuys = reconciledActive.filter((o) => o.side === 'BUY').length;
     const activeSells = reconciledActive.filter((o) => o.side === 'SELL').length;
@@ -227,7 +231,6 @@ export async function reconcile(
     
     // In neutral mode: we want (position + buyOrders - sellOrders) = 0
     // Rearranged: sellOrders - buyOrders = position
-    // So if long 0.55 SOL with 0.15 SOL orders: need ~4 more sells than buys
     const positionQty = positionManager.netQuantity.abs();
     const ordersNeededToHedge = positionQty.div(qtyPerLevel).toNumber();
     
@@ -238,12 +241,29 @@ export async function reconcile(
     // If short position: need (buys - sells) = positionQty.abs()
     let targetHedge = isLong ? ordersNeededToHedge : -ordersNeededToHedge;
     
-    // CRITICAL FIX: Only check hedge balance, not full grid on both sides
-    // The contradiction was: requiring full grid on both sides, but main.ts only places hedge side
-    // This caused permanent imbalance — one side always "needed" orders that never got placed
-    needsGridPlacement = Math.abs(currentHedge - targetHedge) > 0.5;
+    // CRITICAL FIX: Check for asymmetric grid with no position — needs full rebuild
+    // If there's no position but orders exist on only one side, the grid is stale
+    // and should be cancelled + replaced with a fresh symmetric grid
+    if (!hasPosition && (activeBuys > 0 || activeSells > 0)) {
+      if (activeBuys === 0 || activeSells === 0 || activeBuys !== activeSells) {
+        needsFullRebuild = true;
+        log.warn(
+          { activeBuys, activeSells, reason: 'asymmetric grid with no position' },
+          'Neutral mode: stale asymmetric grid detected — will cancel all and rebuild fresh'
+        );
+      }
+    }
     
-    if (needsGridPlacement) {
+    // Only check hedge balance if we have a position
+    // If no position, we want symmetric grid (buys = sells)
+    if (hasPosition) {
+      needsGridPlacement = Math.abs(currentHedge - targetHedge) > 0.5;
+    } else {
+      // No position: want symmetric grid
+      needsGridPlacement = activeBuys !== activeSells || activeBuys < config.levels;
+    }
+    
+    if (needsGridPlacement && !needsFullRebuild) {
       log.info(
         { 
           activeBuys, 
@@ -269,6 +289,7 @@ export async function reconcile(
       hasPosition,
       needsGridPlacement,
       needsTpsl,
+      needsFullRebuild,
       liveOrderCount: reconciledActive.length,
       orphanedCount: orphanedOrderIds.length,
     },
@@ -281,5 +302,6 @@ export async function reconcile(
     needsTpsl,
     liveOrderCount: reconciledActive.length,
     orphanedOrderIds,
+    needsFullRebuild,
   };
 }
