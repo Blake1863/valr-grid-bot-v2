@@ -252,6 +252,19 @@ export async function reconcile(
           'Neutral mode: stale asymmetric grid detected — will cancel all and rebuild fresh'
         );
       }
+      
+      // Also check for orders from different seeds (indicates stale orders from multiple runs)
+      const seeds = new Set(reconciledActive.map(o => {
+        const match = o.customerOrderId.match(/-([^-]+)$/);
+        return match ? match[1] : 'unknown';
+      }));
+      if (seeds.size > 1) {
+        needsFullRebuild = true;
+        log.warn(
+          { seeds: Array.from(seeds), orderCount: reconciledActive.length, reason: 'mixed seeds from different runs' },
+          'Neutral mode: grid has orders from multiple runs — will cancel all and rebuild fresh'
+        );
+      }
     }
     
     // Only check hedge balance if we have a position
