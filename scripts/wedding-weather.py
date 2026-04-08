@@ -430,7 +430,7 @@ def risk_score(wcode, rain_mm, rain_pct, wind_kmh, gusts_kmh):
     if wcode in (61, 63, 80, 81) or rain_mm > 2: return 2, "🌧 Rain likely"
     if wcode in (51, 53, 55) or rain_pct > 60: return 2, "🌦 Drizzle/showers"
     if rain_pct > 40 or wcode in (2, 3): return 1, "⛅ Some cloud/chance of showers"
-    if wind_kmh > 40 or gusts_kmh > 55: return 2, "💨 Strong winds"
+    if wind_kmh > 40 or (gusts_kmh and gusts_kmh > 55): return 2, "💨 Strong winds"
     return 0, "✅ Looking good"
 
 
@@ -439,12 +439,15 @@ def risk_score(wcode, rain_mm, rain_pct, wind_kmh, gusts_kmh):
 # ============================================================
 
 def build_message(data, location, saws_status=None, windy_data=None):
-    """Build Telegram message with 3-day comparison and source cross-check."""
+    """Build Telegram message with full hourly detail for wedding day."""
     now_sast = datetime.now(SAST)
     hourly = data["hourly"]
     daily = data["daily"]
     source_name = data.get("source_name", "Unknown")
     resolution = data.get("resolution", "hourly")
+    
+    # Use Open-Meteo hourly data directly if available (true hourly, not 6-hourly estimates)
+    use_full_hourly = source_name == "Open-Meteo (ECMWF IFS HRES)"
 
     FRIDAY, SATURDAY, SUNDAY = "2026-04-10", "2026-04-11", "2026-04-12"
     day_indices = {}
@@ -474,10 +477,10 @@ def build_message(data, location, saws_status=None, windy_data=None):
 
     # 3-day comparison (primary source)
     lines = [
-        f"💍 *Wedding Weather Update*",
+        f"💍 *Wedding Weather Update — Full Hourly Detail*",
         f"📍 {location.get('display_name', 'Nottingham Road').split(',')[0]}",
         f"🕐 Report: {now_sast.strftime('%d %b %H:%M')} SAST",
-        f"📡 Primary: {source_name}",
+        f"📡 Source: {source_name}",
         f"",
         f"*3-Day Comparison:*",
         f"```",
@@ -536,39 +539,62 @@ def build_message(data, location, saws_status=None, windy_data=None):
         lines.append(f"_🇿🇦 SAWS: {status}_")
         lines.append("")
 
-    # Hourly breakdown
+    # Hourly breakdown — full day detail (06:00-22:00)
     lines.extend([
-        f"*⏰ Your Day — Hour by Hour:*", f"```",
-        f"{'Time':<6} {'°C':>3} {'Rain':>5} {'Prob':>5} {'Wind':>5}  What's happening",
-        f"{'─'*6} {'─'*3} {'─'*5} {'─'*5} {'─'*5}  {'─'*22}",
+        f"*⏰ Your Day — Full Hourly Detail:*", f"```",
+        f"{'Time':<6} {'°C':>3} {'Feels':>5} {'Rain':>5} {'Prob':>5} {'Wind':>5}  Activity",
+        f"{'─'*6} {'─'*3} {'─'*5} {'─'*5} {'─'*5} {'─'*5}  {'─'*22}",
     ])
 
     canapes_risks = []
     for i, ts in enumerate(hourly["time"]):
         if not ts.startswith(WEDDING_DATE): continue
         hour = int(ts.split("T")[1].split(":")[0])
-        if hour < FOCUS_START or hour > FOCUS_END: continue
+        if hour < 6 or hour > 22: continue  # Show full day: 06:00-22:00
 
         temp = hourly["temperature_2m"][i]
+        feels = hourly.get("apparent_temperature", hourly["temperature_2m"])[i]
         rain_h, rain_p = hourly["precipitation"][i], hourly["precipitation_probability"][i]
         wc, wind = hourly["weathercode"][i], hourly["windspeed_10m"][i]
         emoji, _ = WMO.get(wc, ("🌡", ""))
-        r, _ = risk_score(wc, rain_h, rain_p, wind, hourly["windgusts_10m"][i])
+        gusts = hourly.get("windgusts_10m", [None] * len(hourly["time"]))[i]
+        r, _ = risk_score(wc, rain_h, rain_p, wind, gusts)
 
         label, is_outdoor = SCHEDULE.get(hour, ("", False))
         if is_outdoor: canapes_risks.append(r)
-        lines.append(f"{hour:02d}:00  {temp:>2.0f}°  {rain_h:>4.1f}mm  {rain_p:>4.0f}%  {wind:>4.0f}km  {emoji} {label}{' 🌿' if is_outdoor else ' 🏠'}")
+        marker = f" {label}{' 🌿' if is_outdoor else ' 🏠'}" if label else ""
+        lines.append(f"{hour:02d}:00  {temp:>2.0f}°  {feels:>4.0f}°  {rain_h:>4.1f}mm  {rain_p:>4.0f}%  {wind:>4.0f}km  {emoji}{marker}")
 
     lines.extend(["```", "_🌿 outdoors  🏠 indoors_"])
 
-    canapes_max = max(canapes_risks) if canapes_risks else 0
-    msgs = {
-        0: "✅ *Canapés window clear!*",
-        1: "🟡 *Mild risk* — light cloud possible, probably fine.",
-        2: "🟠 *Rain likely* — recommend covered fallback.",
-        3: "🔴 *HIGH RISK* — activate wet weather plan.",
-    }
-    lines.extend(["", f"{msgs[canapes_max]} (16:00–17:45)", "", f"_Next update: tomorrow ~09:00 SAST_"])
+    # Canapés detailed risk assessment
+    canapes_hours = [i for i, ts in enumerate(hourly["time"]) if ts.startswith(WEDDING_DATE) and int(ts.split("T")[1].split(":")[0]) in [16, 17]]
+    if canapes_hours:
+        max_prob = max(hourly["precipitation_probability"][i] for i in canapes_hours)
+        max_rain = max(hourly["precipitation"][i] for i in canapes_hours)
+        avg_temp = sum(hourly["temperature_2m"][i] for i in canapes_hours) / len(canapes_hours)
+        lines.extend([
+            "",
+            "*Canapés Window (16:00-17:45):*",
+            f"🌡 Avg temp: {avg_temp:.0f}°C  |  🌧 Max rain: {max_rain:.1f}mm  |  ☔ Max prob: {max_prob:.0f}%",
+        ])
+        if max_prob < 30 and max_rain < 0.5:
+            lines.append("✅ *Low risk* — outdoor canapés should be fine!")
+        elif max_prob < 60:
+            lines.append("🟡 *Mild risk* — have a backup plan ready.")
+        else:
+            lines.append("🟠 *Moderate risk* — recommend covered area.")
+    else:
+        canapes_max = max(canapes_risks) if canapes_risks else 0
+        msgs = {
+            0: "✅ *Canapés window clear!*",
+            1: "🟡 *Mild risk* — light cloud possible, probably fine.",
+            2: "🟠 *Rain likely* — recommend covered fallback.",
+            3: "🔴 *HIGH RISK* — activate wet weather plan.",
+        }
+        lines.extend(["", f"{msgs[canapes_max]} (16:00–17:45)"])
+
+    lines.extend(["", f"_Next update: tomorrow ~09:00 SAST_"])
 
     return "\n".join(lines)
 
@@ -602,45 +628,48 @@ def main():
         print(f"[ERROR] Geocoding failed: {e}")
         location = {"display_name": "Nottingham Road, KZN (fallback)", "lat": -29.35, "lon": 29.98}
 
-    # Step 2: Fetch YR.no (PRIMARY - ECMWF-based)
+    # Step 2: Fetch Open-Meteo ECMWF (PRIMARY - true hourly data)
+    om_data = None
+    try:
+        om_raw = fetch_open_meteo_ecmwf(location["lat"], location["lon"])
+        if om_raw:
+            om_data = normalize_open_meteo(om_raw)
+            print(f"[INFO] ✓ Open-Meteo (ECMWF IFS HRES) fetched")
+    except Exception as e:
+        print(f"[WARN] Open-Meteo ECMWF failed: {e}")
+
+    # Step 3: Fetch YR.no (SECONDARY - fallback, 6-hourly beyond 48h)
     yr_data = None
+    if not om_data:
+        print(f"[INFO] Open-Meteo unavailable, trying YR.no...")
     try:
         yr_raw = fetch_yr_no(location["lat"], location["lon"])
         yr_data = normalize_yr_no(yr_raw, location["lat"], location["lon"])
         print(f"[INFO] ✓ YR.no (MET Norway) fetched")
+        if not om_data:
+            om_data = yr_data  # Use as primary
     except Exception as e:
         print(f"[WARN] YR.no failed: {e}")
-
-    # Step 3: Fetch Open-Meteo ECMWF (SECONDARY)
-    om_data = None
-    if not yr_data:
-        print(f"[INFO] YR.no unavailable, trying Open-Meteo ECMWF...")
-    om_raw = fetch_open_meteo_ecmwf(location["lat"], location["lon"])
-    if om_raw:
-        om_data = normalize_open_meteo(om_raw)
-        print(f"[INFO] ✓ Open-Meteo (ECMWF IFS HRES) fetched")
-        if not yr_data:
-            yr_data = om_data  # Use as primary
 
     # Step 4: Fetch Windy GFS (BACKUP)
     windy_data = None
     windy_api_key = get_windy_api_key()
-    if windy_api_key and yr_data:
+    if windy_api_key and om_data:
         windy_raw = fetch_windy_gfs(location["lat"], location["lon"], windy_api_key)
         if windy_raw:
             windy_data = normalize_windy_gfs(windy_raw)
             print(f"[INFO] ✓ Windy (GFS) fetched")
 
     # Ensure we have at least one source
-    if not yr_data:
+    if not om_data:
         print(f"[ERROR] All forecast sources failed")
         sys.exit(1)
 
     # Step 5: Check SAWS (qualitative)
     saws_status = fetch_saws_warnings()
 
-    # Step 6: Build message
-    message = build_message(yr_data, location, saws_status, windy_data)
+    # Step 6: Build message (use Open-Meteo as primary)
+    message = build_message(om_data, location, saws_status, windy_data)
     print(message)
 
     if not dry_run:
