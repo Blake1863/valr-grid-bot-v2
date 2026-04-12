@@ -1,56 +1,56 @@
 {
-  "BTCUSDTPERP": {
-    "cycle_count": 102748,
+  "SOLUSDTPERP": {
+    "cycle_count": 102789,
     "current_phase": 1,
     "maker_account": "CM1",
     "maker_side": "BUY",
-    "last_cycle_time": "2026-04-12T00:14:57.612390226+00:00",
-    "total_trades": 102748,
+    "last_cycle_time": "2026-04-12T00:19:59.564205718+00:00",
+    "total_trades": 102789,
     "external_fills": 0
   },
   "ETHUSDTPERP": {
-    "cycle_count": 102756,
+    "cycle_count": 102776,
     "current_phase": 0,
     "maker_account": "CM1",
     "maker_side": "BUY",
-    "last_cycle_time": "2026-04-12T00:14:57.623902144+00:00",
-    "total_trades": 102756,
-    "external_fills": 0
-  },
-  "DOGEUSDTPERP": {
-    "cycle_count": 102750,
-    "current_phase": 0,
-    "maker_account": "CM1",
-    "maker_side": "BUY",
-    "last_cycle_time": "2026-04-12T00:14:57.635308930+00:00",
-    "total_trades": 102750,
+    "last_cycle_time": "2026-04-12T00:19:59.595976137+00:00",
+    "total_trades": 102776,
     "external_fills": 0
   },
   "XRPUSDTPERP": {
-    "cycle_count": 102740,
-    "current_phase": 0,
+    "cycle_count": 102760,
+    "current_phase": 1,
     "maker_account": "CM1",
     "maker_side": "BUY",
-    "last_cycle_time": "2026-04-12T00:14:57.600650450+00:00",
-    "total_trades": 102740,
+    "last_cycle_time": "2026-04-12T00:19:59.574648955+00:00",
+    "total_trades": 102760,
     "external_fills": 0
   },
-  "SOLUSDTPERP": {
-    "cycle_count": 102769,
+  "DOGEUSDTPERP": {
+    "cycle_count": 102770,
     "current_phase": 0,
     "maker_account": "CM1",
     "maker_side": "BUY",
-    "last_cycle_time": "2026-04-12T00:14:57.589176091+00:00",
-    "total_trades": 102769,
+    "last_cycle_time": "2026-04-12T00:19:59.606655788+00:00",
+    "total_trades": 102770,
+    "external_fills": 0
+  },
+  "BTCUSDTPERP": {
+    "cycle_count": 102768,
+    "current_phase": 0,
+    "maker_account": "CM1",
+    "maker_side": "BUY",
+    "last_cycle_time": "2026-04-12T00:19:59.585686465+00:00",
+    "total_trades": 102768,
     "external_fills": 0
   },
   "AVAXUSDTPERP": {
-    "cycle_count": 102733,
-    "current_phase": 0,
+    "cycle_count": 102753,
+    "current_phase": 1,
     "maker_account": "CM1",
     "maker_side": "BUY",
-    "last_cycle_time": "2026-04-12T00:14:57.577796811+00:00",
-    "total_trades": 102733,
+    "last_cycle_time": "2026-04-12T00:19:59.552900342+00:00",
+    "total_trades": 102753,
     "external_fills": 0
   }
 }
