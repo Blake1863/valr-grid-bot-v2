@@ -1,56 +1,56 @@
 {
-  "DOGEUSDTPERP": {
-    "cycle_count": 110308,
-    "current_phase": 1,
-    "maker_account": "CM1",
-    "maker_side": "BUY",
-    "last_cycle_time": "2026-04-13T08:05:01.911887203+00:00",
-    "total_trades": 110308,
-    "external_fills": 0
-  },
-  "XRPUSDTPERP": {
-    "cycle_count": 110296,
-    "current_phase": 1,
-    "maker_account": "CM1",
-    "maker_side": "BUY",
-    "last_cycle_time": "2026-04-13T08:05:01.845730656+00:00",
-    "total_trades": 110296,
-    "external_fills": 0
-  },
   "BTCUSDTPERP": {
-    "cycle_count": 110305,
-    "current_phase": 0,
-    "maker_account": "CM1",
-    "maker_side": "BUY",
-    "last_cycle_time": "2026-04-13T08:05:01.864241721+00:00",
-    "total_trades": 110305,
-    "external_fills": 0
-  },
-  "SOLUSDTPERP": {
     "cycle_count": 110324,
     "current_phase": 0,
     "maker_account": "CM1",
     "maker_side": "BUY",
-    "last_cycle_time": "2026-04-13T08:05:01.825589081+00:00",
+    "last_cycle_time": "2026-04-13T08:09:48.942007875+00:00",
     "total_trades": 110324,
     "external_fills": 0
   },
-  "AVAXUSDTPERP": {
-    "cycle_count": 110287,
-    "current_phase": 0,
-    "maker_account": "CM1",
-    "maker_side": "BUY",
-    "last_cycle_time": "2026-04-13T08:05:01.804284316+00:00",
-    "total_trades": 110287,
-    "external_fills": 0
-  },
-  "ETHUSDTPERP": {
-    "cycle_count": 110313,
+  "SOLUSDTPERP": {
+    "cycle_count": 110343,
     "current_phase": 1,
     "maker_account": "CM1",
     "maker_side": "BUY",
-    "last_cycle_time": "2026-04-13T08:05:01.887053658+00:00",
-    "total_trades": 110313,
+    "last_cycle_time": "2026-04-13T08:09:48.915921346+00:00",
+    "total_trades": 110343,
+    "external_fills": 0
+  },
+  "AVAXUSDTPERP": {
+    "cycle_count": 110306,
+    "current_phase": 0,
+    "maker_account": "CM1",
+    "maker_side": "BUY",
+    "last_cycle_time": "2026-04-13T08:09:48.902019007+00:00",
+    "total_trades": 110306,
+    "external_fills": 0
+  },
+  "ETHUSDTPERP": {
+    "cycle_count": 110332,
+    "current_phase": 1,
+    "maker_account": "CM1",
+    "maker_side": "BUY",
+    "last_cycle_time": "2026-04-13T08:09:48.955671517+00:00",
+    "total_trades": 110332,
+    "external_fills": 0
+  },
+  "DOGEUSDTPERP": {
+    "cycle_count": 110327,
+    "current_phase": 1,
+    "maker_account": "CM1",
+    "maker_side": "BUY",
+    "last_cycle_time": "2026-04-13T08:09:48.969143174+00:00",
+    "total_trades": 110327,
+    "external_fills": 0
+  },
+  "XRPUSDTPERP": {
+    "cycle_count": 110315,
+    "current_phase": 1,
+    "maker_account": "CM1",
+    "maker_side": "BUY",
+    "last_cycle_time": "2026-04-13T08:09:48.929064549+00:00",
+    "total_trades": 110315,
     "external_fills": 0
   }
 }
