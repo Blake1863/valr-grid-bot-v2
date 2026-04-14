@@ -27,7 +27,7 @@ CMS1_ID = "1483815480334401536"
 CMS2_ID = "1483815498551132160"
 
 # Minimum balance per quote asset (USD equivalent)
-MIN_BALANCE_USD = 5.0
+MIN_BALANCE_USD = 20.0  # Floor - keep at least this much
 TARGET_BALANCE_USD = 50.0
 
 # Minimum base asset inventory (cycles worth)
