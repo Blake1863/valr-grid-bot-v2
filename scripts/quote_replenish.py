@@ -98,12 +98,14 @@ def get_balances(subaccount_id):
 
 def get_price_and_tick(pair):
     """Get current price and tick size from public orderbook/pair info."""
+    # Use hardcoded tick sizes (API calls often fail)
+    tick = TICK_SIZES.get(pair, 0.01)
+    
+    # Try to get real prices from API
     try:
         req = urllib.request.Request(f"https://api.valr.com/v1/public/{pair}")
         with urllib.request.urlopen(req, timeout=10) as response:
             data = json.loads(response.read().decode())
-            tick_str = data.get('tickSize', '0.01')
-            tick = float(tick_str)
             bids = data.get('Bids', data.get('bids', []))
             asks = data.get('Asks', data.get('asks', []))
             bid_price = float(bids[0]['price']) if bids else None
@@ -112,23 +114,21 @@ def get_price_and_tick(pair):
             return bid_price, ask_price, mid_price, tick
     except:
         pass
+    
+    # Fallback to estimated prices
     price = USD_PRICES.get(pair.replace('USDT', '').replace('USDC', ''), 1.0)
-    if price >= 100:
-        tick = 0.01
-    elif price >= 1:
-        tick = 0.001
-    else:
-        tick = 0.0001
     return None, None, price, tick
 
 def place_limit_order(subaccount_id, pair, side, quantity, price, time_in_force="GTC"):
     """Place limit order via REST API."""
     path = "/v1/orders/limit"
+    # Format price to avoid floating point issues - use 8 decimal places max
+    price_str = f"{price:.8f}".rstrip('0').rstrip('.')
     body_dict = {
         "pair": pair,
         "side": side,
         "quantity": f"{quantity:.8f}",
-        "price": f"{price}",
+        "price": price_str,
         "timeInForce": time_in_force,
         "customerOrderId": f"replenish-{pair}-{side}-{int(time.time())}"
     }
@@ -310,10 +310,13 @@ def main():
                         # Use VERY aggressive pricing for sells - must be below bid to fill
                         # IOC sells need to hit existing bids, so price 2-3% below bid
                         if bid:
-                            sell_price = round((bid * 0.97) / tick) * tick
+                            # Avoid floating point errors: calculate in integer ticks
+                            ticks = int((bid * 0.97) / tick + 0.5)
+                            sell_price = ticks * tick
                             print(f"         (Bid: ${bid:.4f}, Selling @ ${sell_price:.4f} = {((sell_price/bid)-1)*100:.1f}% below bid)")
                         else:
-                            sell_price = round((mid * 0.97) / tick) * tick
+                            ticks = int((mid * 0.97) / tick + 0.5)
+                            sell_price = ticks * tick
                         
                         print(f"      Selling {sell_qty:.6f} {asset['currency']} @ ${sell_price:.4f} via {pair}...")
                         success, result = place_limit_order(subaccount_id, pair, "SELL", sell_qty, sell_price, "IOC")
@@ -362,10 +365,13 @@ def main():
                     # Use VERY aggressive pricing for buys - must be above ask to fill
                     # IOC buys need to hit existing asks, so price 2-3% above ask
                     if ask:
-                        buy_price = round((ask * 1.03) / tick) * tick
+                        # Avoid floating point errors: calculate in integer ticks
+                        ticks = int((ask * 1.03) / tick + 0.5)
+                        buy_price = ticks * tick
                         print(f"         (Ask: ${ask:.4f}, Buying @ ${buy_price:.4f} = {((buy_price/ask)-1)*100:.1f}% above ask)")
                     else:
-                        buy_price = round((mid * 1.03) / tick) * tick
+                        ticks = int((mid * 1.03) / tick + 0.5)
+                        buy_price = ticks * tick
                     
                     print(f"      Buying {buy_qty:.6f} {shortage['currency']} @ ${buy_price:.4f} via {pair}...")
                     success, result = place_limit_order(subaccount_id, pair, "BUY", buy_qty, buy_price, "IOC")
