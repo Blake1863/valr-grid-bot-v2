@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-Quote Currency Replenisher — sells base assets to replenish USDT/USDC balances.
+Quote/Base Currency Replenisher — manages both USDT and base asset balances.
 
 Quote assets: USDT, USDC only
 Base assets: Everything else (including EURC, USDPC)
 
-Triggers when USDT or USDC drop below $5. Sells base assets to replenish.
+Triggers when:
+- USDT/USDC drop below $5 → sells base assets to replenish
+- Base assets too low for grid → buys more with USDT
 """
 
 import sys
@@ -34,6 +36,10 @@ CMS2_ID = "1483815498551132160"
 MIN_BALANCE_USD = 5.0
 TARGET_BALANCE_USD = 50.0  # Replenish to this level
 
+# Minimum base asset inventory (cycles worth)
+MIN_BASE_CYCLES = 5  # Keep at least 5 cycles of inventory
+TARGET_BASE_CYCLES = 15  # Target this many cycles
+
 # Approximate USD prices
 USD_PRICES = {
     'USDT': 1.0, 'USDC': 1.0, 'USDPC': 1.0, 'EURC': 1.08,
@@ -41,6 +47,30 @@ USD_PRICES = {
     'BITGOLD': 2000.0, 'MSTRX': 130.0, 'TSLAX': 350.0,
     'HOODX': 70.0, 'CRCLX': 100.0, 'COINX': 250.0, 'NVDAX': 120.0,
     'AVAX': 20.0, 'BNB': 600.0
+}
+
+# Enabled pairs from CM-Bot-Spot config
+ENABLED_PAIRS = [
+    "EURCUSDC", "JUPUSDT", "TRUMPUSDT", "SPYXUSDT", "VALR10USDT",
+    "BITGOLDUSDT", "MSTRXUSDT", "TSLAXUSDT", "HOODXUSDT", "CRCLXUSDT",
+    "COINXUSDT", "NVDAXUSDT", "USDPCUSDT"
+]
+
+# Estimated quantity per cycle (from bot config/observations)
+QUANTITY_PER_CYCLE = {
+    'EURC': 0.85, 'JUP': 5.0, 'TRUMP': 1.0, 'SPYX': 0.003, 'VALR10': 0.01,
+    'BITGOLD': 0.003, 'MSTRX': 0.008, 'TSLAX': 0.004, 'HOODX': 0.013,
+    'CRCLX': 0.015, 'COINX': 0.006, 'NVDAX': 0.006, 'USDPC': 1.0,
+    'AVAX': 0.05, 'BNB': 0.003
+}
+
+# Tick sizes for pairs (from VALR API)
+TICK_SIZES = {
+    'TRUMPUSDT': 0.001, 'SPYXUSDT': 0.01, 'VALR10USDT': 0.01,
+    'BITGOLDUSDT': 0.1, 'MSTRXUSDT': 0.01, 'TSLAXUSDT': 0.01,
+    'HOODXUSDT': 0.01, 'CRCLXUSDT': 0.01, 'COINXUSDT': 0.01,
+    'NVDAXUSDT': 0.01, 'JUPUSDT': 0.0001, 'AVAXUSDT': 0.001,
+    'BNBUSDT': 0.01, 'EURCUSDC': 0.0001, 'USDPCUSDT': 0.01
 }
 
 def timestamp_ms():
@@ -75,9 +105,11 @@ def get_price_and_tick(pair):
             tick_str = data.get('tickSize', '0.01')
             tick = float(tick_str)
             bids = data.get('Bids', data.get('bids', []))
-            if bids:
-                price = float(bids[0]['price'])
-                return price, tick
+            asks = data.get('Asks', data.get('asks', []))
+            bid_price = float(bids[0]['price']) if bids else None
+            ask_price = float(asks[0]['price']) if asks else None
+            mid_price = (bid_price + ask_price) / 2 if bid_price and ask_price else None
+            return bid_price, ask_price, mid_price, tick
     except:
         pass
     price = USD_PRICES.get(pair.replace('USDT', '').replace('USDC', ''), 1.0)
@@ -87,18 +119,18 @@ def get_price_and_tick(pair):
         tick = 0.001
     else:
         tick = 0.0001
-    return price, tick
+    return None, None, price, tick
 
-def place_sell_order(subaccount_id, pair, quantity, price):
-    """Place IOC sell order via REST API."""
+def place_limit_order(subaccount_id, pair, side, quantity, price, time_in_force="GTC"):
+    """Place limit order via REST API."""
     path = "/v1/orders/limit"
     body_dict = {
         "pair": pair,
-        "side": "SELL",
+        "side": side,
         "quantity": f"{quantity:.8f}",
         "price": f"{price}",
-        "timeInForce": "IOC",
-        "customerOrderId": f"replenish-{pair}-{int(time.time())}"
+        "timeInForce": time_in_force,
+        "customerOrderId": f"replenish-{pair}-{side}-{int(time.time())}"
     }
     body = json.dumps(body_dict)
     
@@ -121,15 +153,10 @@ def place_sell_order(subaccount_id, pair, quantity, price):
         return False, e.read().decode()[:200]
 
 def get_base_assets(balances):
-    """Get list of base assets (non-quote) with available balances.
-    
-    Quote assets are: USDT, USDC only
-    Everything else (EURC, USDPC, etc.) is a base asset that can be sold.
-    """
+    """Get list of base assets (non-quote) with available balances."""
     assets = []
     for bal in balances:
         curr = bal['currency']
-        # Only USDT and USDC are quote assets - everything else is sellable base
         if curr not in ['USDT', 'USDC', 'ZAR']:
             avail = float(bal.get('available', 0))
             if avail > 0.0001:
@@ -149,21 +176,66 @@ def get_quote_balance_usd(balances, currency):
 
 def get_trading_pair(currency):
     """Determine the correct trading pair for a base asset."""
-    # EURC trades against USDC
     if currency == 'EURC':
         return 'EURCUSDC'
-    # USDPC trades against USDT
     elif currency == 'USDPC':
         return 'USDPCUSDT'
-    # Everything else trades against USDT
     else:
         return f"{currency}USDT"
 
+def get_base_currency(pair):
+    """Extract base currency from trading pair."""
+    if pair.endswith('USDC'):
+        return pair.replace('USDC', '')
+    elif pair.endswith('USDT'):
+        return pair.replace('USDT', '')
+    return pair
+
+def analyze_base_inventory(balances, account_name):
+    """Analyze base asset inventory and identify shortages."""
+    print(f"\n📦 {account_name} - Base Asset Inventory Check")
+    print(f"{'='*80}")
+    
+    shortages = []
+    
+    for pair in ENABLED_PAIRS:
+        base_curr = get_base_currency(pair)
+        qty_per_cycle = QUANTITY_PER_CYCLE.get(base_curr, 0.01)
+        min_qty = qty_per_cycle * MIN_BASE_CYCLES
+        target_qty = qty_per_cycle * TARGET_BASE_CYCLES
+        
+        # Find balance
+        avail = 0
+        for bal in balances:
+            if bal['currency'] == base_curr:
+                avail = float(bal.get('available', 0))
+                break
+        
+        cycles_available = avail / qty_per_cycle if qty_per_cycle > 0 else 0
+        
+        if cycles_available < MIN_BASE_CYCLES:
+            shortfall_qty = target_qty - avail
+            shortages.append({
+                'currency': base_curr,
+                'pair': pair,
+                'available': avail,
+                'min_needed': min_qty,
+                'target_qty': target_qty,
+                'shortfall': shortfall_qty,
+                'cycles': cycles_available,
+                'price_usd': USD_PRICES.get(base_curr, 1.0)
+            })
+            status = "⚠️ LOW" if cycles_available < MIN_BASE_CYCLES else "✅"
+            print(f"   {status} {base_curr:>10}: {avail:>12.6f} ({cycles_available:>5.1f} cycles) - need {min_qty:.6f} min")
+        else:
+            print(f"   ✅ {base_curr:>10}: {avail:>12.6f} ({cycles_available:>5.1f} cycles)")
+    
+    return shortages
+
 def main():
     print("="*80)
-    print("💰 Quote Currency Replenisher")
-    print("   Quote assets: USDT, USDC only")
-    print("   Base assets: Everything else (EURC, USDPC, tokens)")
+    print("💰 Quote/Base Currency Replenisher")
+    print("   Quote assets: USDT, USDC | Base assets: Everything else")
     print("="*80)
     
     # Fetch balances
@@ -178,92 +250,136 @@ def main():
     
     for account_name, subaccount_id, balances in accounts:
         print(f"\n{'='*80}")
-        print(f"📋 {account_name} - Quote Asset Check")
+        print(f"📋 {account_name}")
         print(f"{'='*80}")
         
-        # Check USDT and USDC only (the real quote assets)
+        # === CHECK QUOTE ASSETS ===
         usdt_balance = get_quote_balance_usd(balances, 'USDT')
         usdc_balance = get_quote_balance_usd(balances, 'USDC')
         
         usdt_low = usdt_balance < MIN_BALANCE_USD
         usdc_low = usdc_balance < MIN_BALANCE_USD
         
+        print(f"\n💵 Quote Assets:")
         print(f"   {'⚠️ LOW' if usdt_low else '✅ OK'} USDT: ${usdt_balance:>8.2f} (min: ${MIN_BALANCE_USD:.2f})")
         print(f"   {'⚠️ LOW' if usdc_low else '✅ OK'} USDC: ${usdc_balance:>8.2f} (min: ${MIN_BALANCE_USD:.2f})")
         
-        if not usdt_low and not usdc_low:
-            print(f"   ✅ Both quote assets above minimum")
-            continue
-        
-        # Calculate shortfall
-        shortfall = 0.0
+        # Calculate USDT shortfall
+        usdt_shortfall = 0.0
         if usdt_low:
-            shortfall += TARGET_BALANCE_USD - usdt_balance
-        if usdc_low:
-            shortfall += TARGET_BALANCE_USD - usdc_balance
+            usdt_shortfall = TARGET_BALANCE_USD - usdt_balance
+            print(f"   → USDT shortfall: ${usdt_shortfall:.2f}")
         
-        print(f"\n🔄 Replenishment needed - Shortfall: ${shortfall:.2f}")
+        # === CHECK BASE ASSETS ===
+        shortages = analyze_base_inventory(balances, account_name)
         
-        # Get available base assets
-        base_assets = get_base_assets(balances)
-        if not base_assets:
-            print(f"   ⏭️  No base assets to sell")
-            continue
+        # === REPLENISHMENT ACTIONS ===
+        print(f"\n🔄 Replenishment Actions:")
         
-        # Sort by USD value (sell largest holdings first)
-        base_assets.sort(key=lambda x: x['available'] * x['price_usd'], reverse=True)
-        
-        print(f"\n   Available base assets to sell:")
-        for asset in base_assets[:10]:
-            value = asset['available'] * asset['price_usd']
-            pair = get_trading_pair(asset['currency'])
-            print(f"      {asset['currency']:>10}: {asset['available']:>12.6f} @ ${asset['price_usd']:>8.4f} = ${value:>8.2f} → {pair}")
-        
-        # Calculate how much to sell of each asset
-        remaining_shortfall = shortfall
-        sells_to_execute = []
-        
-        for asset in base_assets:
-            if remaining_shortfall <= 0:
-                break
-            
-            asset_value = asset['available'] * asset['price_usd']
-            
-            # Keep 20% reserve
-            sell_pct = min(0.80, remaining_shortfall / asset_value) if asset_value > 0 else 0
-            sell_qty = asset['available'] * sell_pct
-            sell_value = sell_qty * asset['price_usd']
-            
-            if sell_value >= 0.50:  # Minimum $0.50 per sell
-                pair = get_trading_pair(asset['currency'])
-                sells_to_execute.append((pair, sell_qty, asset['price_usd']))
-                remaining_shortfall -= sell_value
-                print(f"   → Sell {sell_qty:.6f} {asset['currency']} (~${sell_value:.2f}) via {pair}")
-        
-        if not sells_to_execute:
-            print(f"   ⏭️  No sells to execute (assets too small)")
-            continue
-        
-        # Execute sells
-        print(f"\n   Executing {len(sells_to_execute)} sell orders...")
-        for pair, qty, est_price in sells_to_execute:
-            price, tick = get_price_and_tick(pair)
-            aggressive_price = price * 0.98
-            aggressive_price = round(aggressive_price / tick) * tick
-            
-            display_currency = pair.replace('USDT', '').replace('USDC', '')
-            print(f"      Selling {qty:.6f} {display_currency} @ ~${aggressive_price:.4f} (tick: {tick})...")
-            success, result = place_sell_order(subaccount_id, pair, qty, aggressive_price)
-            if success:
-                print(f"         ✅ Order {result[:24]} placed")
+        # 1. If USDT is low, sell base assets
+        if usdt_shortfall > 0:
+            print(f"\n   💸 USDT low - selling base assets...")
+            base_assets = get_base_assets(balances)
+            if not base_assets:
+                print(f"      ⏭️  No base assets to sell")
             else:
-                print(f"         ❌ Failed: {result}")
-            time.sleep(0.5)
+                # Sort by USD value, exclude shortage items if possible
+                base_assets.sort(key=lambda x: x['available'] * x['price_usd'], reverse=True)
+                
+                # Find assets that aren't in shortage
+                shortage_currencies = set(s['currency'] for s in shortages)
+                sellable = [a for a in base_assets if a['currency'] not in shortage_currencies]
+                
+                # If no non-shortage assets, use largest holdings anyway
+                if not sellable:
+                    sellable = base_assets[:3]  # Top 3 largest
+                
+                remaining = usdt_shortfall
+                for asset in sellable:
+                    if remaining <= 0:
+                        break
+                    asset_value = asset['available'] * asset['price_usd']
+                    # Keep 50% reserve when selling for USDT
+                    sell_pct = min(0.50, remaining / asset_value) if asset_value > 0 else 0
+                    sell_qty = asset['available'] * sell_pct
+                    sell_value = sell_qty * asset['price_usd']
+                    
+                    if sell_value >= 0.50:
+                        pair = get_trading_pair(asset['currency'])
+                        bid, ask, mid, tick = get_price_and_tick(pair)
+                        # Use VERY aggressive pricing for sells - must be below bid to fill
+                        # IOC sells need to hit existing bids, so price 2-3% below bid
+                        if bid:
+                            sell_price = round((bid * 0.97) / tick) * tick
+                            print(f"         (Bid: ${bid:.4f}, Selling @ ${sell_price:.4f} = {((sell_price/bid)-1)*100:.1f}% below bid)")
+                        else:
+                            sell_price = round((mid * 0.97) / tick) * tick
+                        
+                        print(f"      Selling {sell_qty:.6f} {asset['currency']} @ ${sell_price:.4f} via {pair}...")
+                        success, result = place_limit_order(subaccount_id, pair, "SELL", sell_qty, sell_price, "IOC")
+                        if success:
+                            print(f"         ✅ Order {result[:24]} placed")
+                            remaining -= sell_value
+                        else:
+                            print(f"         ❌ Failed: {result}")
+                        time.sleep(0.3)
         
-        print(f"\n   {account_name} replenishment complete")
+        # 2. If base assets are low, buy them with USDT
+        if shortages:
+            print(f"\n   📦 Base assets low - buying inventory...")
+            
+            # Calculate total USDT needed
+            total_needed = sum(s['shortfall'] * s['price_usd'] for s in shortages)
+            available_usdt = usdt_balance
+            
+            # Only buy if we have enough USDT (keep min balance)
+            usable_usdt = max(0, available_usdt - MIN_BALANCE_USD)
+            
+            if usable_usdt < 5:
+                print(f"      ⏭️  Insufficient USDT (${available_usdt:.2f}) - need ${total_needed:.2f}")
+            else:
+                print(f"      Available USDT: ${usable_usdt:.2f} | Need: ${total_needed:.2f}")
+                
+                # Prioritize by severity (lowest cycles first)
+                shortages.sort(key=lambda x: x['cycles'])
+                
+                remaining_usdt = usable_usdt
+                for shortage in shortages:
+                    if remaining_usdt <= 0:
+                        break
+                    
+                    buy_qty = shortage['shortfall']
+                    buy_value = buy_qty * shortage['price_usd']
+                    
+                    # Cap purchase to available USDT
+                    if buy_value > remaining_usdt:
+                        buy_qty = remaining_usdt / shortage['price_usd']
+                        buy_value = remaining_usdt
+                    
+                    pair = shortage['pair']
+                    bid, ask, mid, tick = get_price_and_tick(pair)
+                    
+                    # Use VERY aggressive pricing for buys - must be above ask to fill
+                    # IOC buys need to hit existing asks, so price 2-3% above ask
+                    if ask:
+                        buy_price = round((ask * 1.03) / tick) * tick
+                        print(f"         (Ask: ${ask:.4f}, Buying @ ${buy_price:.4f} = {((buy_price/ask)-1)*100:.1f}% above ask)")
+                    else:
+                        buy_price = round((mid * 1.03) / tick) * tick
+                    
+                    print(f"      Buying {buy_qty:.6f} {shortage['currency']} @ ${buy_price:.4f} via {pair}...")
+                    success, result = place_limit_order(subaccount_id, pair, "BUY", buy_qty, buy_price, "IOC")
+                    if success:
+                        print(f"         ✅ Order {result[:24]} placed")
+                        remaining_usdt -= buy_value
+                    else:
+                        print(f"         ❌ Failed: {result}")
+                    time.sleep(0.3)
+        
+        print(f"\n   ✅ {account_name} replenishment pass complete")
     
     print("\n" + "="*80)
-    print("✅ Replenishment pass complete")
+    print("✅ Full replenishment pass complete")
     print("="*80)
 
 if __name__ == "__main__":
