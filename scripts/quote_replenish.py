@@ -274,12 +274,30 @@ def main():
             else:
                 base_assets.sort(key=lambda x: x['available'] * x['price_usd'], reverse=True)
                 
-                # Exclude shortage items if possible
+                # Exclude shortage items AND assets needed for enabled pairs
                 shortage_currencies = set(s['currency'] for s in shortages)
-                sellable = [a for a in base_assets if a['currency'] not in shortage_currencies]
                 
+                # Get base currencies from enabled pairs - these are working inventory
+                enabled_base_currencies = set()
+                for pair in ENABLED_PAIRS:
+                    base = get_base_currency(pair)
+                    enabled_base_currencies.add(base)
+                
+                # Only sell assets that are:
+                # 1. Not in shortage
+                # 2. NOT part of any enabled trading pair (true excess)
+                sellable = [a for a in base_assets 
+                           if a['currency'] not in shortage_currencies 
+                           and a['currency'] not in enabled_base_currencies]
+                
+                # If no true excess, sell from enabled pairs but keep minimum inventory
                 if not sellable:
-                    sellable = base_assets[:3]
+                    # Sort by value and exclude items below 10 cycles
+                    sellable = [a for a in base_assets 
+                               if a['currency'] not in shortage_currencies
+                               and (a['available'] / max(QUANTITY_PER_CYCLE.get(a['currency'], 0.01), 0.01)) >= 10]
+                    sellable.sort(key=lambda x: x['available'] * x['price_usd'], reverse=True)
+                    sellable = sellable[:3]
                 
                 remaining = usdt_shortfall
                 for asset in sellable:
