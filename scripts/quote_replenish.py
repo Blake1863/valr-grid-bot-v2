@@ -94,21 +94,26 @@ def get_market_prices():
         print(f"   ⚠️  Could not fetch market summary: {e}")
         return {}
 
-def place_simple_order(subaccount_id, pair, side, pay_amount, pay_currency):
-    """Place SIMPLE order (market execution at VALR quoted price).
+def place_market_order(subaccount_id, pair, side, amount, is_base_amount=True):
+    """Place MARKET order at best available price.
     
-    SIMPLE orders:
-    - Execute immediately at VALR's quoted price
-    - FOK (Fill or Kill) - fill completely or fail
-    - Widest pair coverage
-    - No tick size calculations needed
+    MARKET orders:
+    - Execute immediately at best available price
+    - IOC (Immediate or Cancel) - partial fills allowed
+    - Use baseAmount for SELL, quoteAmount for BUY
     """
-    path = f"/v1/simple/{pair}/order"
+    path = "/v2/orders/market"
     body_dict = {
         "side": side,
-        "payInCurrency": pay_currency,
-        "payAmount": f"{pay_amount:.8f}",
+        "pair": pair,
     }
+    # For SELL: specify baseAmount (the asset you're selling)
+    # For BUY: specify quoteAmount (the USDT you're spending)
+    if is_base_amount:
+        body_dict["baseAmount"] = f"{amount:.8f}"
+    else:
+        body_dict["quoteAmount"] = f"{amount:.8f}"
+    
     body = json.dumps(body_dict)
     
     timestamp, signature = sign_request("POST", path, body, subaccount_id)
@@ -210,7 +215,7 @@ def analyze_base_inventory(balances, account_name, market_prices):
 def main():
     print("="*80)
     print("💰 Quote/Base Currency Replenisher")
-    print("   Using SIMPLE orders for market execution")
+    print("   Using MARKET orders for market execution")
     print("="*80)
     
     # Fetch market prices first
@@ -288,9 +293,9 @@ def main():
                     
                     if sell_value >= 0.50:
                         pair = get_trading_pair(asset['currency'])
-                        # For SIMPLE sell: payInCurrency = base asset
+                        # For MARKET sell: use baseAmount (selling the base asset)
                         print(f"      Selling {sell_qty:.6f} {asset['currency']} via {pair}...")
-                        success, result = place_simple_order(subaccount_id, pair, "SELL", sell_qty, asset['currency'])
+                        success, result = place_market_order(subaccount_id, pair, "SELL", sell_qty, is_base_amount=True)
                         if success:
                             print(f"         ✅ Order {result[:24]} placed")
                             remaining -= sell_value
@@ -327,9 +332,9 @@ def main():
                         buy_value = remaining_usdt
                     
                     pair = shortage['pair']
-                    # For SIMPLE buy: payInCurrency = USDT (quote currency)
-                    print(f"      Buying {buy_qty:.6f} {shortage['currency']} via {pair}...")
-                    success, result = place_simple_order(subaccount_id, pair, "BUY", buy_value, "USDT")
+                    # For MARKET buy: use quoteAmount (spending USDT)
+                    print(f"      Buying {shortage['currency']} with ${buy_value:.2f} USDT via {pair}...")
+                    success, result = place_market_order(subaccount_id, pair, "BUY", buy_value, is_base_amount=False)
                     if success:
                         print(f"         ✅ Order {result[:24]} placed")
                         remaining_usdt -= buy_value
