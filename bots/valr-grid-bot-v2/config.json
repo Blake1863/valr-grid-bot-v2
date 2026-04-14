@@ -16,7 +16,7 @@
   "referencePriceSource": "mark_price",
   "leverage": 10,
   "postOnly": true,
-  "allowMargin": true,
+  "allowMargin": false,
   "cooldownAfterStopSecs": 300,
   "dryRun": false,
   "reconcileIntervalSecs": 60,
