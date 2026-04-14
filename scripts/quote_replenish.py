@@ -32,7 +32,7 @@ TARGET_BALANCE_USD = 50.0
 
 # Minimum base asset inventory (cycles worth)
 MIN_BASE_CYCLES = 5
-TARGET_BASE_CYCLES = 15
+TARGET_BASE_CYCLES = 10
 
 # Approximate USD prices (fallback only)
 USD_PRICES = {
@@ -164,6 +164,17 @@ def get_trading_pair(currency):
     else:
         return f"{currency}USDT"
 
+def get_quote_currency(pair):
+    """Get the quote currency for a trading pair."""
+    if pair.endswith('USDC'):
+        return 'USDC'
+    elif pair.endswith('USDT'):
+        return 'USDT'
+    elif pair.endswith('ZAR'):
+        return 'ZAR'
+    else:
+        return 'USDT'  # default
+
 def get_base_currency(pair):
     """Extract base currency from trading pair."""
     if pair.endswith('USDC'):
@@ -259,6 +270,11 @@ def main():
             usdt_shortfall = TARGET_BALANCE_USD - usdt_balance
             print(f"   → USDT shortfall: ${usdt_shortfall:.2f}")
         
+        usdc_shortfall = 0.0
+        if usdc_low:
+            usdc_shortfall = TARGET_BALANCE_USD - usdc_balance
+            print(f"   → USDC shortfall: ${usdc_shortfall:.2f}")
+        
         # === CHECK BASE ASSETS ===
         shortages = analyze_base_inventory(balances, account_name, market_prices)
         
@@ -274,30 +290,26 @@ def main():
             else:
                 base_assets.sort(key=lambda x: x['available'] * x['price_usd'], reverse=True)
                 
-                # Exclude shortage items AND assets needed for enabled pairs
+                # Exclude shortage items
                 shortage_currencies = set(s['currency'] for s in shortages)
                 
-                # Get base currencies from enabled pairs - these are working inventory
-                enabled_base_currencies = set()
-                for pair in ENABLED_PAIRS:
-                    base = get_base_currency(pair)
-                    enabled_base_currencies.add(base)
+                # Sell from enabled pairs that have EXCESS (above target cycles)
+                # This is the whole point - rotate surplus inventory for USDT
+                sellable = []
+                for asset in base_assets:
+                    if asset['currency'] in shortage_currencies:
+                        continue
+                    
+                    # Calculate cycles
+                    qty_per_cycle = QUANTITY_PER_CYCLE.get(asset['currency'], 0.01)
+                    cycles = asset['available'] / qty_per_cycle if qty_per_cycle > 0 else 0
+                    
+                    # Only sell if above target (we have surplus)
+                    if cycles >= TARGET_BASE_CYCLES:
+                        sellable.append({**asset, 'cycles': cycles})
                 
-                # Only sell assets that are:
-                # 1. Not in shortage
-                # 2. NOT part of any enabled trading pair (true excess)
-                sellable = [a for a in base_assets 
-                           if a['currency'] not in shortage_currencies 
-                           and a['currency'] not in enabled_base_currencies]
-                
-                # If no true excess, sell from enabled pairs but keep minimum inventory
-                if not sellable:
-                    # Sort by value and exclude items below 10 cycles
-                    sellable = [a for a in base_assets 
-                               if a['currency'] not in shortage_currencies
-                               and (a['available'] / max(QUANTITY_PER_CYCLE.get(a['currency'], 0.01), 0.01)) >= 10]
-                    sellable.sort(key=lambda x: x['available'] * x['price_usd'], reverse=True)
-                    sellable = sellable[:3]
+                # Sort by value (sell largest surplus first)
+                sellable.sort(key=lambda x: x['available'] * x['price_usd'], reverse=True)
                 
                 remaining = usdt_shortfall
                 for asset in sellable:
@@ -321,38 +333,73 @@ def main():
                             print(f"         ❌ Failed: {result}")
                         time.sleep(0.3)
         
-        # 2. If base assets are low, buy them with USDT
+        # 2. If base assets are low, buy them with correct quote currency
         if shortages:
             print(f"\n   📦 Base assets low - buying inventory...")
             
-            total_needed = sum(s['shortfall'] * s['price_usd'] for s in shortages)
-            available_usdt = usdt_balance
+            # Separate shortages by quote currency needed
+            usdc_shortages = [s for s in shortages if s['pair'].endswith('USDC')]
+            usdt_shortages = [s for s in shortages if s['pair'].endswith('USDT')]
             
-            usable_usdt = max(0, available_usdt - MIN_BALANCE_USD)
+            # Process USDC purchases first (EURC etc)
+            if usdc_shortages:
+                total_usdc_needed = sum(s['shortfall'] * s['price_usd'] for s in usdc_shortages)
+                usable_usdc = max(0, usdc_balance - MIN_BALANCE_USD)
+                
+                if usable_usdc < 5:
+                    print(f"      ⏭️  Insufficient USDC (${usdc_balance:.2f}) - need ${total_usdc_needed:.2f}")
+                else:
+                    print(f"      Available USDC: ${usable_usdc:.2f} | Need: ${total_usdc_needed:.2f}")
+                    usdc_shortages.sort(key=lambda x: x['cycles'])
+                    
+                    remaining_usdc = usable_usdc
+                    for shortage in usdc_shortages:
+                        if remaining_usdc <= 0:
+                            break
+                        
+                        buy_qty = shortage['shortfall']
+                        buy_value = buy_qty * shortage['price_usd']
+                        
+                        if buy_value > remaining_usdc:
+                            buy_qty = remaining_usdc / shortage['price_usd']
+                            buy_value = remaining_usdc
+                        
+                        pair = shortage['pair']
+                        print(f"      Buying {shortage['currency']} with ${buy_value:.2f} USDC via {pair}...")
+                        success, result = place_market_order(subaccount_id, pair, "BUY", buy_value, is_base_amount=False)
+                        if success:
+                            print(f"         ✅ Order {result[:24]} placed")
+                            remaining_usdc -= buy_value
+                        else:
+                            print(f"         ❌ Failed: {result}")
+                        time.sleep(0.3)
             
-            if usable_usdt < 5:
-                print(f"      ⏭️  Insufficient USDT (${available_usdt:.2f}) - need ${total_needed:.2f}")
-            else:
-                print(f"      Available USDT: ${usable_usdt:.2f} | Need: ${total_needed:.2f}")
+            # Process USDT purchases
+            if usdt_shortages:
+                total_usdt_needed = sum(s['shortfall'] * s['price_usd'] for s in usdt_shortages)
+                usable_usdt = max(0, usdt_balance - MIN_BALANCE_USD)
                 
-                shortages.sort(key=lambda x: x['cycles'])
-                
-                remaining_usdt = usable_usdt
-                for shortage in shortages:
-                    if remaining_usdt <= 0:
-                        break
+                if usable_usdt < 5:
+                    print(f"      ⏭️  Insufficient USDT (${usdt_balance:.2f}) - need ${total_usdt_needed:.2f}")
+                else:
+                    print(f"      Available USDT: ${usable_usdt:.2f} | Need: ${total_usdt_needed:.2f}")
+                    usdt_shortages.sort(key=lambda x: x['cycles'])
                     
-                    buy_qty = shortage['shortfall']
-                    buy_value = buy_qty * shortage['price_usd']
-                    
-                    if buy_value > remaining_usdt:
-                        buy_qty = remaining_usdt / shortage['price_usd']
-                        buy_value = remaining_usdt
-                    
-                    pair = shortage['pair']
-                    # For MARKET buy: use quoteAmount (spending USDT)
-                    print(f"      Buying {shortage['currency']} with ${buy_value:.2f} USDT via {pair}...")
-                    success, result = place_market_order(subaccount_id, pair, "BUY", buy_value, is_base_amount=False)
+                    remaining_usdt = usable_usdt
+                    for shortage in usdt_shortages:
+                        if remaining_usdt <= 0:
+                            break
+                        
+                        buy_qty = shortage['shortfall']
+                        buy_value = buy_qty * shortage['price_usd']
+                        
+                        if buy_value > remaining_usdt:
+                            buy_qty = remaining_usdt / shortage['price_usd']
+                            buy_value = remaining_usdt
+                        
+                        pair = shortage['pair']
+                        print(f"      Buying {shortage['currency']} with ${buy_value:.2f} USDT via {pair}...")
+                        success, result = place_market_order(subaccount_id, pair, "BUY", buy_value, is_base_amount=False)
                     if success:
                         print(f"         ✅ Order {result[:24]} placed")
                         remaining_usdt -= buy_value
