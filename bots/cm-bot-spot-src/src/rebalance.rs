@@ -337,70 +337,23 @@ impl Rebalancer {
     }
 
     /// Detect and correct systemic imbalance where BOTH accounts have excess base asset.
-    /// Transfers can't fix this - we need to actually SELL base to get quote.
-    /// Returns true if a corrective sell was triggered.
+    /// 
+    /// ⚠️ DISABLED — This function was firing every cycle and placing market SELL orders
+    /// against external liquidity, causing rapid capital bleed (~1% spread loss per 15s).
+    /// The wash-trading bot naturally holds base assets; a 60% base threshold is normal
+    /// and does not require corrective market sells. Use internal transfers only.
+    /// 
+    /// Returns false always (disabled).
     pub async fn correct_base_asset_surplus(
         &self,
-        base_currency: &str,
-        quote_currency: &str,
-        pair_symbol: &str,
-        current_price: f64,
+        _base_currency: &str,
+        _quote_currency: &str,
+        _pair_symbol: &str,
+        _current_price: f64,
     ) -> bool {
-        let bal1 = match self.get_balances(self.cms1_id).await {
-            Ok(b) => b,
-            Err(e) => { eprintln!("[REBALANCE] Failed to fetch CMS1 balances: {}", e); return false; }
-        };
-        let bal2 = match self.get_balances(self.cms2_id).await {
-            Ok(b) => b,
-            Err(e) => { eprintln!("[REBALANCE] Failed to fetch CMS2 balances: {}", e); return false; }
-        };
-
-        let base1 = bal1.get(base_currency).copied().unwrap_or(0.0);
-        let base2 = bal2.get(base_currency).copied().unwrap_or(0.0);
-        let quote1 = bal1.get(quote_currency).copied().unwrap_or(0.0);
-        let quote2 = bal2.get(quote_currency).copied().unwrap_or(0.0);
-
-        let total_base = base1 + base2;
-        let total_quote = quote1 + quote2;
-
-        if total_base < 0.001 || total_quote < 0.001 {
-            return false; // No meaningful holdings
-        }
-
-        // Check if BOTH accounts are base-heavy (>60% base, <40% quote)
-        let cms1_base_pct = base1 / (base1 + quote1 / current_price + 0.0001);
-        let cms2_base_pct = base2 / (base2 + quote2 / current_price + 0.0001);
-
-        let both_base_heavy = cms1_base_pct > 0.60 && cms2_base_pct > 0.60;
-
-        if !both_base_heavy {
-            return false;
-        }
-
-        // Both accounts have too much base - need to SELL some
-        // Pick the account with more base surplus
-        let (sell_account, sell_id, sell_label, base_amt) = if base1 > base2 {
-            (self.cms1_id, self.cms1_id, "CMS1", base1)
-        } else {
-            (self.cms2_id, self.cms2_id, "CMS2", base2)
-        };
-
-        // Sell 50% of excess base (amount over 40% of total) - more aggressive
-        let target_base = total_base * 0.40;
-        let excess_base = base_amt - target_base;
-        let sell_qty = (excess_base * 0.50).min(base_amt * 0.40); // Max 40% of holdings
-
-        if sell_qty < 0.001 {
-            return false;
-        }
-
-        println!("[REBALANCE] 🔁 BOTH accounts base-heavy (CMS1={:.0}%, CMS2={:.0}%) → {} selling {:.4} {} @ {:.2} (target: {:.0}%)",
-            cms1_base_pct * 100.0, cms2_base_pct * 100.0, sell_label, sell_qty, base_currency, current_price, target_base / (base_amt + 0.0001) * 100.0);
-
-        // Place a market SELL order to convert base → quote
-        let _ = self.place_market_sell(pair_symbol, sell_qty, sell_id).await;
-
-        true
+        // DISABLED: was causing market sells against external liquidity every cycle.
+        // The rebalancer's background 90s interval handles internal transfers safely.
+        false
     }
 
     /// Place a market sell order via REST API
