@@ -1,0 +1,26 @@
+{
+  "snapshot_time": "2026-04-17T18:40:00+08:00",
+  "balances": {
+    "CM1": {
+      "total_usdt": 63.039725699,
+      "available_usdt": 16.11085539,
+      "reserved_usdt": 46.928870309
+    },
+    "CM2": {
+      "total_usdt": 41.371804222,
+      "available_usdt": 1.970760222,
+      "reserved_usdt": 39.401044
+    },
+    "combined_total": 104.411529921
+  },
+  "state": {
+    "DOGEUSDTPERP": {"cycle_count": 133616, "external_fills": 0},
+    "XRPUSDTPERP": {"cycle_count": 133608, "external_fills": 0},
+    "BTCUSDTPERP": {"cycle_count": 133610, "external_fills": 0},
+    "SOLUSDTPERP": {"cycle_count": 133632, "external_fills": 0},
+    "ETHUSDTPERP": {"cycle_count": 133620, "external_fills": 0},
+    "AVAXUSDTPERP": {"cycle_count": 133597, "external_fills": 0}
+  },
+  "total_cycles": 801683,
+  "log_timestamp": "2026-04-17T10:41:04"
+}
