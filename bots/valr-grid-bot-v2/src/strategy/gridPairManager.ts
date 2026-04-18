@@ -1,19 +1,16 @@
 /**
- * Grid Pair Manager — Explicit pair tracking for symmetric grid.
+ * Grid Manager — Adaptive grid with fixed range.
  * 
- * Core concepts:
- * - Grid is N pairs (bid + ask), not loose orders
- * - Each pair has a levelIndex (1 to N)
- * - Pairs can be: active, partial (one leg filled), complete (both filled), or missing
- * - Replenishment replaces completed pairs at their original level
- * - Grid always stays within configured level range (1 to N)
- * - Spacing is computed from gridRangePercent / levels
- * - NO recenter logic — grid range is fixed
- * 
- * This prevents:
- * - Grid decay into one-sided state
- * - Unlimited level expansion from repeated fills
- * - Directional bias from asymmetric replenishment
+ * Core behavior:
+ * - Fixed price range: reference ± (gridRangePercent/2)
+ * - N price levels per side (N bids below ref, N asks above ref)
+ * - Bids placed ONLY below current price
+ * - Asks placed ONLY above current price
+ * - Order count adapts to price position within range
+ * - When price at top of range: many bids, few asks
+ * - When price at bottom of range: few bids, many asks
+ * - Replenishment fills missing levels within range bounds
+ * - NO recenter — grid range is fixed forever
  */
 
 import Decimal from 'decimal.js';
@@ -22,47 +19,45 @@ import type { PairConstraints } from '../exchange/pairMetadata.js';
 import { priceToString, qtyToString } from '../exchange/pairMetadata.js';
 import { createLogger } from '../app/logger.js';
 
-const log = createLogger('gridPairManager');
+const log = createLogger('gridManager');
 
-export type PairLegState = 'missing' | 'active' | 'filled';
-export type PairState = 'active' | 'partial' | 'complete' | 'missing';
+export type LegState = 'missing' | 'active' | 'filled';
 
-export interface GridPairLeg {
-  level: number;
-  side: 'BUY' | 'SELL';
-  price: Decimal;
-  priceStr: string;
-  quantity: Decimal;
-  quantityStr: string;
-  customerOrderId: string;
-  exchangeOrderId?: string;
-  state: PairLegState;
-  filledAt?: string;
-  updatedAt?: string;
-}
-
-export interface GridPair {
-  pairId: string;           // e.g., "pair-1", "pair-2"
-  levelIndex: number;        // 1 to N (configured levels)
-  bidLeg: GridPairLeg;
-  askLeg: GridPairLeg;
-  state: PairState;
-  createdAt: string;
-  updatedAt: string;
-  completedAt?: string;      // When both legs filled
+export interface GridLevel {
+  levelIndex: number;         // 1 to N (distance from reference)
+  bidPrice: Decimal;
+  bidPriceStr: string;
+  askPrice: Decimal;
+  askPriceStr: string;
+  bidLeg: {
+    customerOrderId: string;
+    exchangeOrderId?: string;
+    state: LegState;
+    quantity: Decimal;
+    quantityStr: string;
+    filledAt?: string;
+  };
+  askLeg: {
+    customerOrderId: string;
+    exchangeOrderId?: string;
+    state: LegState;
+    quantity: Decimal;
+    quantityStr: string;
+    filledAt?: string;
+  };
 }
 
 export interface GridState {
-  pairs: GridPair[];
+  levels: GridLevel[];
   referencePrice: Decimal;
-  totalActiveBids: number;
-  totalActiveAsks: number;
-  partialPairs: number;
-  completePairs: number;
-  missingPairs: number;
+  minBidPrice: Decimal;       // Lowest bid (level N)
+  maxAskPrice: Decimal;       // Highest ask (level N)
+  currentPrice: Decimal;
+  activeBidCount: number;
+  activeAskCount: number;
 }
 
-/** Build customerOrderId for a pair leg — max 50 chars */
+/** Build customerOrderId for a leg — max 50 chars */
 function buildCOID(side: 'BUY' | 'SELL', level: number, seed: string): string {
   const s = side === 'BUY' ? 'B' : 'S';
   return `grid-${s}-${level}-${seed}`.slice(0, 50);
@@ -70,31 +65,15 @@ function buildCOID(side: 'BUY' | 'SELL', level: number, seed: string): string {
 
 /**
  * Compute spacing per level from total grid range.
- * 
- * For a 10% total range with 30 levels:
- * - Each side spans 5% (half the range)
- * - Spacing per level = 5% / 30 = 0.1667%
- * 
- * Uses linear spacing (not compound) for predictable range bounds.
+ * Linear spacing for predictable bounds.
  */
 export function computeSpacingFromRange(config: BotConfig): Decimal {
   const halfRange = new Decimal(config.gridRangePercent).div(2);
   return halfRange.div(config.levels);
 }
 
-/** Price at level i below reference (for BUY) — linear spacing */
-function buyLevelPrice(ref: Decimal, spacing: Decimal, i: number): Decimal {
-  return ref.minus(spacing.mul(i));
-}
-
-/** Price at level i above reference (for SELL) — linear spacing */
-function sellLevelPrice(ref: Decimal, spacing: Decimal, i: number): Decimal {
-  return ref.plus(spacing.mul(i));
-}
-
 /**
- * Calculate dynamic quantity per level based on available balance.
- * For symmetric grid: totalNotional / (levels * 2)
+ * Calculate quantity per level from available balance.
  */
 export function calculateQuantityPerLevel(
   config: BotConfig,
@@ -105,22 +84,16 @@ export function calculateQuantityPerLevel(
   const targetLeverage = new Decimal(config.targetLeverage ?? config.leverage ?? 1);
   const allocationPercent = new Decimal(config.capitalAllocationPercent ?? 90);
 
-  // Total notional we want to deploy
   const totalNotional = availableBalance
     .mul(targetLeverage)
     .mul(allocationPercent.div(100));
 
-  // For neutral: levels * 2 (both sides)
   const totalLevels = config.levels * 2;
-
-  // Notional per level
   let quantity = totalNotional.div(totalLevels).div(referencePrice);
 
-  // Round down to baseDecimalPlaces
   const truncationFactor = new Decimal(10).pow(constraints.baseDecimalPlaces);
   quantity = quantity.mul(truncationFactor).floor().div(truncationFactor);
 
-  // Ensure minimum order size
   const minQty = new Decimal(constraints.minBaseAmount);
   if (quantity.lessThan(minQty)) {
     quantity = minQty;
@@ -130,61 +103,56 @@ export function calculateQuantityPerLevel(
 }
 
 /**
- * Create a single grid pair at the given level index.
+ * Build the grid levels with fixed price points.
+ * Does NOT determine which orders to place — that depends on current price.
  */
-export function createGridPair(
+export function buildGridLevels(
   config: BotConfig,
   referencePrice: Decimal,
   constraints: PairConstraints,
-  levelIndex: number,
   quantity: Decimal,
   seed: string
-): GridPair {
-  const spacing = computeSpacingFromRange(config);
-  const now = new Date().toISOString();
+): GridLevel[] {
+  const spacingPercent = computeSpacingFromRange(config); // e.g., 0.167 for 0.167%
+  const levels: GridLevel[] = [];
 
-  const bidPrice = buyLevelPrice(referencePrice, spacing, levelIndex);
-  const askPrice = sellLevelPrice(referencePrice, spacing, levelIndex);
+  for (let i = 1; i <= config.levels; i++) {
+    // Apply spacing as percentage of reference price
+    const bidPrice = referencePrice.mul(new Decimal(1).minus(spacingPercent.div(100).mul(i)));
+    const askPrice = referencePrice.mul(new Decimal(1).plus(spacingPercent.div(100).mul(i)));
 
-  const bidLeg: GridPairLeg = {
-    level: levelIndex,
-    side: 'BUY',
-    price: bidPrice,
-    priceStr: priceToString(bidPrice, constraints.tickSize),
-    quantity,
-    quantityStr: qtyToString(quantity, constraints.baseDecimalPlaces),
-    customerOrderId: buildCOID('BUY', levelIndex, seed),
-    state: 'missing',
-  };
+    levels.push({
+      levelIndex: i,
+      bidPrice,
+      bidPriceStr: priceToString(bidPrice, constraints.tickSize),
+      askPrice,
+      askPriceStr: priceToString(askPrice, constraints.tickSize),
+      bidLeg: {
+        customerOrderId: buildCOID('BUY', i, seed),
+        state: 'missing',
+        quantity,
+        quantityStr: qtyToString(quantity, constraints.baseDecimalPlaces),
+      },
+      askLeg: {
+        customerOrderId: buildCOID('SELL', i, seed),
+        state: 'missing',
+        quantity,
+        quantityStr: qtyToString(quantity, constraints.baseDecimalPlaces),
+      },
+    });
+  }
 
-  const askLeg: GridPairLeg = {
-    level: levelIndex,
-    side: 'SELL',
-    price: askPrice,
-    priceStr: priceToString(askPrice, constraints.tickSize),
-    quantity,
-    quantityStr: qtyToString(quantity, constraints.baseDecimalPlaces),
-    customerOrderId: buildCOID('SELL', levelIndex, seed),
-    state: 'missing',
-  };
-
-  return {
-    pairId: `pair-${levelIndex}`,
-    levelIndex,
-    bidLeg,
-    askLeg,
-    state: 'missing',
-    createdAt: now,
-    updatedAt: now,
-  };
+  return levels;
 }
 
 /**
- * Build the complete grid state with all pairs.
+ * Initialize grid state with current price.
+ * Determines which levels should have active orders.
  */
-export function buildGridState(
+export function initGridState(
   config: BotConfig,
   referencePrice: Decimal,
+  currentPrice: Decimal,
   constraints: PairConstraints,
   availableBalance: Decimal,
   seed: string
@@ -193,280 +161,209 @@ export function buildGridState(
     ? calculateQuantityPerLevel(config, availableBalance, referencePrice, constraints)
     : new Decimal(config.quantityPerLevel);
 
-  const pairs: GridPair[] = [];
-  for (let i = 1; i <= config.levels; i++) {
-    pairs.push(createGridPair(config, referencePrice, constraints, i, quantity, seed));
-  }
+  const levels = buildGridLevels(config, referencePrice, constraints, quantity, seed);
 
-  return {
-    pairs,
+  const spacingPercent = computeSpacingFromRange(config);
+  // Calculate min/max as percentage of reference
+  const totalRangePercent = spacingPercent.mul(config.levels);
+  const minBidPrice = referencePrice.mul(new Decimal(1).minus(totalRangePercent.div(100)));
+  const maxAskPrice = referencePrice.mul(new Decimal(1).plus(totalRangePercent.div(100)));
+
+  const state: GridState = {
+    levels,
     referencePrice,
-    totalActiveBids: 0,
-    totalActiveAsks: 0,
-    partialPairs: 0,
-    completePairs: 0,
-    missingPairs: config.levels,
+    minBidPrice,
+    maxAskPrice,
+    currentPrice,
+    activeBidCount: 0,
+    activeAskCount: 0,
   };
+
+  // Mark which legs should be active based on current price
+  updateGridOrders(state, currentPrice);
+
+  return state;
 }
 
 /**
- * Update pair state based on leg states.
+ * Update which orders should be active based on current price.
+ * 
+ * Rules:
+ * - Bid at level i is active if: currentPrice > bidPrice
+ * - Ask at level i is active if: currentPrice < askPrice
+ * 
+ * This means:
+ * - Price at top of range → many bids, few asks
+ * - Price at bottom of range → few bids, many asks
+ * - Price in middle → ~equal bids and asks
  */
-function updatePairState(pair: GridPair): void {
-  const bidState = pair.bidLeg.state;
-  const askState = pair.askLeg.state;
+export function updateGridOrders(grid: GridState, currentPrice: Decimal): void {
+  grid.currentPrice = currentPrice;
+  let activeBids = 0;
+  let activeAsks = 0;
 
-  if (bidState === 'filled' && askState === 'filled') {
-    pair.state = 'complete';
-    pair.completedAt = new Date().toISOString();
-  } else if (bidState === 'filled' || askState === 'filled') {
-    pair.state = 'partial';
-  } else if (bidState === 'active' || askState === 'active') {
-    pair.state = 'active';
-  } else {
-    pair.state = 'missing';
+  for (const level of grid.levels) {
+    // Bid should be active if current price is ABOVE the bid price
+    const bidShouldBeActive = currentPrice.gt(level.bidPrice);
+    // Ask should be active if current price is BELOW the ask price
+    const askShouldBeActive = currentPrice.lt(level.askPrice);
+
+    // Update bid state (only if not already filled)
+    if (level.bidLeg.state !== 'filled') {
+      if (bidShouldBeActive && level.bidLeg.state === 'missing') {
+        level.bidLeg.state = 'active';
+      } else if (!bidShouldBeActive && level.bidLeg.state === 'active') {
+        // Price moved above this bid - order would have filled or been cancelled
+        // Mark as missing so it can be replaced if appropriate
+        level.bidLeg.state = 'missing';
+        level.bidLeg.exchangeOrderId = undefined;
+      }
+    }
+
+    // Update ask state (only if not already filled)
+    if (level.askLeg.state !== 'filled') {
+      if (askShouldBeActive && level.askLeg.state === 'missing') {
+        level.askLeg.state = 'active';
+      } else if (!askShouldBeActive && level.askLeg.state === 'active') {
+        level.askLeg.state = 'missing';
+        level.askLeg.exchangeOrderId = undefined;
+      }
+    }
+
+    if (level.bidLeg.state === 'active') activeBids++;
+    if (level.askLeg.state === 'active') activeAsks++;
   }
 
-  pair.updatedAt = new Date().toISOString();
-}
-
-/**
- * Mark a leg as active (order placed).
- */
-export function markLegActive(
-  grid: GridState,
-  customerOrderId: string,
-  exchangeOrderId: string
-): boolean {
-  for (const pair of grid.pairs) {
-    if (pair.bidLeg.customerOrderId === customerOrderId) {
-      pair.bidLeg.state = 'active';
-      pair.bidLeg.exchangeOrderId = exchangeOrderId;
-      updatePairState(pair);
-      recalculateGridStats(grid);
-      return true;
-    }
-    if (pair.askLeg.customerOrderId === customerOrderId) {
-      pair.askLeg.state = 'active';
-      pair.askLeg.exchangeOrderId = exchangeOrderId;
-      updatePairState(pair);
-      recalculateGridStats(grid);
-      return true;
-    }
-  }
-  return false;
+  grid.activeBidCount = activeBids;
+  grid.activeAskCount = activeAsks;
 }
 
 /**
  * Mark a leg as filled.
- * Returns the pair that was filled for replenishment logic.
  */
 export function markLegFilled(
   grid: GridState,
   customerOrderId: string | undefined,
   exchangeOrderId: string
-): GridPair | null {
-  for (const pair of grid.pairs) {
-    const isBid = pair.bidLeg.exchangeOrderId === exchangeOrderId || 
-                  pair.bidLeg.customerOrderId === customerOrderId;
-    const isAsk = pair.askLeg.exchangeOrderId === exchangeOrderId ||
-                  pair.askLeg.customerOrderId === customerOrderId;
-
-    if (isBid) {
-      pair.bidLeg.state = 'filled';
-      pair.bidLeg.filledAt = new Date().toISOString();
-      updatePairState(pair);
-      recalculateGridStats(grid);
-      log.info(
-        { pairId: pair.pairId, level: pair.levelIndex, side: 'BUY', newState: pair.state },
-        'Bid leg filled'
-      );
-      return pair;
+): { level: GridLevel; side: 'BUY' | 'SELL' } | null {
+  for (const level of grid.levels) {
+    if (level.bidLeg.exchangeOrderId === exchangeOrderId || 
+        level.bidLeg.customerOrderId === customerOrderId) {
+      level.bidLeg.state = 'filled';
+      level.bidLeg.filledAt = new Date().toISOString();
+      log.info({ level: level.levelIndex, side: 'BUY', price: level.bidPriceStr }, 'Bid filled');
+      return { level, side: 'BUY' };
     }
-    if (isAsk) {
-      pair.askLeg.state = 'filled';
-      pair.askLeg.filledAt = new Date().toISOString();
-      updatePairState(pair);
-      recalculateGridStats(grid);
-      log.info(
-        { pairId: pair.pairId, level: pair.levelIndex, side: 'SELL', newState: pair.state },
-        'Ask leg filled'
-      );
-      return pair;
+    if (level.askLeg.exchangeOrderId === exchangeOrderId ||
+        level.askLeg.customerOrderId === customerOrderId) {
+      level.askLeg.state = 'filled';
+      level.askLeg.filledAt = new Date().toISOString();
+      log.info({ level: level.levelIndex, side: 'SELL', price: level.askPriceStr }, 'Ask filled');
+      return { level, side: 'SELL' };
     }
   }
   return null;
 }
 
 /**
- * Mark a leg as cancelled/missing.
+ * Get legs that need to be placed (state = 'active' but no exchangeOrderId).
  */
-export function markLegMissing(
-  grid: GridState,
-  customerOrderId: string
-): boolean {
-  for (const pair of grid.pairs) {
-    if (pair.bidLeg.customerOrderId === customerOrderId) {
-      pair.bidLeg.state = 'missing';
-      pair.bidLeg.exchangeOrderId = undefined;
-      updatePairState(pair);
-      return true;
-    }
-    if (pair.askLeg.customerOrderId === customerOrderId) {
-      pair.askLeg.state = 'missing';
-      pair.askLeg.exchangeOrderId = undefined;
-      updatePairState(pair);
-      return true;
-    }
-  }
-  return false;
-}
+export function getLegsToPlace(grid: GridState): Array<{
+  level: GridLevel;
+  side: 'BUY' | 'SELL';
+  price: Decimal;
+  priceStr: string;
+  quantity: Decimal;
+  quantityStr: string;
+  customerOrderId: string;
+}> {
+  const toPlace: Array<{
+    level: GridLevel;
+    side: 'BUY' | 'SELL';
+    price: Decimal;
+    priceStr: string;
+    quantity: Decimal;
+    quantityStr: string;
+    customerOrderId: string;
+  }> = [];
 
-/**
- * Get all legs that need to be placed (state = 'missing').
- * Returns GridPairLeg[] with full order data.
- */
-export function getMissingLegs(grid: GridState): GridPairLeg[] {
-  const missing: GridPairLeg[] = [];
-  for (const pair of grid.pairs) {
-    if (pair.bidLeg.state === 'missing') {
-      missing.push(pair.bidLeg);
+  for (const level of grid.levels) {
+    if (level.bidLeg.state === 'active' && !level.bidLeg.exchangeOrderId) {
+      toPlace.push({
+        level,
+        side: 'BUY',
+        price: level.bidPrice,
+        priceStr: level.bidPriceStr,
+        quantity: level.bidLeg.quantity,
+        quantityStr: level.bidLeg.quantityStr,
+        customerOrderId: level.bidLeg.customerOrderId,
+      });
     }
-    if (pair.askLeg.state === 'missing') {
-      missing.push(pair.askLeg);
-    }
-  }
-  return missing;
-}
-
-/**
- * Get all active legs (state = 'active').
- */
-export function getActiveLegs(grid: GridState): GridPairLeg[] {
-  const active: GridPairLeg[] = [];
-  for (const pair of grid.pairs) {
-    if (pair.bidLeg.state === 'active') {
-      active.push(pair.bidLeg);
-    }
-    if (pair.askLeg.state === 'active') {
-      active.push(pair.askLeg);
-    }
-  }
-  return active;
-}
-
-/**
- * Get completed pairs that need replacement.
- */
-export function getCompletedPairs(grid: GridState): GridPair[] {
-  return grid.pairs.filter(p => p.state === 'complete');
-}
-
-/**
- * Get partial pairs (one leg filled, one missing/active).
- */
-export function getPartialPairs(grid: GridState): GridPair[] {
-  return grid.pairs.filter(p => p.state === 'partial');
-}
-
-/**
- * Recalculate grid statistics.
- */
-export function recalculateGridStats(grid: GridState): void {
-  let activeBids = 0;
-  let activeAsks = 0;
-  let partial = 0;
-  let complete = 0;
-  let missing = 0;
-
-  for (const pair of grid.pairs) {
-    updatePairState(pair);
-    
-    if (pair.bidLeg.state === 'active') activeBids++;
-    if (pair.askLeg.state === 'active') activeAsks++;
-    
-    switch (pair.state) {
-      case 'partial': partial++; break;
-      case 'complete': complete++; break;
-      case 'missing': missing++; break;
+    if (level.askLeg.state === 'active' && !level.askLeg.exchangeOrderId) {
+      toPlace.push({
+        level,
+        side: 'SELL',
+        price: level.askPrice,
+        priceStr: level.askPriceStr,
+        quantity: level.askLeg.quantity,
+        quantityStr: level.askLeg.quantityStr,
+        customerOrderId: level.askLeg.customerOrderId,
+      });
     }
   }
 
-  grid.totalActiveBids = activeBids;
-  grid.totalActiveAsks = activeAsks;
-  grid.partialPairs = partial;
-  grid.completePairs = complete;
-  grid.missingPairs = missing;
+  return toPlace;
 }
 
 /**
- * NO RECENTER LOGIC — Grid range is fixed and never rebuilt.
- * The grid stays at its original reference price until restart.
+ * Get legs to cancel (have exchangeOrderId but state is no longer 'active').
  */
+export function getLegsToCancel(grid: GridState): Array<{
+  level: GridLevel;
+  side: 'BUY' | 'SELL';
+  exchangeOrderId: string;
+}> {
+  const toCancel: Array<{
+    level: GridLevel;
+    side: 'BUY' | 'SELL';
+    exchangeOrderId: string;
+  }> = [];
 
-/**
- * Replace a completed pair — reset both legs to missing so they get placed.
- * This is the core "keep grid full" logic.
- */
-export function replaceCompletedPair(
-  grid: GridState,
-  pairId: string,
-  config: BotConfig,
-  referencePrice: Decimal,
-  constraints: PairConstraints,
-  quantity: Decimal,
-  seed: string
-): GridPair | null {
-  const pairIndex = grid.pairs.findIndex(p => p.pairId === pairId);
-  if (pairIndex === -1) return null;
+  for (const level of grid.levels) {
+    if (level.bidLeg.exchangeOrderId && level.bidLeg.state !== 'active' && level.bidLeg.state !== 'filled') {
+      toCancel.push({
+        level,
+        side: 'BUY',
+        exchangeOrderId: level.bidLeg.exchangeOrderId,
+      });
+    }
+    if (level.askLeg.exchangeOrderId && level.askLeg.state !== 'active' && level.askLeg.state !== 'filled') {
+      toCancel.push({
+        level,
+        side: 'SELL',
+        exchangeOrderId: level.askLeg.exchangeOrderId,
+      });
+    }
+  }
 
-  const oldPair = grid.pairs[pairIndex];
-  const now = new Date().toISOString();
-
-  // Create fresh pair at same level
-  const newPair = createGridPair(config, referencePrice, constraints, oldPair.levelIndex, quantity, seed);
-  newPair.createdAt = oldPair.createdAt;  // Preserve original creation time
-  newPair.updatedAt = now;
-
-  grid.pairs[pairIndex] = newPair;
-  recalculateGridStats(grid);
-
-  log.info(
-    { pairId, level: oldPair.levelIndex, completedAt: oldPair.completedAt },
-    'Completed pair replaced — grid restored to full'
-  );
-
-  return newPair;
+  return toCancel;
 }
 
 /**
- * Log current grid state for observability.
+ * Log grid state for observability.
  */
 export function logGridState(grid: GridState, config: BotConfig): void {
   log.info(
     {
       referencePrice: grid.referencePrice.toString(),
-      totalActiveBids: grid.totalActiveBids,
-      totalActiveAsks: grid.totalActiveAsks,
-      partialPairs: grid.partialPairs,
-      completePairs: grid.completePairs,
-      missingPairs: grid.missingPairs,
-      targetLevels: config.levels,
-      isFull: grid.totalActiveBids === config.levels && grid.totalActiveAsks === config.levels,
+      currentPrice: grid.currentPrice.toString(),
+      rangeMin: grid.minBidPrice.toString(),
+      rangeMax: grid.maxAskPrice.toString(),
+      activeBids: grid.activeBidCount,
+      activeAsks: grid.activeAskCount,
+      totalLevels: config.levels,
+      pricePosition: grid.currentPrice.minus(grid.minBidPrice).div(grid.maxAskPrice.minus(grid.minBidPrice)).mul(100).toFixed(1) + '%',
     },
     'Grid state summary'
   );
-
-  for (const pair of grid.pairs) {
-    log.debug(
-      {
-        pairId: pair.pairId,
-        level: pair.levelIndex,
-        state: pair.state,
-        bid: { price: pair.bidLeg.priceStr, state: pair.bidLeg.state },
-        ask: { price: pair.askLeg.priceStr, state: pair.askLeg.state },
-      },
-      `Pair ${pair.levelIndex}`
-    );
-  }
 }
