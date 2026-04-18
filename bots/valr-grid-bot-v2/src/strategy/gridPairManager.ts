@@ -7,6 +7,8 @@
  * - Pairs can be: active, partial (one leg filled), complete (both filled), or missing
  * - Replenishment replaces completed pairs at their original level
  * - Grid always stays within configured level range (1 to N)
+ * - Spacing is computed from gridRangePercent / levels
+ * - NO recenter logic — grid range is fixed
  * 
  * This prevents:
  * - Grid decay into one-sided state
@@ -66,21 +68,27 @@ function buildCOID(side: 'BUY' | 'SELL', level: number, seed: string): string {
   return `grid-${s}-${level}-${seed}`.slice(0, 50);
 }
 
-/** Price one step below reference (for BUY at level i) */
-function buyLevelPrice(ref: Decimal, spacing: Decimal, spacingMode: 'percent' | 'absolute', i: number): Decimal {
-  if (spacingMode === 'percent') {
-    const factor = new Decimal(1).minus(spacing.div(100));
-    return ref.mul(factor.pow(i));
-  }
+/**
+ * Compute spacing per level from total grid range.
+ * 
+ * For a 10% total range with 30 levels:
+ * - Each side spans 5% (half the range)
+ * - Spacing per level = 5% / 30 = 0.1667%
+ * 
+ * Uses linear spacing (not compound) for predictable range bounds.
+ */
+export function computeSpacingFromRange(config: BotConfig): Decimal {
+  const halfRange = new Decimal(config.gridRangePercent).div(2);
+  return halfRange.div(config.levels);
+}
+
+/** Price at level i below reference (for BUY) — linear spacing */
+function buyLevelPrice(ref: Decimal, spacing: Decimal, i: number): Decimal {
   return ref.minus(spacing.mul(i));
 }
 
-/** Price one step above reference (for SELL at level i) */
-function sellLevelPrice(ref: Decimal, spacing: Decimal, spacingMode: 'percent' | 'absolute', i: number): Decimal {
-  if (spacingMode === 'percent') {
-    const factor = new Decimal(1).plus(spacing.div(100));
-    return ref.mul(factor.pow(i));
-  }
+/** Price at level i above reference (for SELL) — linear spacing */
+function sellLevelPrice(ref: Decimal, spacing: Decimal, i: number): Decimal {
   return ref.plus(spacing.mul(i));
 }
 
@@ -132,11 +140,11 @@ export function createGridPair(
   quantity: Decimal,
   seed: string
 ): GridPair {
-  const spacing = new Decimal(config.spacingValue);
+  const spacing = computeSpacingFromRange(config);
   const now = new Date().toISOString();
 
-  const bidPrice = buyLevelPrice(referencePrice, spacing, config.spacingMode, levelIndex);
-  const askPrice = sellLevelPrice(referencePrice, spacing, config.spacingMode, levelIndex);
+  const bidPrice = buyLevelPrice(referencePrice, spacing, levelIndex);
+  const askPrice = sellLevelPrice(referencePrice, spacing, levelIndex);
 
   const bidLeg: GridPairLeg = {
     level: levelIndex,
@@ -392,128 +400,9 @@ export function recalculateGridStats(grid: GridState): void {
 }
 
 /**
- * Check if grid needs rebuilding due to price drift.
- * Returns true if reference price has moved beyond the outer grid levels.
+ * NO RECENTER LOGIC — Grid range is fixed and never rebuilt.
+ * The grid stays at its original reference price until restart.
  */
-export function needsRecenter(
-  grid: GridState,
-  newReferencePrice: Decimal,
-  config: BotConfig,
-  constraints: PairConstraints
-): boolean {
-  if (grid.pairs.length === 0) return true;
-
-  // Get the outer levels (highest level index = furthest from reference)
-  const outerPair = grid.pairs[grid.pairs.length - 1];
-  const oldOuterBid = outerPair.bidLeg.price;
-  const oldOuterAsk = outerPair.askLeg.price;
-
-  // Calculate grid range
-  const gridRange = oldOuterAsk.minus(oldOuterBid);
-  
-  // Calculate price move from original reference
-  const priceMove = newReferencePrice.minus(grid.referencePrice).abs();
-  
-  // Threshold: if price moved more than 50% of grid range
-  const threshold = gridRange.mul(0.5);
-
-  const shouldRecenter = priceMove.gt(threshold);
-  
-  if (shouldRecenter) {
-    log.info(
-      {
-        oldRef: grid.referencePrice.toString(),
-        newRef: newReferencePrice.toString(),
-        priceMove: priceMove.toString(),
-        threshold: threshold.toString(),
-        gridRange: gridRange.toString(),
-      },
-      'Grid recenter triggered — price moved beyond threshold'
-    );
-  }
-
-  return shouldRecenter;
-}
-
-/**
- * Rebuild grid state with new reference price.
- * Preserves filled legs (exposure), replaces missing/active legs.
- */
-export function rebuildGridWithNewReference(
-  grid: GridState,
-  config: BotConfig,
-  newReferencePrice: Decimal,
-  constraints: PairConstraints,
-  availableBalance: Decimal,
-  seed: string
-): GridState {
-  const quantity = config.dynamicSizing
-    ? calculateQuantityPerLevel(config, availableBalance, newReferencePrice, constraints)
-    : new Decimal(config.quantityPerLevel);
-
-  const spacing = new Decimal(config.spacingValue);
-  const now = new Date().toISOString();
-
-  const newPairs: GridPair[] = [];
-
-  for (let i = 1; i <= config.levels; i++) {
-    const oldPair = grid.pairs.find(p => p.levelIndex === i);
-    
-    // Create new pair with new reference price
-    const newPair = createGridPair(config, newReferencePrice, constraints, i, quantity, seed);
-
-    // Preserve filled legs (we still have this exposure)
-    if (oldPair) {
-      if (oldPair.bidLeg.state === 'filled') {
-        newPair.bidLeg = { ...oldPair.bidLeg };
-      }
-      if (oldPair.askLeg.state === 'filled') {
-        newPair.askLeg = { ...oldPair.askLeg };
-      }
-    }
-
-    // Update prices for non-filled legs
-    if (newPair.bidLeg.state === 'missing') {
-      const newBidPrice = buyLevelPrice(newReferencePrice, spacing, config.spacingMode, i);
-      newPair.bidLeg.price = newBidPrice;
-      newPair.bidLeg.priceStr = priceToString(newBidPrice, constraints.tickSize);
-    }
-    if (newPair.askLeg.state === 'missing') {
-      const newAskPrice = sellLevelPrice(newReferencePrice, spacing, config.spacingMode, i);
-      newPair.askLeg.price = newAskPrice;
-      newPair.askLeg.priceStr = priceToString(newAskPrice, constraints.tickSize);
-    }
-
-    newPair.updatedAt = now;
-    newPairs.push(newPair);
-  }
-
-  const newGrid: GridState = {
-    pairs: newPairs,
-    referencePrice: newReferencePrice,
-    totalActiveBids: 0,
-    totalActiveAsks: 0,
-    partialPairs: 0,
-    completePairs: 0,
-    missingPairs: 0,
-  };
-
-  recalculateGridStats(newGrid);
-
-  log.info(
-    {
-      newRef: newReferencePrice.toString(),
-      activeBids: newGrid.totalActiveBids,
-      activeAsks: newGrid.totalActiveAsks,
-      partialPairs: newGrid.partialPairs,
-      completePairs: newGrid.completePairs,
-      missingPairs: newGrid.missingPairs,
-    },
-    'Grid rebuilt with new reference price'
-  );
-
-  return newGrid;
-}
 
 /**
  * Replace a completed pair — reset both legs to missing so they get placed.

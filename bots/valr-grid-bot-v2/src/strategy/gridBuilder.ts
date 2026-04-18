@@ -123,7 +123,10 @@ export function buildGridLevels(
   seed: string,
   availableBalance?: Decimal  // Required when dynamicSizing is true
 ): GridLevel[] {
-  const spacing = new Decimal(config.spacingValue);
+  // Compute spacing from gridRangePercent (for neutral) or use spacingValue (for directional)
+  const spacing = config.gridRangePercent
+    ? new Decimal(config.gridRangePercent).div(2).div(config.levels) // Linear spacing
+    : new Decimal(config.spacingValue!);
 
   // Calculate quantity — dynamic or fixed
   let qty: Decimal;
@@ -190,7 +193,10 @@ export function buildReplenishLevel(
   seed: string,
   availableBalance?: Decimal  // Required when dynamicSizing is true
 ): GridLevel {
-  const spacing = new Decimal(config.spacingValue);
+  // Compute spacing from gridRangePercent (for neutral) or use spacingValue (for directional)
+  const spacing = config.gridRangePercent
+    ? new Decimal(config.gridRangePercent).div(2).div(config.levels) // Linear spacing
+    : new Decimal(config.spacingValue!);
 
   // Calculate quantity — dynamic or fixed
   let qty: Decimal;
@@ -261,12 +267,13 @@ export function calcSlPrice(
 export function calcTpPrice(
   config: BotConfig,
   averageEntryPrice: Decimal,
-  spacing: Decimal,
+  spacing: Decimal | undefined,
   positionSide?: 'buy' | 'sell'
 ): Decimal | null {
   // In neutral mode, the grid levels are the TP — no separate TP conditional needed
   if (config.mode === 'neutral') return null;
   if (config.tpMode === 'disabled') return null;
+  if (!spacing) return null; // Safety check
 
   const isLong = positionSide
     ? positionSide === 'buy'
@@ -290,7 +297,11 @@ export function calcTpPrice(
 
 /** Get the grid spacing as an absolute Decimal amount (for TP calculation) */
 export function getSpacingAmount(config: BotConfig, referencePrice: Decimal): Decimal {
-  const spacing = new Decimal(config.spacingValue);
+  // Compute spacing from gridRangePercent (for neutral) or use spacingValue (for directional)
+  const spacing = config.gridRangePercent
+    ? new Decimal(config.gridRangePercent).div(2).div(config.levels) // Linear spacing as percent
+    : new Decimal(config.spacingValue!);
+  
   if (config.spacingMode === 'percent') {
     return referencePrice.mul(spacing.div(100));
   }

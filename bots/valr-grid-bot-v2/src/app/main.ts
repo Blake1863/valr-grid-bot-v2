@@ -44,11 +44,10 @@ import {
   markLegFilled,
   markLegMissing,
   recalculateGridStats,
-  needsRecenter,
-  rebuildGridWithNewReference,
   replaceCompletedPair,
   logGridState,
   calculateQuantityPerLevel,
+  computeSpacingFromRange,
   type GridState,
 } from '../strategy/gridPairManager.js';
 import type { WsOrderStatusUpdate, WsOpenPositionUpdate, WsPositionClosed, WsFailedOrder } from '../exchange/types.js';
@@ -452,12 +451,6 @@ async function main(): Promise<void> {
     recalculateGridStats(gridState);
     logGridState(gridState, config);
 
-    // Check if recenter is needed
-    if (needsRecenter(gridState, refPrice, config, constraints)) {
-      log.info('Recentering grid on startup due to price drift');
-      gridState = rebuildGridWithNewReference(gridState, config, refPrice, constraints, availableBalance, seed);
-    }
-
     // Place missing legs
     if (!orderManager.isCircuitOpen()) {
       await placeMissingGridLegs(gridState, orderManager, config, constraints, availableBalance);
@@ -506,23 +499,6 @@ async function main(): Promise<void> {
       if (tradeWs.isStale()) {
         log.warn('Trade WS price is stale — pausing grid operations');
         return;
-      }
-
-      // Check if recenter needed (neutral mode)
-      if (config.mode === 'neutral' && gridState) {
-        const currentPrice = await getReferencePrice(config, tradeWs, rest);
-        if (needsRecenter(gridState, currentPrice, config, constraints)) {
-          log.info('Recentering grid due to price drift');
-          gridState = rebuildGridWithNewReference(
-            gridState,
-            config,
-            currentPrice,
-            constraints,
-            availableBalance,
-            Date.now().toString(36)
-          );
-          await placeMissingGridLegs(gridState, orderManager, config, constraints, availableBalance);
-        }
       }
 
       // Ensure TPSL exists if position open

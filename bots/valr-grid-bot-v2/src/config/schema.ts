@@ -6,9 +6,10 @@ export const ConfigSchema = z.object({
 
   mode: z.enum(['long_only', 'short_only', 'neutral']),
 
-  levels: z.number().int().min(1).max(20),
-  spacingMode: z.enum(['absolute', 'percent']),
-  spacingValue: z.string().min(1), // Decimal string
+  levels: z.number().int().min(1).max(100),
+  gridRangePercent: z.number().min(0.1).max(100), // Total range % (e.g., 10 = ±5% from ref)
+  spacingMode: z.enum(['absolute', 'percent']).default('percent'),
+  spacingValue: z.string().optional(), // Computed from gridRangePercent if not provided
 
   quantityPerLevel: z.string().min(1), // Decimal string — used when dynamicSizing is false
 
@@ -34,7 +35,7 @@ export const ConfigSchema = z.object({
   dryRun: z.boolean().default(false),
 
   reconcileIntervalSecs: z.number().int().min(10).default(60),
-  maxActiveGridOrders: z.number().int().min(1).max(40).default(10),
+  maxActiveGridOrders: z.number().int().min(1).max(200).default(10),
   wsStaleTimeoutSecs: z.number().int().min(10).default(30),
 });
 
