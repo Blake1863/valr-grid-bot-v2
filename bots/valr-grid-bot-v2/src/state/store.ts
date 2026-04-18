@@ -117,7 +117,7 @@ export class StateStore {
         pairId = excluded.pairId,
         updatedAt = excluded.updatedAt
     `);
-    stmt.run(order);
+    stmt.run({ ...order, pairId: order.pairId || null });
   }
 
   updateGridOrderStatus(customerOrderId: string, status: OrderStatus, exchangeOrderId?: string): void {

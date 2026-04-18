@@ -105,8 +105,9 @@ async function main(): Promise<void> {
   log.info({ lowerBound: lowerBound.toString(), upperBound: upperBound.toString(), levels: config.levels }, 'Grid configuration');
 
   log.info('Fetching API credentials');
-  const apiKey = getSecret('valr_api_key');
-  const apiSecret = getSecret('valr_api_secret');
+  const apiKey = getSecret('valr_grid_bot_1_api_key');
+  const apiSecret = getSecret('valr_grid_bot_1_api_secret');
+  log.info({ apiKey: apiKey.substring(0, 16) + '...', hasSecret: !!apiSecret }, 'Credentials loaded');
 
   const rest = new ValrRestClient(apiKey, apiSecret, config.subaccountId);
   const store = new StateStore();
