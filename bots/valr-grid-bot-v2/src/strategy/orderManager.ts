@@ -10,7 +10,7 @@ import type { ValrRestClient } from '../exchange/restClient.js';
 import type { StateStore } from '../state/store.js';
 import type { BotConfig } from '../config/schema.js';
 import type { PairConstraints } from '../exchange/pairMetadata.js';
-import type { GridLevel } from './gridBuilder.js';
+import type { GridLevel } from './gridManager.js';
 import type { WsOrderStatusUpdate } from '../exchange/types.js';
 import { createLogger } from '../app/logger.js';
 
@@ -58,7 +58,7 @@ export class OrderManager {
         customerOrderId: level.customerOrderId,
         exchangeOrderId: null,
         status: 'pending',
-        level: level.level,
+        level: level.levelIndex,
         createdAt: now,
         updatedAt: now,
       });
@@ -101,14 +101,14 @@ export class OrderManager {
           if (outcome.accepted && outcome.orderId) {
             this.store.updateGridOrderStatus(level.customerOrderId, 'placed', outcome.orderId);
             log.info(
-              { level: level.level, price: level.priceStr, orderId: outcome.orderId },
+              { level: level.levelIndex, price: level.priceStr, orderId: outcome.orderId },
               'Grid order accepted'
             );
             this.failureCount = 0;
           } else {
             this.store.updateGridOrderStatus(level.customerOrderId, 'failed');
             log.error(
-              { level: level.level, price: level.priceStr, error: outcome.error },
+              { level: level.levelIndex, price: level.priceStr, error: outcome.error },
               'Grid order rejected in batch'
             );
             this._recordFailure();
@@ -125,7 +125,7 @@ export class OrderManager {
   }
 
   /** Place a single grid level (for replenishment after fill) */
-  async placeSingleOrder(level: GridLevel & { pairId?: string }): Promise<void> {
+  async placeSingleOrder(level: GridLevel): Promise<void> {
     this._checkCircuitBreaker();
 
     const now = new Date().toISOString();
@@ -137,14 +137,13 @@ export class OrderManager {
       customerOrderId: level.customerOrderId,
       exchangeOrderId: null,
       status: 'pending',
-      level: level.level,
-      pairId: level.pairId,
+      level: level.levelIndex,
       createdAt: now,
       updatedAt: now,
     });
 
     if (this.dryRun) {
-      log.info({ level: level.level, price: level.priceStr }, '[DRY-RUN] Would place single grid order');
+      log.info({ level: level.levelIndex, price: level.priceStr }, '[DRY-RUN] Would place single grid order');
       this.store.updateGridOrderStatus(level.customerOrderId, 'placed', `dry-${level.customerOrderId}`);
       return;
     }
@@ -162,7 +161,7 @@ export class OrderManager {
       });
       this.store.updateGridOrderStatus(level.customerOrderId, 'placed', resp.id);
       this.failureCount = 0;
-      log.info({ level: level.level, price: level.priceStr, orderId: resp.id }, 'Single grid order placed');
+      log.info({ level: level.levelIndex, price: level.priceStr, orderId: resp.id }, 'Single grid order placed');
     } catch (err) {
       this.store.updateGridOrderStatus(level.customerOrderId, 'failed');
       this._recordFailure();

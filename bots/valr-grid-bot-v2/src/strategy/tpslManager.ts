@@ -16,7 +16,8 @@ import type { ValrRestClient } from '../exchange/restClient.js';
 import type { BotConfig } from '../config/schema.js';
 import type { PositionState } from './positionManager.js';
 import type { StateStore } from '../state/store.js';
-import { calcSlPrice, calcTpPrice, getSpacingAmount } from './gridBuilder.js';
+// TPSL uses position-based SL, not grid spacing
+import { calcSlPrice } from './gridBuilder.js';
 import { priceToString } from '../exchange/pairMetadata.js';
 import type { PairConstraints } from '../exchange/pairMetadata.js';
 import { createLogger } from '../app/logger.js';
@@ -57,8 +58,8 @@ export class TpslManager {
     const entry = position.averageEntryPrice;
     // Pass position side so neutral mode SL direction is correct
     const slPrice = calcSlPrice(this.config, entry, position.side);
-    const spacing = getSpacingAmount(this.config, referencePrice);
-    const tpPrice = calcTpPrice(this.config, entry, spacing, position.side);
+    // For neutral mode, TP is disabled (grid levels are the TP)
+    const tpPrice = null;
 
     const slStr = priceToString(slPrice, this.constraints.tickSize);
     const tpStr = tpPrice ? priceToString(tpPrice, this.constraints.tickSize) : null;

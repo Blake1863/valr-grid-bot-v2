@@ -6,10 +6,9 @@ export const ConfigSchema = z.object({
 
   mode: z.enum(['long_only', 'short_only', 'neutral']),
 
-  levels: z.number().int().min(1).max(100),
-  gridRangePercent: z.number().min(0.1).max(100), // Total range % (e.g., 10 = ±5% from ref)
-  spacingMode: z.enum(['absolute', 'percent']).optional().default('percent'),
-  spacingValue: z.string().optional(), // Computed from gridRangePercent if not provided
+  levels: z.number().int().min(1).max(100),  // Total live resting entry orders (N)
+  lowerBound: z.string().min(1),  // Lower price bound (e.g., "80.00")
+  upperBound: z.string().min(1),  // Upper price bound (e.g., "90.00")
 
   quantityPerLevel: z.string().min(1), // Decimal string — used when dynamicSizing is false
   maxNetPosition: z.string().optional(), // Max net position in base currency (optional risk limit)

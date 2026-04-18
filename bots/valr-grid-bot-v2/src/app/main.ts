@@ -1,13 +1,12 @@
 /**
- * VALR Grid Bot v2 — Adaptive grid with fixed range.
+ * VALR Grid Bot v2 — Bounded Price-Range Grid
  * 
  * Core behavior:
- * - Fixed price range: reference ± (gridRangePercent/2)
- * - N price levels per side
- * - Bids placed ONLY below current price
- * - Asks placed ONLY above current price
- * - Order count adapts to price position
- * - NO recenter — grid range is fixed forever
+ * - Fixed price band: [lowerBound, upperBound]
+ * - Exactly N live resting entry orders (total)
+ * - Bid/ask split varies naturally with price position
+ * - Deterministic level selection (nearest to reference)
+ * - Never place orders outside configured range
  */
 
 import { execSync } from 'child_process';
@@ -24,20 +23,21 @@ import { OrderManager } from '../strategy/orderManager.js';
 import { RiskManager } from '../strategy/riskManager.js';
 import {
   initGridState,
-  updateGridOrders,
-  markLegFilled,
-  getLegsToPlace,
-  getLegsToCancel,
+  updateGridState,
+  markLevelFilled,
+  markLevelActive,
+  getLevelsToPlace,
+  getLevelsToCancel,
   logGridState,
-  calculateQuantityPerLevel,
   type GridState,
-} from '../strategy/gridPairManager.js';
+} from '../strategy/gridManager.js';
 import type { WsOrderStatusUpdate, WsOpenPositionUpdate, WsPositionClosed, WsFailedOrder } from '../exchange/types.js';
 import { createLogger } from './logger.js';
 
 const log = createLogger('main');
 
 let gridState: GridState | null = null;
+let isDataStale = false;
 
 function getSecret(name: string): string {
   try {
@@ -88,13 +88,21 @@ async function getReferencePrice(
 }
 
 async function main(): Promise<void> {
-  log.info('VALR Grid Bot v2 starting (adaptive grid with fixed range)');
+  log.info('VALR Grid Bot v2 starting (bounded price-range grid)');
 
   const config = loadConfig();
 
   if (config.dryRun) {
     log.warn('DRY-RUN MODE — no real orders');
   }
+
+  // Validate bounds
+  const lowerBound = new Decimal(config.lowerBound);
+  const upperBound = new Decimal(config.upperBound);
+  if (lowerBound.gte(upperBound)) {
+    throw new Error(`Invalid bounds: lowerBound (${lowerBound}) must be < upperBound (${upperBound})`);
+  }
+  log.info({ lowerBound: lowerBound.toString(), upperBound: upperBound.toString(), levels: config.levels }, 'Grid configuration');
 
   log.info('Fetching API credentials');
   const apiKey = getSecret('valr_api_key');
@@ -120,6 +128,7 @@ async function main(): Promise<void> {
   const tradeWs = new WsTradeClient(config.pair, config.wsStaleTimeoutSecs * 1000);
   tradeWs.connect();
 
+  // Wait for initial price (up to 5s)
   await new Promise<void>((resolve) => {
     const start = Date.now();
     const check = setInterval(() => {
@@ -138,37 +147,33 @@ async function main(): Promise<void> {
     'Reference and current price'
   );
 
+  // Check if price is outside bounds
+  if (currentPrice.lt(lowerBound)) {
+    log.warn({ currentPrice: currentPrice.toString(), lowerBound: lowerBound.toString() }, 
+      'Price is below lower bound — will place asks only when price enters range');
+  } else if (currentPrice.gt(upperBound)) {
+    log.warn({ currentPrice: currentPrice.toString(), upperBound: upperBound.toString() },
+      'Price is above upper bound — will place bids only when price enters range');
+  }
+
   // Initialize grid state
   const seed = Date.now().toString(36);
-  gridState = initGridState(config, refPrice, currentPrice, constraints, availableBalance, seed);
+  gridState = initGridState(config, lowerBound, upperBound, refPrice, currentPrice, constraints, availableBalance, seed);
   logGridState(gridState, config);
 
   // Place initial orders
   if (!orderManager.isCircuitOpen()) {
     try {
       riskManager.checkCooldown(store);
-      const toPlace = getLegsToPlace(gridState);
+      const toPlace = getLevelsToPlace(gridState);
       log.info({ count: toPlace.length }, 'Placing initial grid orders');
       
-      for (const leg of toPlace) {
+      for (const level of toPlace) {
         try {
-          await orderManager.placeSingleOrder({
-            level: leg.level.levelIndex,
-            side: leg.side,
-            price: leg.price,
-            priceStr: leg.priceStr,
-            quantity: leg.quantity,
-            quantityStr: leg.quantityStr,
-            customerOrderId: leg.customerOrderId,
-          });
-          // Mark as placed (exchangeOrderId will be set by WS)
-          if (leg.side === 'BUY') {
-            leg.level.bidLeg.exchangeOrderId = 'pending';
-          } else {
-            leg.level.askLeg.exchangeOrderId = 'pending';
-          }
+          await orderManager.placeSingleOrder(level);
+          level.state = 'pending';
         } catch (err) {
-          log.error({ err, level: leg.level.levelIndex, side: leg.side }, 'Failed to place order');
+          log.error({ err, level: level.levelIndex, side: level.side }, 'Failed to place order');
         }
       }
     } catch (err) {
@@ -194,9 +199,10 @@ async function main(): Promise<void> {
 
         if (result === 'filled' && gridState) {
           try {
-            const filled = markLegFilled(gridState, data.customerOrderId, data.orderId);
+            const filled = markLevelFilled(gridState, data.customerOrderId, data.orderId);
             if (!filled) return;
 
+            // Update position from exchange
             const positions = await rest.getOpenPositions(config.pair);
             positionManager.updateFromRest(positions);
 
@@ -209,38 +215,35 @@ async function main(): Promise<void> {
               return;
             }
 
-            // Update grid orders based on new price
-            updateGridOrders(gridState, currentPrice);
+            // Recompute active levels and replenish
+            const { toPlace, toCancel, bidCount, askCount } = updateGridState(gridState, config, currentPrice);
             
-            // Place any new orders that should be active
-            const toPlace = getLegsToPlace(gridState);
+            log.info({ bidCount, askCount, total: bidCount + askCount, target: config.levels }, 
+              'Active level count after fill');
+
+            // Place missing orders
             if (toPlace.length > 0) {
-              log.info({ count: toPlace.length }, 'Replenishing grid');
-              for (const leg of toPlace) {
+              log.info({ count: toPlace.length }, 'Replenishing grid levels');
+              for (const level of toPlace) {
                 try {
-                  await orderManager.placeSingleOrder({
-                    level: leg.level.levelIndex,
-                    side: leg.side,
-                    price: leg.price,
-                    priceStr: leg.priceStr,
-                    quantity: leg.quantity,
-                    quantityStr: leg.quantityStr,
-                    customerOrderId: leg.customerOrderId,
-                  });
+                  await orderManager.placeSingleOrder(level);
                 } catch (err) {
-                  log.error({ err, level: leg.level.levelIndex, side: leg.side }, 'Failed to replenish');
+                  log.error({ err, level: level.levelIndex, side: level.side }, 'Failed to replenish');
                 }
               }
             }
 
-            // Cancel orders that are no longer valid
-            const toCancel = getLegsToCancel(gridState);
-            for (const leg of toCancel) {
-              try {
-                await rest.cancelOrder(leg.exchangeOrderId, config.pair);
-                log.info({ level: leg.level.levelIndex, side: leg.side }, 'Cancelled order');
-              } catch (err) {
-                log.warn({ err, level: leg.level.levelIndex }, 'Failed to cancel');
+            // Cancel orders no longer in active set
+            if (toCancel.length > 0) {
+              log.info({ count: toCancel.length }, 'Cancelling stale orders');
+              for (const level of toCancel) {
+                try {
+                  await rest.cancelOrder(level.exchangeOrderId!, config.pair);
+                  level.state = 'cancelled';
+                  level.exchangeOrderId = undefined;
+                } catch (err) {
+                  log.warn({ err, level: level.levelIndex }, 'Failed to cancel');
+                }
               }
             }
 
@@ -256,6 +259,20 @@ async function main(): Promise<void> {
             logGridState(gridState, config);
           } catch (err) {
             log.error({ err }, 'Error handling fill');
+          }
+        } else if (result === 'cancelled' && gridState) {
+          // Mark as cancelled and trigger replenishment
+          markLevelActive(gridState, data.customerOrderId || '', data.orderId);
+          const { toPlace } = updateGridState(gridState, config, gridState.currentPrice);
+          if (toPlace.length > 0) {
+            log.info({ count: toPlace.length }, 'Replenishing after cancellation');
+            for (const level of toPlace) {
+              try {
+                await orderManager.placeSingleOrder(level);
+              } catch (err) {
+                log.error({ err, level: level.levelIndex }, 'Failed to replenish');
+              }
+            }
           }
         }
       },
@@ -311,52 +328,53 @@ async function main(): Promise<void> {
   // Periodic reconciliation
   setInterval(async () => {
     try {
+      // Check for stale data
       if (tradeWs.isStale()) {
-        log.warn('Trade WS stale — pausing');
+        if (!isDataStale) {
+          log.warn('Trade WS stale — pausing new entry placement');
+          isDataStale = true;
+        }
         return;
+      }
+      if (isDataStale) {
+        log.info('Trade WS data fresh — resuming operations');
+        isDataStale = false;
       }
 
       const positions = await rest.getOpenPositions(config.pair);
       positionManager.updateFromRest(positions);
 
-      if (gridState) {
+      if (gridState && !isDataStale) {
         const currentPrice = await getReferencePrice(config, tradeWs, rest);
-        const oldBidCount = gridState.activeBidCount;
-        const oldAskCount = gridState.activeAskCount;
+        const { toPlace, toCancel, bidCount, askCount } = updateGridState(gridState, config, currentPrice);
         
-        updateGridOrders(gridState, currentPrice);
-        
-        // Log if order counts changed
-        if (gridState.activeBidCount !== oldBidCount || gridState.activeAskCount !== oldAskCount) {
-          logGridState(gridState, config);
-        }
-
         // Place missing orders
-        const toPlace = getLegsToPlace(gridState);
-        for (const leg of toPlace) {
-          try {
-            await orderManager.placeSingleOrder({
-              level: leg.level.levelIndex,
-              side: leg.side,
-              price: leg.price,
-              priceStr: leg.priceStr,
-              quantity: leg.quantity,
-              quantityStr: leg.quantityStr,
-              customerOrderId: leg.customerOrderId,
-            });
-          } catch (err) {
-            log.warn({ err, level: leg.level.levelIndex }, 'Failed to place');
+        for (const level of toPlace) {
+          if (!level.exchangeOrderId) {
+            try {
+              await orderManager.placeSingleOrder(level);
+            } catch (err) {
+              log.warn({ err, level: level.levelIndex }, 'Failed to place');
+            }
           }
         }
 
         // Cancel invalid orders
-        const toCancel = getLegsToCancel(gridState);
-        for (const leg of toCancel) {
+        for (const level of toCancel) {
           try {
-            await rest.cancelOrder(leg.exchangeOrderId, config.pair);
+            await rest.cancelOrder(level.exchangeOrderId!, config.pair);
+            level.state = 'cancelled';
+            level.exchangeOrderId = undefined;
           } catch (err) {
-            log.warn({ err, level: leg.level.levelIndex }, 'Failed to cancel');
+            log.warn({ err, level: level.levelIndex }, 'Failed to cancel');
           }
+        }
+
+        // Log if counts changed significantly
+        const totalActive = bidCount + askCount;
+        if (totalActive !== config.levels) {
+          log.info({ active: totalActive, target: config.levels, bidCount, askCount }, 
+            'Active order count differs from target — reconciliation in progress');
         }
       }
 
@@ -372,7 +390,14 @@ async function main(): Promise<void> {
     }
   }, config.reconcileIntervalSecs * 1000);
 
-  log.info({ pair: config.pair, range: config.gridRangePercent + '%' }, 'Grid bot running');
+  log.info(
+    { 
+      pair: config.pair, 
+      levels: config.levels,
+      range: `${lowerBound.toString()} – ${upperBound.toString()}`
+    }, 
+    'Grid bot running'
+  );
 
   process.on('SIGTERM', () => {
     log.info('Shutting down');
