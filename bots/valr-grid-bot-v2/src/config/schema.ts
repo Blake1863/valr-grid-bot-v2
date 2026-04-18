@@ -8,10 +8,11 @@ export const ConfigSchema = z.object({
 
   levels: z.number().int().min(1).max(100),
   gridRangePercent: z.number().min(0.1).max(100), // Total range % (e.g., 10 = ±5% from ref)
-  spacingMode: z.enum(['absolute', 'percent']).default('percent'),
+  spacingMode: z.enum(['absolute', 'percent']).optional().default('percent'),
   spacingValue: z.string().optional(), // Computed from gridRangePercent if not provided
 
   quantityPerLevel: z.string().min(1), // Decimal string — used when dynamicSizing is false
+  maxNetPosition: z.string().optional(), // Max net position in base currency (optional risk limit)
 
   dynamicSizing: z.boolean().default(false), // Calculate qty from balance when true
   targetLeverage: z.number().int().min(1).max(100).optional(), // Effective leverage for dynamic sizing
