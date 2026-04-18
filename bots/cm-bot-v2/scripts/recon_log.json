@@ -697,5 +697,52 @@
         "closing": 41.9362
       }
     }
+  },
+  {
+    "date": "2026-04-17",
+    "opening": 247.3404,
+    "closing": 191.7638,
+    "global_opening": 282.0189,
+    "global_closing": 229.5507,
+    "spot_volume": 0.0,
+    "perp_taker_vol": 191144.0716,
+    "perp_fees_usdt": 38.228815,
+    "fees_estimated": 38.228815,
+    "inventory_movement": -17.347768,
+    "fill_count": 0,
+    "accounts": {
+      "CMS2": {
+        "spot_volume": 0.0,
+        "perp_taker_vol": 0.0,
+        "perp_fees_usdt": 0.0,
+        "fill_count": 0,
+        "opening": 83.7405,
+        "closing": 82.9927
+      },
+      "CMS1": {
+        "spot_volume": 0.0,
+        "perp_taker_vol": 0.0,
+        "perp_fees_usdt": 0.0,
+        "fill_count": 0,
+        "opening": 88.6228,
+        "closing": 87.8442
+      },
+      "CM2": {
+        "spot_volume": 0.0,
+        "perp_taker_vol": 106098.8231,
+        "perp_fees_usdt": 21.219765,
+        "fill_count": 0,
+        "opening": 33.0409,
+        "closing": 8.6286
+      },
+      "CM1": {
+        "spot_volume": 0.0,
+        "perp_taker_vol": 85045.2485,
+        "perp_fees_usdt": 17.00905,
+        "fill_count": 0,
+        "opening": 41.9362,
+        "closing": 12.2984
+      }
+    }
   }
 ]
