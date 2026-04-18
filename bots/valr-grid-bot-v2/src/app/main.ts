@@ -1,6 +1,15 @@
 /**
  * VALR Grid Bot v2 — Main entry point
  *
+ * Symmetric grid bot with explicit pair tracking.
+ * 
+ * Core behavior:
+ * - Maintains N bid + N ask levels within configured range (no expansion)
+ * - Tracks grid as explicit pairs (bid + ask at each level)
+ * - Replaces completed pairs to keep grid full
+ * - Allows natural long/short exposure from grid trading
+ * - Recenter grid when price drifts beyond threshold
+ *
  * Startup sequence:
  * 1. Load + validate config
  * 2. Fetch API credentials from secrets manager
@@ -26,11 +35,29 @@ import { TpslManager } from '../strategy/tpslManager.js';
 import { OrderManager } from '../strategy/orderManager.js';
 import { RiskManager } from '../strategy/riskManager.js';
 import { reconcile } from '../strategy/reconciliation.js';
-import { buildGridLevels, buildReplenishLevel, calcSlPrice, getSpacingAmount, calcTpPrice } from '../strategy/gridBuilder.js';
+import { buildGridLevels } from '../strategy/gridBuilder.js';
+import {
+  buildGridState,
+  getMissingLegs,
+  getCompletedPairs,
+  markLegActive,
+  markLegFilled,
+  markLegMissing,
+  recalculateGridStats,
+  needsRecenter,
+  rebuildGridWithNewReference,
+  replaceCompletedPair,
+  logGridState,
+  calculateQuantityPerLevel,
+  type GridState,
+} from '../strategy/gridPairManager.js';
 import type { WsOrderStatusUpdate, WsOpenPositionUpdate, WsPositionClosed, WsFailedOrder } from '../exchange/types.js';
 import { createLogger } from './logger.js';
 
 const log = createLogger('main');
+
+// Global grid state for neutral mode
+let gridState: GridState | null = null;
 
 function getSecret(name: string): string {
   try {
@@ -82,14 +109,152 @@ async function getReferencePrice(
   throw new Error('Cannot determine reference price from any source');
 }
 
+/**
+ * Place missing grid legs for neutral mode (pair-based).
+ */
+async function placeMissingGridLegs(
+  grid: GridState,
+  orderManager: OrderManager,
+  config: ReturnType<typeof loadConfig>,
+  constraints: Awaited<ReturnType<PairMetadataLoader['load']>>,
+  availableBalance: Decimal
+): Promise<void> {
+  const missingLegs = getMissingLegs(grid);
+  if (missingLegs.length === 0) {
+    log.info('Grid is full — no missing legs to place');
+    return;
+  }
+
+  log.info({ count: missingLegs.length }, 'Placing missing grid legs');
+
+  // Find the pairId for each leg
+  for (const leg of missingLegs) {
+    const pair = grid.pairs.find(p => 
+      p.bidLeg.customerOrderId === leg.customerOrderId || 
+      p.askLeg.customerOrderId === leg.customerOrderId
+    );
+    
+    try {
+      const result = await orderManager.placeSingleOrder({
+        level: leg.level,
+        side: leg.side,
+        price: leg.price,
+        priceStr: leg.priceStr,
+        quantity: leg.quantity,
+        quantityStr: leg.quantityStr,
+        customerOrderId: leg.customerOrderId,
+        pairId: pair?.pairId,
+      });
+      // Mark as active - exchangeOrderId will be set by WS confirmation
+      const activePair = grid.pairs.find(p => 
+        p.bidLeg.customerOrderId === leg.customerOrderId || 
+        p.askLeg.customerOrderId === leg.customerOrderId
+      );
+      if (activePair) {
+        if (activePair.bidLeg.customerOrderId === leg.customerOrderId) {
+          activePair.bidLeg.state = 'active';
+        } else {
+          activePair.askLeg.state = 'active';
+        }
+        activePair.updatedAt = new Date().toISOString();
+        recalculateGridStats(grid);
+      }
+      log.info(
+        { level: leg.level, side: leg.side, price: leg.priceStr },
+        'Grid leg placed'
+      );
+    } catch (err) {
+      log.error({ err, level: leg.level, side: leg.side }, 'Failed to place grid leg');
+    }
+  }
+
+  recalculateGridStats(grid);
+  logGridState(grid, config);
+}
+
+/**
+ * Replace completed pairs to keep grid full.
+ */
+async function replaceCompletedPairs(
+  grid: GridState,
+  orderManager: OrderManager,
+  config: ReturnType<typeof loadConfig>,
+  constraints: Awaited<ReturnType<PairMetadataLoader['load']>>,
+  availableBalance: Decimal
+): Promise<void> {
+  const completed = getCompletedPairs(grid);
+  if (completed.length === 0) return;
+
+  log.info({ count: completed.length }, 'Replacing completed grid pairs');
+
+  const seed = Date.now().toString(36);
+
+  for (const pair of completed) {
+    const qty = config.dynamicSizing && availableBalance.gt(0)
+      ? calculateQuantityPerLevel(config, availableBalance, grid.referencePrice, constraints)
+      : new Decimal(config.quantityPerLevel);
+
+    const newPair = replaceCompletedPair(
+      grid,
+      pair.pairId,
+      config,
+      grid.referencePrice,
+      constraints,
+      qty,
+      seed
+    );
+
+    if (newPair) {
+      // Place both legs of the new pair - state already set to 'missing' by replaceCompletedPair
+      // WS ORDER_STATUS_UPDATE will mark them as 'active' when confirmed
+      try {
+        await orderManager.placeSingleOrder({
+          level: newPair.bidLeg.level,
+          side: newPair.bidLeg.side,
+          price: newPair.bidLeg.price,
+          priceStr: newPair.bidLeg.priceStr,
+          quantity: newPair.bidLeg.quantity,
+          quantityStr: newPair.bidLeg.quantityStr,
+          customerOrderId: newPair.bidLeg.customerOrderId,
+          pairId: newPair.pairId,
+        });
+      } catch (err) {
+        log.error({ err, pair: pair.pairId, side: 'BUY' }, 'Failed to place replacement bid');
+      }
+
+      try {
+        await orderManager.placeSingleOrder({
+          level: newPair.askLeg.level,
+          side: newPair.askLeg.side,
+          price: newPair.askLeg.price,
+          priceStr: newPair.askLeg.priceStr,
+          quantity: newPair.askLeg.quantity,
+          quantityStr: newPair.askLeg.quantityStr,
+          customerOrderId: newPair.askLeg.customerOrderId,
+          pairId: newPair.pairId,
+        });
+      } catch (err) {
+        log.error({ err, pair: pair.pairId, side: 'SELL' }, 'Failed to place replacement ask');
+      }
+    }
+  }
+
+  recalculateGridStats(grid);
+  logGridState(grid, config);
+}
+
 async function main(): Promise<void> {
-  log.info('VALR Grid Bot v2 starting');
+  log.info('VALR Grid Bot v2 starting (symmetric grid with pair tracking)');
 
   // ─── 1. Load config ───────────────────────────────────────────────────────
   const config = loadConfig();
 
   if (config.dryRun) {
     log.warn('DRY-RUN MODE — no real orders will be placed');
+  }
+
+  if (config.mode !== 'neutral') {
+    log.warn('Pair-based grid is optimized for neutral mode. Directional modes use legacy logic.');
   }
 
   // ─── 2. Credentials ───────────────────────────────────────────────────────
@@ -115,13 +280,6 @@ async function main(): Promise<void> {
     { available: usdtBalance?.available ?? 'N/A', total: usdtBalance?.total ?? 'N/A' },
     'Account USDT balance'
   );
-
-  if (config.dynamicSizing) {
-    log.info(
-      { targetLeverage: config.targetLeverage, allocationPercent: config.capitalAllocationPercent },
-      'Dynamic sizing enabled — order sizes will adjust with balance'
-    );
-  }
 
   // ─── 5. Build strategy components ─────────────────────────────────────────
   const positionManager = new PositionManager(config.pair, store);
@@ -164,87 +322,40 @@ async function main(): Promise<void> {
     apiSecret,
     {
       onOrderStatusUpdate: async (data: WsOrderStatusUpdate) => {
-        const filledOrder = orderManager.getFilledOrderData(data);
         const result = orderManager.handleOrderStatusUpdate(data);
 
-        if (result === 'filled') {
+        if (result === 'filled' && config.mode === 'neutral' && gridState) {
           try {
+            // Mark the leg as filled in grid state
+            markLegFilled(gridState, data.customerOrderId, data.orderId);
+
             // Refresh position from exchange (authoritative)
             const positions = await rest.getOpenPositions(config.pair);
             positionManager.updateFromRest(positions);
 
             const refPrice = await getReferencePrice(config, tradeWs, rest);
-            const seed = Date.now().toString(36);
 
-            if (config.mode === 'neutral') {
-              // ── NEUTRAL MODE ─────────────────────────────────────────────
-              // Replenish the side that just filled with a new deeper order.
-              // The existing orders on the opposite side ARE the take profits.
-              if (filledOrder) {
-                // CRITICAL FIX: Check cooldown before replenishing (prevents orders after position close)
-                try {
-                  riskManager.checkCooldown(store);
-                } catch {
-                  log.info('In cooldown after position close — skipping neutral replenishment');
-                  return; // Don't replenish after position closed
-                }
+            // Check cooldown before any action
+            try {
+              riskManager.checkCooldown(store);
+            } catch {
+              log.info('In cooldown after position close — skipping replenishment');
+              return;
+            }
 
-                const filledSide = filledOrder.side as 'BUY' | 'SELL';
-                const activeOrders = orderManager.getActiveOrders();
-                const activeSameSide = activeOrders.filter((o) => o.side === filledSide);
-                const nextLevel = activeSameSide.length + 1;
+            // Replace completed pairs to keep grid full
+            await replaceCompletedPairs(gridState, orderManager, config, constraints, availableBalance);
 
-                // Replenish the filled side
-                const replenish = buildReplenishLevel(
-                  config, refPrice, constraints, filledSide, nextLevel, seed, availableBalance
-                );
-                log.info(
-                  { side: filledSide, level: nextLevel, price: replenish.priceStr },
-                  'Neutral: replenishing filled side'
-                );
-                try {
-                  await orderManager.placeSingleOrder(replenish);
-                } catch (err) {
-                  log.warn({ err }, 'Failed to replenish after fill');
-                }
-              }
-
-              // Place SL if we have a net position (no TP — grid is its own TP)
-              if (!positionManager.isFlat) {
-                try {
-                  await tpslManager.rebuild(positionManager.position!, refPrice);
-                } catch (err) {
-                  log.error({ err }, 'CRITICAL: SL placement failed after fill');
-                }
-              }
-
-            } else {
-              // ── DIRECTIONAL MODES (long_only / short_only) ───────────────
-              if (!positionManager.isFlat) {
-                try {
-                  await tpslManager.rebuild(positionManager.position!, refPrice);
-                } catch (err) {
-                  log.error({ err }, 'CRITICAL: TPSL placement failed after fill — halting new entries');
-                  return;
-                }
-
-                // Replenish next deeper level
-                const activeOrders = orderManager.getActiveOrders();
-
-                if (activeOrders.length < config.levels) {
-                  const nextLevel = activeOrders.length + 1;
-                  const newLevels = buildGridLevels(config, refPrice, constraints, seed, availableBalance);
-                  const nextLevelData = newLevels.find((l) => l.level === nextLevel);
-                  if (nextLevelData) {
-                    try {
-                      await orderManager.placeSingleOrder(nextLevelData);
-                    } catch (err) {
-                      log.warn({ err }, 'Failed to replenish grid level after fill');
-                    }
-                  }
-                }
+            // Place SL if we have a net position
+            if (!positionManager.isFlat) {
+              try {
+                await tpslManager.rebuild(positionManager.position!, refPrice);
+              } catch (err) {
+                log.error({ err }, 'CRITICAL: SL placement failed after fill');
               }
             }
+
+            logGridState(gridState, config);
           } catch (err) {
             log.error({ err }, 'Error handling fill event');
           }
@@ -253,7 +364,6 @@ async function main(): Promise<void> {
 
       onOpenPositionUpdate: async (data: WsOpenPositionUpdate) => {
         if (data.pair !== config.pair) return;
-        // Just update position state — TPSL only moves on fills, not on position updates
         positionManager.updateFromWs(data);
       },
 
@@ -264,7 +374,6 @@ async function main(): Promise<void> {
         positionManager.handlePositionClosed(data);
 
         // Cancel all grid orders + TPSL
-        // Note: orderManager.cancelAll() now clears DB even if REST call fails
         try {
           await orderManager.cancelAll();
         } catch (err) {
@@ -274,6 +383,11 @@ async function main(): Promise<void> {
           await tpslManager.cancelAll();
         } catch (err) {
           log.error({ err }, 'Error cancelling TPSL after position close');
+        }
+
+        // Reset grid state
+        if (config.mode === 'neutral') {
+          gridState = null;
         }
 
         // Enter cooldown
@@ -309,92 +423,67 @@ async function main(): Promise<void> {
     riskManager.checkCooldown(store);
   } catch (err) {
     log.warn({ err }, 'In cooldown — not placing grid yet');
-    log.info('Waiting for cooldown to expire...');
   }
 
   const refPrice = await getReferencePrice(config, tradeWs, rest);
   log.info({ refPrice: refPrice.toString(), source: config.referencePriceSource }, 'Reference price');
 
-  if (reconcileResult.needsGridPlacement && !orderManager.isCircuitOpen()) {
-    try {
-      riskManager.checkCooldown(store);
-      
-      // CRITICAL FIX: If needsFullRebuild, cancel ALL existing grid orders first
-      // This handles asymmetric grids from stale restarts (e.g., only buys or only sells)
-      if (reconcileResult.needsFullRebuild) {
-        log.warn('Full rebuild requested — cancelling all existing grid orders');
-        await orderManager.cancelAll();
-        await tpslManager.cancelAll();
-      }
-      
-      const seed = Date.now().toString(36);
-      const allGridLevels = buildGridLevels(config, refPrice, constraints, seed, availableBalance);
+  if (config.mode === 'neutral') {
+    // Initialize pair-based grid state
+    const seed = Date.now().toString(36);
+    gridState = buildGridState(config, refPrice, constraints, availableBalance, seed);
 
-      let gridLevels = allGridLevels;
-      if (config.mode === 'neutral' && positionManager.position) {
-        // Neutral mode with position: only place hedging orders (don't add to position)
-        // This avoids "Insufficient Balance" errors when account is already leveraged
-        const activeOrders = orderManager.getActiveOrders();
-        const activeBuys = activeOrders.filter((o) => o.side === 'BUY').length;
-        const activeSells = activeOrders.filter((o) => o.side === 'SELL').length;
-        const qtyPerLevel = new Decimal(config.quantityPerLevel);
-        
-        // Calculate how many orders needed to hedge/close the position
-        const positionQty = positionManager.netQuantity.abs();
-        const ordersNeededToHedge = Math.ceil(positionQty.div(qtyPerLevel).toNumber());
-        const isLong = positionManager.netQuantity.gt(0);
-        
-        // For long position: place SELLs to close. For short: place BUYs to close.
-        const hedgeSide = isLong ? 'SELL' : 'BUY';
-        const hedgeSideCount = isLong ? activeSells : activeBuys;
-        
-        // Only place orders on hedging side (reduces position, no extra margin needed)
-        // Skip opposite side orders until position is flat (would require more balance)
-        gridLevels = allGridLevels.filter((l) => {
-          if (l.side === hedgeSide) {
-            // Place enough orders to hedge the position + normal grid
-            return hedgeSideCount < ordersNeededToHedge + config.levels;
-          } else {
-            // Skip opposite side orders when position is open
-            return false;
-          }
-        });
-        
-        log.info(
-          { 
-            positionSide: isLong ? 'LONG' : 'SHORT',
-            positionQty: positionQty.toString(),
-            hedgeSide,
-            ordersNeededToHedge,
-            activeBuys,
-            activeSells,
-            gridLevelsToPlace: gridLevels.length
-          },
-          'Neutral mode: placing hedged grid'
-        );
-      } else if (config.mode === 'neutral') {
-        // No position: symmetric grid
-        const activeOrders = orderManager.getActiveOrders();
-        const activeBuys = activeOrders.filter((o) => o.side === 'BUY').length;
-        const activeSells = activeOrders.filter((o) => o.side === 'SELL').length;
-        gridLevels = allGridLevels.filter((l) => {
-          if (l.side === 'BUY' && activeBuys >= config.levels) return false;
-          if (l.side === 'SELL' && activeSells >= config.levels) return false;
-          return true;
-        });
-      }
-
-      if (gridLevels.length > 0) {
-        log.info({ levels: gridLevels.length, refPrice: refPrice.toString() }, 'Placing initial grid');
-        for (const level of gridLevels) {
-          log.info({ level: level.level, side: level.side, price: level.priceStr, qty: level.quantityStr });
+    // Restore state from existing orders on exchange
+    const activeOrders = orderManager.getActiveOrders();
+    for (const order of activeOrders) {
+      // Try to match to existing pair
+      const level = order.level;
+      const pair = gridState.pairs.find(p => p.levelIndex === level);
+      if (pair) {
+        if (order.side === 'BUY') {
+          pair.bidLeg.state = 'active';
+          pair.bidLeg.exchangeOrderId = order.exchangeOrderId || undefined;
+        } else {
+          pair.askLeg.state = 'active';
+          pair.askLeg.exchangeOrderId = order.exchangeOrderId || undefined;
         }
-        await orderManager.placeGrid(gridLevels);
-      } else {
-        log.info('Grid already fully populated on exchange — no placement needed');
       }
-    } catch (err) {
-      log.error({ err }, 'Failed to place initial grid');
+    }
+    recalculateGridStats(gridState);
+    logGridState(gridState, config);
+
+    // Check if recenter is needed
+    if (needsRecenter(gridState, refPrice, config, constraints)) {
+      log.info('Recentering grid on startup due to price drift');
+      gridState = rebuildGridWithNewReference(gridState, config, refPrice, constraints, availableBalance, seed);
+    }
+
+    // Place missing legs
+    if (!orderManager.isCircuitOpen()) {
+      await placeMissingGridLegs(gridState, orderManager, config, constraints, availableBalance);
+    }
+  } else {
+    // Legacy directional mode
+    if (reconcileResult.needsGridPlacement && !orderManager.isCircuitOpen()) {
+      try {
+        riskManager.checkCooldown(store);
+        
+        if (reconcileResult.needsFullRebuild) {
+          log.warn('Full rebuild requested — cancelling all existing grid orders');
+          await orderManager.cancelAll();
+          await tpslManager.cancelAll();
+        }
+        
+        const seed = Date.now().toString(36);
+        const allGridLevels = buildGridLevels(config, refPrice, constraints, seed, availableBalance);
+
+        if (allGridLevels.length > 0) {
+          log.info({ levels: allGridLevels.length, refPrice: refPrice.toString() }, 'Placing initial grid');
+          await orderManager.placeGrid(allGridLevels);
+        }
+      } catch (err) {
+        log.error({ err }, 'Failed to place initial grid');
+      }
     }
   }
 
@@ -403,7 +492,6 @@ async function main(): Promise<void> {
       await tpslManager.rebuild(positionManager.position, refPrice);
     } catch (err) {
       log.error({ err }, 'CRITICAL: Initial TPSL placement failed');
-      // Don't exit — let the periodic reconcile handle it
     }
   }
 
@@ -414,6 +502,30 @@ async function main(): Promise<void> {
       const positions = await rest.getOpenPositions(config.pair);
       positionManager.updateFromRest(positions);
 
+      // Check for stale WS price
+      if (tradeWs.isStale()) {
+        log.warn('Trade WS price is stale — pausing grid operations');
+        return;
+      }
+
+      // Check if recenter needed (neutral mode)
+      if (config.mode === 'neutral' && gridState) {
+        const currentPrice = await getReferencePrice(config, tradeWs, rest);
+        if (needsRecenter(gridState, currentPrice, config, constraints)) {
+          log.info('Recentering grid due to price drift');
+          gridState = rebuildGridWithNewReference(
+            gridState,
+            config,
+            currentPrice,
+            constraints,
+            availableBalance,
+            Date.now().toString(36)
+          );
+          await placeMissingGridLegs(gridState, orderManager, config, constraints, availableBalance);
+        }
+      }
+
+      // Ensure TPSL exists if position open
       if (!positionManager.isFlat && !store.getTpsl(config.pair)) {
         log.warn('TPSL missing during periodic check — rebuilding');
         const refPrice = await getReferencePrice(config, tradeWs, rest);

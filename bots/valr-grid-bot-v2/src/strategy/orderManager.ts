@@ -125,7 +125,7 @@ export class OrderManager {
   }
 
   /** Place a single grid level (for replenishment after fill) */
-  async placeSingleOrder(level: GridLevel): Promise<void> {
+  async placeSingleOrder(level: GridLevel & { pairId?: string }): Promise<void> {
     this._checkCircuitBreaker();
 
     const now = new Date().toISOString();
@@ -138,6 +138,7 @@ export class OrderManager {
       exchangeOrderId: null,
       status: 'pending',
       level: level.level,
+      pairId: level.pairId,
       createdAt: now,
       updatedAt: now,
     });

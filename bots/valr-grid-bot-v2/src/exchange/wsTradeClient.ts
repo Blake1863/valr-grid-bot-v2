@@ -63,6 +63,11 @@ export class WsTradeClient {
     return this._markPrice ?? this._midPrice ?? this._lastTradedPrice ?? null;
   }
 
+  /** Check if price data is stale (no messages within timeout) */
+  isStale(): boolean {
+    return Date.now() - this.lastMessageAt > this.staleTimeoutMs;
+  }
+
   connect(): void {
     this.stopped = false;
     this._connect();

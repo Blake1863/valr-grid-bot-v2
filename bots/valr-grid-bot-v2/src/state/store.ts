@@ -26,6 +26,7 @@ export interface GridOrderRow {
   exchangeOrderId: string | null;
   status: OrderStatus;
   level: number;
+  pairId?: string;       // Grid pair ID (e.g., "pair-1")
   createdAt: string;
   updatedAt: string;
 }
@@ -72,6 +73,7 @@ export class StateStore {
         exchangeOrderId TEXT,
         status TEXT NOT NULL DEFAULT 'pending',
         level INTEGER NOT NULL DEFAULT 0,
+        pairId TEXT,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL
       );
@@ -107,11 +109,12 @@ export class StateStore {
 
   upsertGridOrder(order: Omit<GridOrderRow, 'id'>): void {
     const stmt = this.db.prepare(`
-      INSERT INTO grid_orders (pair, side, price, quantity, customerOrderId, exchangeOrderId, status, level, createdAt, updatedAt)
-      VALUES (@pair, @side, @price, @quantity, @customerOrderId, @exchangeOrderId, @status, @level, @createdAt, @updatedAt)
+      INSERT INTO grid_orders (pair, side, price, quantity, customerOrderId, exchangeOrderId, status, level, pairId, createdAt, updatedAt)
+      VALUES (@pair, @side, @price, @quantity, @customerOrderId, @exchangeOrderId, @status, @level, @pairId, @createdAt, @updatedAt)
       ON CONFLICT(customerOrderId) DO UPDATE SET
         exchangeOrderId = excluded.exchangeOrderId,
         status = excluded.status,
+        pairId = excluded.pairId,
         updatedAt = excluded.updatedAt
     `);
     stmt.run(order);
@@ -135,7 +138,16 @@ export class StateStore {
   getActiveGridOrders(pair: string): GridOrderRow[] {
     return this.db
       .prepare(
-        "SELECT * FROM grid_orders WHERE pair = ? AND status IN ('pending', 'placed') ORDER BY CAST(price AS REAL)"
+        "SELECT * FROM grid_orders WHERE pair = ? AND status IN ('pending', 'placed') ORDER BY level, side"
+      )
+      .all(pair) as GridOrderRow[];
+  }
+
+  /** Get grid orders with pairId for pair-based reconciliation */
+  getGridOrdersWithPairs(pair: string): GridOrderRow[] {
+    return this.db
+      .prepare(
+        "SELECT * FROM grid_orders WHERE pair = ? AND pairId IS NOT NULL ORDER BY pairId, side"
       )
       .all(pair) as GridOrderRow[];
   }

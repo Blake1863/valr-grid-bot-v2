@@ -1,15 +1,12 @@
 /**
- * Grid level generator.
+ * Grid level generator — LEGACY support for directional modes.
+ * 
+ * For neutral symmetric grid with explicit pair tracking, use gridPairManager.ts.
+ * 
  * Pure functions — no I/O, testable in isolation.
  *
  * long_only:  laddered BUY orders below reference price
  * short_only: laddered SELL orders above reference price
- *
- * neutral (symmetric):
- *   N BUY orders below ref price  — the sells above are their take profits
- *   N SELL orders above ref price — the buys below are their take profits
- *   On fill → replenish that side with a new order one level deeper
- *   Price oscillating through grid = profit captured on each crossing
  *
  * percent spacing example (3 levels, 0.4%, ref=100):
  *   BUY  level 1: 100 * 0.996   = 99.60
@@ -18,10 +15,6 @@
  *   SELL level 1: 100 * 1.004   = 100.40
  *   SELL level 2: 100 * 1.004²  = 100.80
  *   SELL level 3: 100 * 1.004³  = 101.21
- *
- * absolute spacing example (3 levels, $0.50, ref=100):
- *   BUY  1: 99.50  BUY  2: 99.00  BUY  3: 98.50
- *   SELL 1: 100.50 SELL 2: 101.00 SELL 3: 101.50
  */
 
 import Decimal from 'decimal.js';
@@ -87,6 +80,7 @@ export interface GridLevel {
   quantity: Decimal;
   quantityStr: string; // truncated to baseDecimalPlaces
   customerOrderId: string;
+  pairId?: string;     // Grid pair ID for pair-based tracking
 }
 
 /** Build customerOrderId — max 50 chars, alphanumeric + dashes */
