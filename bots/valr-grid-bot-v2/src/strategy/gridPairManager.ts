@@ -235,12 +235,14 @@ export function markLegActive(
       pair.bidLeg.state = 'active';
       pair.bidLeg.exchangeOrderId = exchangeOrderId;
       updatePairState(pair);
+      recalculateGridStats(grid);
       return true;
     }
     if (pair.askLeg.customerOrderId === customerOrderId) {
       pair.askLeg.state = 'active';
       pair.askLeg.exchangeOrderId = exchangeOrderId;
       updatePairState(pair);
+      recalculateGridStats(grid);
       return true;
     }
   }
@@ -266,6 +268,7 @@ export function markLegFilled(
       pair.bidLeg.state = 'filled';
       pair.bidLeg.filledAt = new Date().toISOString();
       updatePairState(pair);
+      recalculateGridStats(grid);
       log.info(
         { pairId: pair.pairId, level: pair.levelIndex, side: 'BUY', newState: pair.state },
         'Bid leg filled'
@@ -276,6 +279,7 @@ export function markLegFilled(
       pair.askLeg.state = 'filled';
       pair.askLeg.filledAt = new Date().toISOString();
       updatePairState(pair);
+      recalculateGridStats(grid);
       log.info(
         { pairId: pair.pairId, level: pair.levelIndex, side: 'SELL', newState: pair.state },
         'Ask leg filled'
@@ -399,22 +403,18 @@ export function needsRecenter(
 ): boolean {
   if (grid.pairs.length === 0) return true;
 
-  const spacing = new Decimal(config.spacingValue);
-  const outerBidLevel = config.levels;
-  const outerAskLevel = config.levels;
+  // Get the outer levels (highest level index = furthest from reference)
+  const outerPair = grid.pairs[grid.pairs.length - 1];
+  const oldOuterBid = outerPair.bidLeg.price;
+  const oldOuterAsk = outerPair.askLeg.price;
 
-  // Calculate current outer levels based on OLD reference
-  const oldOuterBid = grid.pairs[0].bidLeg.price;
-  const oldOuterAsk = grid.pairs[0].askLeg.price;
-
-  // Calculate what outer levels WOULD BE with new reference
-  const newOuterBid = buyLevelPrice(newReferencePrice, spacing, config.spacingMode, outerBidLevel);
-  const newOuterAsk = sellLevelPrice(newReferencePrice, spacing, config.spacingMode, outerAskLevel);
-
-  // If new reference would put current price outside grid bounds, recenter
-  // Threshold: if price moved more than 50% of grid range
+  // Calculate grid range
   const gridRange = oldOuterAsk.minus(oldOuterBid);
+  
+  // Calculate price move from original reference
   const priceMove = newReferencePrice.minus(grid.referencePrice).abs();
+  
+  // Threshold: if price moved more than 50% of grid range
   const threshold = gridRange.mul(0.5);
 
   const shouldRecenter = priceMove.gt(threshold);

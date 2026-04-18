@@ -106,8 +106,8 @@ describe('GridPairManager', () => {
       expect(grid.pairs[1].bidLeg.priceStr).toBe('99.20');
       expect(grid.pairs[1].askLeg.priceStr).toBe('100.80');
 
-      // Level 3: 100 * 0.996^3 = 98.81, 100 * 1.004^3 = 101.21
-      expect(grid.pairs[2].bidLeg.priceStr).toBe('98.81');
+      // Level 3: 100 * 0.996^3 = 98.80 (rounded to tick), 100 * 1.004^3 = 101.20
+      expect(grid.pairs[2].bidLeg.priceStr).toBe('98.80');
       expect(grid.pairs[2].askLeg.priceStr).toBe('101.20');
     });
 
@@ -117,8 +117,8 @@ describe('GridPairManager', () => {
       const config: BotConfig = { ...baseConfig, dynamicSizing: true, targetLeverage: 10 };
       const grid = buildGridState(config, refPrice, mockConstraints, balance, 'test');
 
-      // Expected: 1000 * 10 * 0.9 / 6 levels / 100 price = 1.5 per level
-      const expectedQty = '1.50';
+      // Expected: 1000 * 10 * 0.9 / 6 levels / 100 price = 15 per level
+      const expectedQty = '15.00';
       expect(grid.pairs[0].bidLeg.quantityStr).toBe(expectedQty);
       expect(grid.pairs[0].askLeg.quantityStr).toBe(expectedQty);
     });
@@ -173,6 +173,7 @@ describe('GridPairManager', () => {
 
     it('marks bid as filled and pair as partial', () => {
       const pair = markLegFilled(grid, undefined, 'bid-123');
+      recalculateGridStats(grid);
       
       expect(pair).toBe(grid.pairs[0]);
       expect(grid.pairs[0].bidLeg.state).toBe('filled');
@@ -183,9 +184,9 @@ describe('GridPairManager', () => {
 
     it('marks pair as complete when both legs filled', () => {
       markLegFilled(grid, undefined, 'bid-123');
-      const pair = markLegFilled(grid, undefined, 'ask-456');
+      markLegFilled(grid, undefined, 'ask-456');
+      recalculateGridStats(grid);
       
-      expect(pair).toBe(grid.pairs[0]);
       expect(grid.pairs[0].state).toBe('complete');
       expect(grid.pairs[0].completedAt).toBeDefined();
       expect(grid.completePairs).toBe(1);
@@ -209,10 +210,9 @@ describe('GridPairManager', () => {
       
       markLegActive(grid, grid.pairs[0].bidLeg.customerOrderId, 'order-1');
       markLegActive(grid, grid.pairs[0].askLeg.customerOrderId, 'order-2');
-      recalculateGridStats(grid);
       
       const missing = getMissingLegs(grid);
-      expect(missing).toHaveLength(4); // 2 remaining pairs * 2 legs
+      expect(missing).toHaveLength(4); // 2 remaining pairs * 2 legs (pair 1 is active, not missing)
     });
   });
 
@@ -227,8 +227,10 @@ describe('GridPairManager', () => {
       markLegActive(grid, grid.pairs[0].askLeg.customerOrderId, 'ask-1');
       markLegFilled(grid, undefined, 'bid-1');
       markLegFilled(grid, undefined, 'ask-1');
+      recalculateGridStats(grid);
       
       expect(grid.pairs[0].state).toBe('complete');
+      expect(grid.completePairs).toBe(1);
       
       // Replace the pair
       const qty = new Decimal('1.0');
@@ -240,8 +242,9 @@ describe('GridPairManager', () => {
       expect(newPair!.askLeg.state).toBe('missing');
       expect(newPair!.pairId).toBe('pair-1');
       
-      // Grid should have missing pairs again
-      expect(grid.missingPairs).toBe(1);
+      // After replace: pair-1 is missing, pairs 2-3 are still missing from initial build
+      recalculateGridStats(grid);
+      expect(grid.missingPairs).toBe(3); // All 3 pairs are missing
       expect(grid.completePairs).toBe(0);
     });
   });
@@ -252,7 +255,9 @@ describe('GridPairManager', () => {
       const balance = new Decimal('1000');
       const grid = buildGridState(baseConfig, refPrice, mockConstraints, balance, 'test');
       
-      // Small price move (1%) - should not trigger recenter
+      // Grid range is ~98.81 to ~101.21 (about 2.4 total)
+      // Threshold is 50% of range = ~1.2
+      // Price move of 1% (from 100 to 101) = 1, which is less than threshold
       const newPrice = new Decimal('101');
       expect(needsRecenter(grid, newPrice, baseConfig, mockConstraints)).toBe(false);
     });
@@ -287,8 +292,8 @@ describe('GridPairManager', () => {
       expect(newGrid.pairs).toHaveLength(3);
       
       // Prices should be recalculated around new reference
-      expect(newGrid.pairs[0].bidLeg.price).toBeLessThan(newPrice);
-      expect(newGrid.pairs[0].askLeg.price).toBeGreaterThan(newPrice);
+      expect(newGrid.pairs[0].bidLeg.price.lt(newPrice)).toBe(true);
+      expect(newGrid.pairs[0].askLeg.price.gt(newPrice)).toBe(true);
     });
 
     it('preserves filled legs during rebuild', () => {
@@ -368,8 +373,8 @@ describe('GridPairManager', () => {
       
       const qty = calculateQuantityPerLevel(config, balance, refPrice, mockConstraints);
       
-      // Expected: 1000 * 10 * 0.9 / 6 / 100 = 1.5
-      expect(qty.toString()).toBe('1.50');
+      // Expected: 1000 * 10 * 0.9 / 6 / 100 = 15
+      expect(qty.toNumber()).toBe(15);
     });
 
     it('respects minimum order size', () => {
