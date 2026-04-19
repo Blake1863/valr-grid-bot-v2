@@ -4,7 +4,7 @@
  * Provides tick size, quantity precision, and min order constraints.
  */
 
-import Decimal from 'decimal.js';
+import { Decimal } from 'decimal.js';
 
 export interface PairConstraints {
   pair: string;

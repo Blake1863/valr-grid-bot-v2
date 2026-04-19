@@ -6,7 +6,7 @@
 
 import WebSocket from 'ws';
 import { createLogger } from '../app/logger.js';
-import Decimal from 'decimal.js';
+import { Decimal } from 'decimal.js';
 
 const log = createLogger('wsPrice');
 

@@ -10,7 +10,7 @@
  * - All levels are unique, sorted, and respect tick/qty precision
  */
 
-import Decimal from 'decimal.js';
+import { Decimal } from 'decimal.js';
 import type { BotConfig } from '../config/schema.js';
 import type { PairConstraints } from '../exchange/pairMetadata.js';
 import { priceToString, qtyToString, roundToTick } from '../exchange/pairMetadata.js';

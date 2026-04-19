@@ -25,7 +25,7 @@
  *    - On price move: adjust active orders to stay nearest to price
  */
 
-import Decimal from 'decimal.js';
+import { Decimal } from 'decimal.js';
 import type { BotConfig } from '../config/schema.js';
 import type { PairConstraints } from '../exchange/pairMetadata.js';
 import { createLogger } from '../app/logger.js';
@@ -281,7 +281,7 @@ export function handleOrderFill(
   state.activeOrderIds.delete(filledOrder.customerOrderId);
 
   // Get adjacent target level
-  const targetIdx = getAdjacentTarget(filledOrder.levelIndex, filledOrder.side, Array.from(state.orders.values()).map(o => ({ levelIndex: o.levelIndex })));
+  const targetIdx = getAdjacentTarget(filledOrder.levelIndex, filledOrder.side, state.construction.levels);
   
   if (targetIdx === null) {
     log.warn({ level: filledOrder.levelIndex }, 'No adjacent target — at range boundary');

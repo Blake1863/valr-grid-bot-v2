@@ -4,7 +4,7 @@
  * Main entry point.
  */
 
-import Decimal from 'decimal.js';
+import { Decimal } from 'decimal.js';
 import { createLogger } from './logger.js';
 import { loadConfig } from '../config/loader.js';
 import type { BotConfig } from '../config/schema.js';
@@ -13,7 +13,7 @@ import { WSPriceClient, type PriceUpdate } from '../exchange/wsPriceClient.js';
 import { WSAccountClient, type AccountUpdate } from '../exchange/wsAccountClient.js';
 import { getPairConstraints, validateOrder } from '../exchange/pairMetadata.js';
 import { buildGrid, assignNeutralSides, calculateQuantityPerLevel } from '../strategy/gridBuilder.js';
-import { initGridState, updateGridState, handleOrderFill, markOrderActive, markOrderCancelled, setDataHealthy } from '../strategy/gridManager.js';
+import { initGridState, updateGridState, handleOrderFill, markOrderActive, markOrderCancelled, setDataHealthy, type GridOrder } from '../strategy/gridManager.js';
 import { createStore, type StoredOrder, type StoredCycle } from '../state/store.js';
 
 const log = createLogger('main');
@@ -165,7 +165,7 @@ function handleAccountUpdate(update: AccountUpdate): void {
   const data = update.data;
   if (data.status === 'FILLED' || data.status === 'PARTIALLY_FILLED') {
     const customerOrderId = data.customerOrderId;
-    const order = Array.from(gridState.orders.values()).find(o => o.customerOrderId === customerOrderId);
+    const order = Array.from(gridState.orders.values()).find((o: GridOrder) => o.customerOrderId === customerOrderId);
     
     if (order) {
       const constraints = getPairConstraints(config.pair);
@@ -235,8 +235,8 @@ async function reconcile(): Promise<void> {
     
     // Map exchange orders to grid orders
     for (const exOrder of openOrders) {
-      const gridOrder = Array.from(gridState.orders.values()).find(
-        o => o.customerOrderId === exOrder.customerOrderId
+      const gridOrder: GridOrder | undefined = Array.from(gridState.orders.values()).find(
+        (o: GridOrder) => o.customerOrderId === exOrder.customerOrderId
       );
       
       if (gridOrder && !gridOrder.exchangeOrderId) {
@@ -250,7 +250,7 @@ async function reconcile(): Promise<void> {
     for (const [levelIdx, order] of gridState.orders) {
       if (order.state === 'active' && !order.exchangeOrderId) {
         // Order marked active but no exchange ID — reconcile
-        const exOrder = openOrders.find(o => o.customerOrderId === order.customerOrderId);
+        const exOrder = openOrders.find((o: any) => o.customerOrderId === order.customerOrderId);
         if (exOrder) {
           order.exchangeOrderId = exOrder.orderId;
         } else {

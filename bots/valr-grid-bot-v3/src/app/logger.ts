@@ -2,7 +2,7 @@
  * Logger — Pino-based structured logging
  */
 
-import pino from 'pino';
+import * as pino from 'pino';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -16,7 +16,7 @@ if (!fs.existsSync(logsDir)) {
 }
 
 // Create logger with file and console output
-const logger = pino({
+const logger = pino.default({
   level: process.env.LOG_LEVEL || 'info',
   transport: {
     targets: [
