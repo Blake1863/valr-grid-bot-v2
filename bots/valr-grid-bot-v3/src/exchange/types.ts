@@ -3,19 +3,21 @@
  */
 
 export interface ValrOrder {
-  orderId: string;
+  id?: string;         // Response from placeLimitOrder (202 Accepted)
+  orderId?: string;    // Response from getOpenOrders
   customerOrderId?: string;
-  pair: string;
+  pair?: string;
+  currencyPair?: string;
   side: 'BUY' | 'SELL';
-  type: 'LIMIT' | 'MARKET';
-  status: 'PENDING' | 'ACTIVE' | 'PARTIALLY_FILLED' | 'FILLED' | 'CANCELLED' | 'REJECTED';
+  type?: string;
+  status?: string;
   price?: string;
-  quantity: string;
-  filledQuantity: string;
-  remainingQuantity: string;
+  quantity?: string;
+  filledQuantity?: string;
+  remainingQuantity?: string;
   averagePrice?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ValrPosition {
@@ -71,13 +73,11 @@ export interface ValrConditionalOrder {
 export interface OrderPlacement {
   pair: string;
   side: 'BUY' | 'SELL';
-  type: 'LIMIT';
-  price: string;
   quantity: string;
+  price: string;
   customerOrderId?: string;
-  postOnly?: boolean;
+  allowMargin?: boolean;
   reduceOnly?: boolean;
-  subaccountId?: string;
 }
 
 export interface ConditionalPlacement {

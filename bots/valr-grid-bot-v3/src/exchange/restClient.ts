@@ -104,7 +104,7 @@ export class ValrRestClient {
 
     const res = method === 'GET' 
       ? await httpsGet(url, headers)
-      : await httpsRequest(method, url, headers, bodyStr || undefined);
+      : await httpsRequest(method, url, headers, bodyStr);
 
     if (res.statusCode < 200 || res.statusCode >= 300) {
       throw new Error(`[REST ${method} ${path}] HTTP ${res.statusCode}: ${res.data}`);
@@ -148,7 +148,7 @@ export class ValrRestClient {
   }
 
   async placeLimitOrder(order: OrderPlacement): Promise<ValrOrder> {
-    return this.request<ValrOrder>('POST', '/v1/orders', order);
+    return this.request<ValrOrder>('POST', '/v1/orders/limit', order);
   }
 
   async cancelOrder(orderId: string): Promise<void> {
@@ -159,9 +159,10 @@ export class ValrRestClient {
     // Cancel all open orders for the subaccount
     const orders = await this.getOpenOrders();
     for (const order of orders) {
-      if (order.pair === pair) {
+      const orderId = order.orderId || order.id;
+      if (order.pair === pair && orderId) {
         try {
-          await this.cancelOrder(order.orderId);
+          await this.cancelOrder(orderId);
         } catch (err) {
           // Ignore errors
         }

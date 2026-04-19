@@ -1,14 +1,17 @@
 /**
  * VALR WebSocket Price Client
  * 
- * Subscribes to mark price / ticker updates for real-time grid management.
+ * Subscribes to mark price / orderbook updates for real-time grid management.
+ * Uses wss://api.valr.com/ws/trade (public, no auth required)
  */
 
 import WebSocket from 'ws';
-import { createLogger } from '../app/logger.js';
 import { Decimal } from 'decimal.js';
+import { createLogger } from '../app/logger.js';
 
 const log = createLogger('wsPrice');
+
+const WS_URL = 'wss://api.valr.com/ws/trade';
 
 export interface PriceUpdate {
   pair: string;
@@ -34,6 +37,7 @@ export class WSPriceClient {
   private reconnectDelayMs = 1000;
   private maxReconnectDelayMs = 30000;
   private healthy: boolean = false;
+  private pingTimer: NodeJS.Timeout | null = null;
 
   constructor(options: WSPriceClientOptions) {
     this.pairs = options.pairs;
@@ -46,15 +50,16 @@ export class WSPriceClient {
       this.ws.close();
     }
 
-    const url = 'wss://ws.valr.com';
-    log.info({ url }, 'Connecting to VALR WebSocket');
+    log.info({ url: WS_URL, pairs: this.pairs }, 'Connecting to VALR trade WebSocket');
 
-    this.ws = new WebSocket(url);
+    this.ws = new WebSocket(WS_URL);
 
     this.ws.on('open', () => {
       log.info('WebSocket connected');
       this.reconnectDelayMs = 1000;
+      this.lastUpdate.clear();
       this.subscribe();
+      this.startPing();
     });
 
     this.ws.on('message', (data: WebSocket.Data) => {
@@ -71,9 +76,10 @@ export class WSPriceClient {
       this.healthy = false;
     });
 
-    this.ws.on('close', () => {
-      log.warn('WebSocket closed');
+    this.ws.on('close', (code) => {
+      log.warn({ code }, 'WebSocket closed');
       this.healthy = false;
+      this.stopPing();
       this.scheduleReconnect();
     });
 
@@ -84,32 +90,55 @@ export class WSPriceClient {
   private subscribe(): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
 
-    // Subscribe to ticker for each pair
-    for (const pair of this.pairs) {
-      const subMsg = {
-        type: 'subscribe',
-        channel: 'ticker',
-        pair,
-      };
-      this.ws.send(JSON.stringify(subMsg));
-      log.info({ pair }, 'Subscribed to ticker');
-    }
+    // Subscribe to mark price and orderbook updates
+    const subMsg = {
+      type: 'SUBSCRIBE',
+      subscriptions: [
+        { event: 'MARK_PRICE_UPDATE', pairs: this.pairs },
+        { event: 'AGGREGATED_ORDERBOOK_UPDATE', pairs: this.pairs },
+        { event: 'MARKET_SUMMARY_UPDATE', pairs: this.pairs },
+      ],
+    };
+    
+    this.ws.send(JSON.stringify(subMsg));
+    log.info({ pairs: this.pairs }, 'Subscribed to price feeds');
   }
 
   private handleMessage(msg: any): void {
-    if (msg.type === 'ticker') {
-      const pair = msg.pair;
-      const markPrice = new Decimal(msg.last || msg.markPrice || '0');
-      const lastPrice = new Decimal(msg.last || '0');
-      const timestamp = Date.now();
+    const type = msg.type;
+    const data = msg.data || msg;
+    const pair = data?.currencyPairSymbol || data?.currencyPair || data?.pair;
 
-      this.lastUpdate.set(pair, timestamp);
+    if (!pair) return;
 
+    let markPrice: Decimal | null = null;
+    let lastPrice: Decimal | null = null;
+
+    if (type === 'MARK_PRICE_UPDATE') {
+      markPrice = new Decimal(data.markPrice || '0');
+      lastPrice = markPrice;
+    } else if (type === 'AGGREGATED_ORDERBOOK_UPDATE') {
+      const bestBid = data.Bids?.[0];
+      const bestAsk = data.Asks?.[0];
+      if (bestBid && bestAsk) {
+        const bid = new Decimal(bestBid.price);
+        const ask = new Decimal(bestAsk.price);
+        lastPrice = bid.add(ask).div(2);
+        markPrice = lastPrice;
+      }
+    } else if (type === 'MARKET_SUMMARY_UPDATE') {
+      lastPrice = new Decimal(data.lastTradedPrice || '0');
+      markPrice = new Decimal(data.markPrice || data.lastTradedPrice || '0');
+    }
+
+    if (markPrice) {
+      this.lastUpdate.set(pair, Date.now());
+      
       this.onPrice({
         pair,
         markPrice,
-        lastPrice,
-        timestamp,
+        lastPrice: lastPrice || markPrice,
+        timestamp: Date.now(),
       });
     }
   }
@@ -135,6 +164,21 @@ export class WSPriceClient {
     return this.healthy;
   }
 
+  private startPing(): void {
+    this.pingTimer = setInterval(() => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.ping();
+      }
+    }, 20000);
+  }
+
+  private stopPing(): void {
+    if (this.pingTimer) {
+      clearInterval(this.pingTimer);
+      this.pingTimer = null;
+    }
+  }
+
   private scheduleReconnect(): void {
     log.info({ delayMs: this.reconnectDelayMs }, 'Scheduling reconnect');
     
@@ -145,6 +189,7 @@ export class WSPriceClient {
   }
 
   disconnect(): void {
+    this.stopPing();
     if (this.ws) {
       this.ws.close();
       this.ws = null;

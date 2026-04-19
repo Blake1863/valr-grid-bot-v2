@@ -102,15 +102,14 @@ async function main(): Promise<void> {
   });
 
   accountClient = new WSAccountClient({
-    apiKey,
-    apiSecret,
-    subaccountId: config.subaccountId,
+    pollIntervalMs: 5000,
     onUpdate: handleAccountUpdate,
+    fetchOpenOrders: () => restClient.getOpenOrders(),
   });
 
   // Connect WebSockets
   priceClient.connect();
-  accountClient.connect();
+  accountClient.start();
 
   // Wait for WS to be healthy
   await sleep(2000);
@@ -203,17 +202,21 @@ async function placeOrder(order: any, constraints: any): Promise<void> {
     const result = await restClient.placeLimitOrder({
       pair: config.pair,
       side: order.side,
-      type: 'LIMIT',
       price: order.priceStr,
       quantity: order.quantityStr,
       customerOrderId: order.customerOrderId,
-      postOnly: config.postOnly,
-      subaccountId: config.subaccountId,
+      allowMargin: config.allowMargin,
+      reduceOnly: order.role === 'exit',
     });
 
-    markOrderActive(gridState, order.customerOrderId, result.orderId);
+    const exchangeOrderId = result.id || result.orderId;
+    if (!exchangeOrderId) {
+      log.warn({ result }, 'No order ID returned');
+      return;
+    }
+    markOrderActive(gridState, order.customerOrderId, exchangeOrderId);
     order.state = 'active';
-    order.exchangeOrderId = result.orderId;
+    order.exchangeOrderId = exchangeOrderId;
 
     // Persist to store
     saveOrder(order);
@@ -244,7 +247,10 @@ async function reconcile(): Promise<void> {
       if (gridOrder && !gridOrder.exchangeOrderId) {
         gridOrder.exchangeOrderId = exOrder.orderId;
         gridOrder.state = 'active';
-        markOrderActive(gridState, gridOrder.customerOrderId, exOrder.orderId);
+        const exId = exOrder.orderId || exOrder.id;
+        if (exId) {
+          markOrderActive(gridState, gridOrder.customerOrderId, exId);
+        }
       }
     }
 
