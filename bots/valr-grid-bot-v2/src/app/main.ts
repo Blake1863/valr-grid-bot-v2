@@ -157,8 +157,9 @@ async function main(): Promise<void> {
       'Price is above upper bound — will place bids only when price enters range');
   }
 
-  // Initialize grid state
-  const seed = Date.now().toString(36);
+  // Initialize grid state with unique seed
+  const seed = `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`;
+  log.info({ seed }, 'Grid seed');
   gridState = initGridState(config, lowerBound, upperBound, refPrice, currentPrice, constraints, availableBalance, seed);
   logGridState(gridState, config);
 
