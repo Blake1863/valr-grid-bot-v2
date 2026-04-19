@@ -95,6 +95,12 @@ export class ValrRestClient {
   private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
     const url = `${BASE_URL}${path}`;
     const bodyStr = body ? JSON.stringify(body) : '';
+    
+    // Debug logging for POST requests
+    if (method === 'POST') {
+      console.log(`[DEBUG] POST ${path} body:`, bodyStr);
+    }
+    
     const headers = this.getHeaders(method, path, bodyStr);
 
     if (this.dryRun && method !== 'GET') {

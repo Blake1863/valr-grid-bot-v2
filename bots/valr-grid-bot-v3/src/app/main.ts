@@ -94,9 +94,10 @@ async function main(): Promise<void> {
 
   log.info({ inRange: gridState.inRange }, 'Grid state initialized');
 
-  // Initialize WebSocket clients
+  // Initialize WebSocket clients (use SOLUSDT not SOLUSDTPERP for WS)
+  const wsPair = config.pair.replace('PERP', '');
   priceClient = new WSPriceClient({
-    pairs: [config.pair],
+    pairs: [wsPair],
     onPrice: handlePriceUpdate,
     staleTimeoutMs: config.staleDataTimeoutMs,
   });
