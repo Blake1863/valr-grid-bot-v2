@@ -141,7 +141,7 @@ function handlePriceUpdate(update: PriceUpdate): void {
   // Cancel orders that should no longer be active
   for (const order of toCancel) {
     if (order.exchangeOrderId) {
-      restClient.cancelOrder(order.exchangeOrderId, config.pair)
+      restClient.cancelOrder(order.exchangeOrderId)
         .then(() => {
           markOrderCancelled(gridState, order.customerOrderId);
           log.info({ level: order.levelIndex }, 'Cancelled order');
@@ -165,7 +165,8 @@ function handleAccountUpdate(update: AccountUpdate): void {
   const data = update.data;
   if (data.status === 'FILLED' || data.status === 'PARTIALLY_FILLED') {
     const customerOrderId = data.customerOrderId;
-    const order = Array.from(gridState.orders.values()).find((o: GridOrder) => o.customerOrderId === customerOrderId);
+    const allOrders = Array.from(gridState.orders.values()) as GridOrder[];
+    const order = allOrders.find((o) => o.customerOrderId === customerOrderId);
     
     if (order) {
       const constraints = getPairConstraints(config.pair);
@@ -231,12 +232,13 @@ async function reconcile(): Promise<void> {
 
   try {
     // Fetch open orders
-    const openOrders = await restClient.getOpenOrders(config.pair);
+    const openOrders = await restClient.getOpenOrders();
     
     // Map exchange orders to grid orders
     for (const exOrder of openOrders) {
-      const gridOrder: GridOrder | undefined = Array.from(gridState.orders.values()).find(
-        (o: GridOrder) => o.customerOrderId === exOrder.customerOrderId
+      const allOrders = Array.from(gridState.orders.values()) as GridOrder[];
+      const gridOrder = allOrders.find(
+        (o) => o.customerOrderId === exOrder.customerOrderId
       );
       
       if (gridOrder && !gridOrder.exchangeOrderId) {

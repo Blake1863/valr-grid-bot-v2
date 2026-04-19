@@ -3,8 +3,8 @@
  */
 
 import crypto from 'crypto';
-import fetch from 'node-fetch';
-import type { ValrOrder, ValrPosition, ValrBalance, ValrTicker, ValrMarkPrice, ValrConditionalOrder, OrderPlacement, ConditionalPlacement } from './types.js';
+import https from 'https';
+import type { ValrOrder, ValrPosition, ValrBalance, ValrTicker, ValrMarkPrice, OrderPlacement } from './types.js';
 
 const BASE_URL = 'https://api.valr.com';
 
@@ -13,6 +13,47 @@ export interface ValrRestClientOptions {
   apiSecret: string;
   subaccountId?: string;
   dryRun?: boolean;
+}
+
+interface HttpResponse {
+  statusCode: number;
+  data: string;
+}
+
+function httpsGet(url: string, headers: Record<string, string>): Promise<HttpResponse> {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => resolve({ statusCode: res.statusCode || 0, data }));
+    }).on('error', reject);
+  });
+}
+
+function httpsRequest(method: string, url: string, headers: Record<string, string>, body?: string): Promise<HttpResponse> {
+  return new Promise((resolve, reject) => {
+    const urlObj = new URL(url);
+    const options = {
+      hostname: urlObj.hostname,
+      port: 443,
+      path: urlObj.pathname + urlObj.search,
+      method,
+      headers,
+    };
+    
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => resolve({ statusCode: res.statusCode || 0, data }));
+    });
+    
+    req.on('error', reject);
+    
+    if (body) {
+      req.write(body);
+    }
+    req.end();
+  });
 }
 
 export class ValrRestClient {
@@ -61,30 +102,36 @@ export class ValrRestClient {
       return {} as T;
     }
 
-    const res = await fetch(url, {
-      method,
-      headers,
-      body: bodyStr || undefined,
-    });
+    const res = method === 'GET' 
+      ? await httpsGet(url, headers)
+      : await httpsRequest(method, url, headers, bodyStr || undefined);
 
-    const text = await res.text();
-    
-    if (!res.ok) {
-      throw new Error(`[REST ${method} ${path}] HTTP ${res.status}: ${text}`);
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw new Error(`[REST ${method} ${path}] HTTP ${res.statusCode}: ${res.data}`);
     }
 
-    return JSON.parse(text) as T;
+    return JSON.parse(res.data) as T;
   }
 
   // === Market Data ===
 
   async getTicker(pair: string): Promise<ValrTicker> {
-    return this.request('GET', `/v1/ticker?pair=${pair}`);
+    // Use public market summary endpoint
+    const currencyPair = pair.replace('PERP', ''); // SOLUSDTPERP -> SOLUSDT
+    const res = await this.request<any>('GET', `/v1/public/${currencyPair}/marketsummary`);
+    return {
+      pair,
+      bid: res.bidPrice || '0',
+      ask: res.askPrice || '0',
+      last: res.lastTradedPrice || '0',
+      high: res.highPrice || '0',
+      low: res.lowPrice || '0',
+      volume: res.baseVolume || '0',
+      timestamp: res.created || new Date().toISOString(),
+    };
   }
 
   async getMarkPrice(pair: string): Promise<ValrMarkPrice> {
-    // VALR may not have a dedicated mark price endpoint for perps
-    // Fall back to ticker or implement based on actual API
     const ticker = await this.getTicker(pair);
     return {
       pair,
@@ -96,31 +143,38 @@ export class ValrRestClient {
 
   // === Orders ===
 
-  async getOpenOrders(pair: string): Promise<ValrOrder[]> {
-    const orders = await this.request<ValrOrder[]>('GET', '/v1/orders/open');
-    return orders.filter(o => o.pair === pair);
+  async getOpenOrders(): Promise<ValrOrder[]> {
+    return this.request<ValrOrder[]>('GET', '/v1/orders/open');
   }
 
   async placeLimitOrder(order: OrderPlacement): Promise<ValrOrder> {
-    return this.request('POST', '/v1/orders', order);
+    return this.request<ValrOrder>('POST', '/v1/orders', order);
   }
 
-  async cancelOrder(orderId: string, pair: string): Promise<void> {
-    await this.request('DELETE', `/v1/orders/${orderId}?pair=${pair}`);
+  async cancelOrder(orderId: string): Promise<void> {
+    await this.request('DELETE', `/v1/orders/${orderId}`);
   }
 
   async cancelAllOrders(pair: string): Promise<void> {
-    await this.request('DELETE', `/v1/orders?pair=${pair}`);
+    // Cancel all open orders for the subaccount
+    const orders = await this.getOpenOrders();
+    for (const order of orders) {
+      if (order.pair === pair) {
+        try {
+          await this.cancelOrder(order.orderId);
+        } catch (err) {
+          // Ignore errors
+        }
+      }
+    }
   }
 
   // === Positions ===
 
   async getPositions(): Promise<ValrPosition[]> {
-    // VALR perpetual positions endpoint — adjust based on actual API
     try {
-      return await this.request<ValrPosition[]>('GET', '/v1/perpetual/positions');
+      return await this.request<ValrPosition[]>('GET', '/v1/positions/open');
     } catch (err) {
-      // Endpoint may not exist or differ — return empty
       return [];
     }
   }
@@ -134,7 +188,7 @@ export class ValrRestClient {
 
   async getBalances(): Promise<ValrBalance[]> {
     try {
-      return await this.request<ValrBalance[]>('GET', '/v1/balances');
+      return await this.request<ValrBalance[]>('GET', '/v1/account/balances');
     } catch (err) {
       return [];
     }
@@ -143,34 +197,5 @@ export class ValrRestClient {
   async getBalance(asset: string): Promise<ValrBalance | null> {
     const balances = await this.getBalances();
     return balances.find(b => b.asset === asset) || null;
-  }
-
-  // === Conditional Orders (Stop Loss / TP) ===
-
-  async getConditionalOrders(pair: string): Promise<ValrConditionalOrder[]> {
-    try {
-      const orders = await this.request<ValrConditionalOrder[]>('GET', '/v1/conditional-orders');
-      return orders.filter(o => o.pair === pair);
-    } catch {
-      return [];
-    }
-  }
-
-  async placeConditionalOrder(order: ConditionalPlacement): Promise<ValrConditionalOrder> {
-    return this.request('POST', '/v1/conditional-orders', order);
-  }
-
-  async cancelConditionalOrder(orderId: string): Promise<void> {
-    await this.request('DELETE', `/v1/conditional-orders/${orderId}`);
-  }
-
-  // === Account ===
-
-  async getSubaccounts(): Promise<{ id: string; name: string }[]> {
-    try {
-      return await this.request('GET', '/v1/subaccounts');
-    } catch {
-      return [];
-    }
   }
 }
