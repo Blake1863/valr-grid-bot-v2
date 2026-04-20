@@ -29,9 +29,13 @@ All credentials stored in **local encrypted vault** (`~/.openclaw/secrets/secret
 
 | Bot | Service | Status | Credentials | Subaccounts |
 |-----|---------|--------|-------------|-------------|
-| **valr-grid-bot** | `valr-grid-bot.service` | ✅ Running | `valr_grid_bot_1_*` | Direct account |
+| **valr-grid-bot-v3** | `valr-grid-bot-v3.service` | ✅ ACTIVE | `valr_main_*` | Grid Bot 1 |
+| **valr-grid-bot-v2** | `valr-grid-bot-v2.service` | ⚠️ DEPRECATED | `valr_main_*` | Grid Bot 1, 2 |
+| **valr-grid-bot** | `valr-grid-bot.service` | ⚠️ DEPRECATED | `valr_grid_bot_1_*` | Direct account |
 | **cm-bot-v2** | `cm-bot-v2.service` | ✅ Running | `valr_main_*` | CM1, CM2 |
 | **cm-bot-spot** | `cm-bot-spot.service` | ✅ Running | `valr_main_*` | CMS1, CMS2 |
+
+**Note:** v1 and v2 grid bots are deprecated. v3 is the current production version.
 
 ### Current Issues
 
