@@ -11,7 +11,7 @@ All credentials stored in **local encrypted vault** (`~/.openclaw/secrets/secret
 | Secret Name | Purpose | Account | Balance |
 |-------------|---------|---------|---------|
 | `valr_grid_bot_1_api_key` / `valr_grid_bot_1_api_secret` | Grid Bot | Dedicated grid bot account | ~USDT 16 |
-| `valr_main_api_key` / `valr_main_api_secret` | CM Bots | CMSpot-eead (main account) | ~USDT 277 |
+| `valr_main_api_key` / `valr_main_api_secret` | CM Bots | primary account (main account) | ~USDT 277 |
 | `bybit_api_key` / `bybit_api_secret` | Bybit | Bybit account | - |
 
 ### Subaccount Mappings
