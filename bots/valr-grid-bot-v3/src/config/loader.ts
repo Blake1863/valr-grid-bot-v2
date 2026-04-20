@@ -12,10 +12,12 @@ import { validateConfig, type BotConfig } from './schema.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Load configuration from configs/bot-config.json.
+ * Load configuration from configs/bot-config.json or VALR_GRID_BOT_CONFIG env var.
  */
 export function loadConfig(): BotConfig {
-  const configPath = path.join(__dirname, '../../configs/bot-config.json');
+  const configPath = process.env.VALR_GRID_BOT_CONFIG 
+    ? path.join(__dirname, '../../', process.env.VALR_GRID_BOT_CONFIG)
+    : path.join(__dirname, '../../configs/bot-config.json');
   
   if (!fs.existsSync(configPath)) {
     throw new Error(`Config file not found: ${configPath}`);

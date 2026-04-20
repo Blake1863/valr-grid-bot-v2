@@ -1,6 +1,6 @@
 # VALR Bot Deployment - Current State
 
-**Last Updated:** 2026-03-24 21:23 SAST
+**Last Updated:** 2026-04-21 04:36 Asia/Shanghai
 
 ---
 
@@ -10,9 +10,10 @@ All credentials stored in **local encrypted vault** (`~/.openclaw/secrets/secret
 
 | Secret Name | Purpose | Account | Balance |
 |-------------|---------|---------|---------|
-| `valr_grid_bot_1_api_key` / `valr_grid_bot_1_api_secret` | Grid Bot | Dedicated grid bot account | ~USDT 16 |
-| `valr_main_api_key` / `valr_main_api_secret` | CM Bots | primary account (main account) | ~USDT 277 |
+| `valr_main_api_key` / `valr_main_api_secret` | All Bots | primary account (main account) | ~USDT 277 |
 | `bybit_api_key` / `bybit_api_secret` | Bybit | Bybit account | - |
+
+**Note:** `valr_grid_bot_1_*` credentials deprecated — all bots now use `primary account` key with subaccount impersonation.
 
 ### Subaccount Mappings
 
@@ -22,6 +23,8 @@ All credentials stored in **local encrypted vault** (`~/.openclaw/secrets/secret
 | **CM2** | `1483472079069155328` | Futures trading | cm-bot-v2 |
 | **CMS1** | `1483815480334401536` | Spot trading | cm-bot-spot |
 | **CMS2** | `1483815498551132160` | Spot trading | cm-bot-spot |
+| **Grid Bot 1** | `1432690254033137664` | Futures grid | valr-grid-bot-v3 (SOL) |
+| **Grid Bot 2** | `1491067064373735424` | Futures grid | valr-grid-bot-v3-eth (ETH) |
 
 ---
 
@@ -29,28 +32,26 @@ All credentials stored in **local encrypted vault** (`~/.openclaw/secrets/secret
 
 | Bot | Service | Status | Credentials | Subaccounts |
 |-----|---------|--------|-------------|-------------|
-| **valr-grid-bot-v3** | `valr-grid-bot-v3.service` | ✅ ACTIVE | `valr_main_*` | Grid Bot 1 |
-| **valr-grid-bot-v2** | `valr-grid-bot-v2.service` | ⚠️ DEPRECATED | `valr_main_*` | Grid Bot 1, 2 |
-| **valr-grid-bot** | `valr-grid-bot.service` | ⚠️ DEPRECATED | `valr_grid_bot_1_*` | Direct account |
+| **valr-grid-bot-v3** | `valr-grid-bot-v3.service` | ✅ ACTIVE | `valr_main_*` | Grid Bot 1 (SOL) |
+| **valr-grid-bot-v3-eth** | `valr-grid-bot-v3-eth.service` | ✅ ACTIVE | `valr_main_*` | Grid Bot 2 (ETH) |
+| **valr-grid-bot-v2** | `valr-grid-bot-v2.service` | ⛔ DEPRECATED | — | — |
+| **valr-grid-bot** | `valr-grid-bot.service` | ⛔ DEPRECATED | — | — |
 | **cm-bot-v2** | `cm-bot-v2.service` | ✅ Running | `valr_main_*` | CM1, CM2 |
 | **cm-bot-spot** | `cm-bot-spot.service` | ✅ Running | `valr_main_*` | CMS1, CMS2 |
-
-**Note:** v1 and v2 grid bots are deprecated. v3 is the current production version.
-
-### Current Issues
-
-**⚠️ WebSocket Rate Limiting (HTTP 429)**
-- CM bots (v2 & spot) experiencing WS connection instability
-- Cause: Extensive testing triggered VALR rate limits
-- Impact: Order placement timing out, WS connections dropping
-- Resolution: Automatic recovery once rate limit window expires (1-5 min)
-- REST API working fine (balance checks, etc.)
-
-**Grid Bot:** Fully operational, managing SOLUSDTPERP position with stop-loss.
 
 ---
 
 ## Configuration Files
+
+### valr-grid-bot-v3 (SOL)
+- **Config:** `bots/valr-grid-bot-v3/configs/bot-config.json`
+- **Logs:** `bots/valr-grid-bot-v3/logs/bot.log`
+- **State:** `bots/valr-grid-bot-v3/logs/solusdtperp-state.db`
+
+### valr-grid-bot-v3-eth (ETH)
+- **Config:** `bots/valr-grid-bot-v3/configs/eth-config.json`
+- **Logs:** `bots/valr-grid-bot-v3/logs/bot.log`
+- **State:** `bots/valr-grid-bot-v3/logs/ethusdtperp-state.db`
 
 ### cm-bot-v2 (Futures)
 - **Binary:** `bots/cm-bot-v2/cm-bot-v2`
@@ -64,29 +65,26 @@ All credentials stored in **local encrypted vault** (`~/.openclaw/secrets/secret
 - **Env:** `bots/cm-bot-spot/.env` (subaccount IDs only)
 - **Logs:** `bots/cm-bot-spot/logs/cm-bot-spot.log`
 
-### valr-grid-bot
-- **Binary:** `bots/valr-grid-bot/valr-grid-bot`
-- **Config:** `bots/valr-grid-bot/config.json`
-- **Logs:** `bots/valr-grid-bot/logs/grid-bot.stdout`
-
 ---
 
 ## Service Management
 
 ```bash
-# Status
-systemctl --user status valr-grid-bot.service cm-bot-v2.service cm-bot-spot.service
+# Status - Grid Bots
+systemctl --user status valr-grid-bot-v3.service valr-grid-bot-v3-eth.service
+
+# Status - CM Bots
+systemctl --user status cm-bot-v2.service cm-bot-spot.service
 
 # Restart individual
-systemctl --user restart valr-grid-bot.service
+systemctl --user restart valr-grid-bot-v3.service
+systemctl --user restart valr-grid-bot-v3-eth.service
 systemctl --user restart cm-bot-v2.service
 systemctl --user restart cm-bot-spot.service
 
-# Restart all
-systemctl --user restart valr-grid-bot.service cm-bot-v2.service cm-bot-spot.service
-
 # Logs
-journalctl --user -u valr-grid-bot.service -f
+journalctl --user -u valr-grid-bot-v3.service -f
+journalctl --user -u valr-grid-bot-v3-eth.service -f
 tail -f bots/cm-bot-v2/logs/cm-bot-v2.log
 tail -f bots/cm-bot-spot/logs/cm-bot-spot.log
 ```
@@ -116,21 +114,32 @@ python3 ~/.openclaw/secrets/secrets.py delete <name>
 ✅ No plaintext API keys in workspace files
 ✅ All credentials encrypted with Fernet (local vault)
 ✅ Subaccount IDs only in .env files (non-sensitive)
-✅ Main account used for subaccount impersonation (CM bots)
-✅ Dedicated credentials for grid bot (isolation)
+✅ Main account (`primary account`) used for all subaccount impersonation
+✅ Deprecated credentials can be removed from vault
+
+---
+
+## Deprecated Services
+
+The following services have been stopped and disabled:
+
+| Service | Reason | Action |
+|---------|--------|--------|
+| `valr-grid-bot.service` | v1 Rust bot — obsolete | Stopped, disabled |
+| `valr-grid-bot-v2.service` | v2 SOL bot — replaced by v3 | Stopped, disabled |
+| `valr-grid-bot-v2-eth.service` | v2 ETH bot — replaced by v3 | Stopped, disabled |
 
 ---
 
 ## Known Issues / TODO
 
-1. **WS Rate Limiting** - CM bots experiencing 429 errors (auto-recovering)
-2. **cm-bot-v2 WS Auth** - Signature format adjusted (removed subaccount from WS signature, using main account directly like valr-common)
-3. **Build Issues** - ws_client.rs had syntax errors from editing (resolved)
+1. **WS Rate Limiting** - CM bots may experience 429 errors (auto-recovering)
+2. **Cleanup** - Remove deprecated `valr_grid_bot_1_*` credentials from vault
 
 ---
 
 ## Next Steps
 
-- Monitor CM bots for WS recovery
-- Verify order placement working after rate limit clears
-- Consider adding rate limiting to bot WS reconnection logic
+- Monitor v3 grid bots for stability
+- Consider removing deprecated credentials from vault
+- Verify CM bot WS stability after rate limit recovery

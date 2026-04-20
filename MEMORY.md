@@ -6,42 +6,55 @@
 
 **Status:** ACTIVE — Primary production bot
 
-**Service:** `valr-grid-bot-v3.service`
+**Services:**
+- `valr-grid-bot-v3.service` (SOLUSDTPERP)
+- `valr-grid-bot-v3-eth.service` (ETHUSDTPERP)
 
-**Subaccount:** Grid Bot 1 (`1432690254033137664`)
+**Subaccounts:**
+| Bot | Subaccount | ID |
+|-----|------------|----|
+| SOL | Grid Bot 1 | `1432690254033137664` |
+| ETH | Grid Bot 2 | `1491067064373735424` |
 
-**Pair:** SOLUSDTPERP
+**Configuration:**
+| Parameter | SOL | ETH |
+|-----------|-----|-----|
+| Pair | SOLUSDTPERP | ETHUSDTPERP |
+| Range | $82–$92 | $2228–$2463 |
+| Grid Count | 30 intervals | 30 intervals |
+| Grid Mode | Arithmetic | Arithmetic |
+| Reference | $86.00 | $2345.50 |
+| Leverage | 10x | 10x |
+| Capital Alloc | 100% | 100% |
+| Dynamic Sizing | ✅ | ✅ |
+| Stop Loss | 3% | 3% |
+
+**API Credentials:** `primary account` key with subaccount impersonation
 
 ---
 
 ### ⚠️ DEPRECATED: Grid Bot v2 (SOL + ETH)
 
-**Status:** DEPRECATED — Running but scheduled for shutdown
+**Status:** DEPRECATED — Stopped and disabled
 
 **Services:**
-- `valr-grid-bot-v2.service` (SOLUSDTPERP)
-- `valr-grid-bot-v2-eth.service` (ETHUSDTPERP)
-
-**Subaccounts:**
-| Bot | Subaccount | ID |
-|---|---|---|
-| SOL | Grid Bot 1 | `1432690254033137664` |
-| ETH | Grid Bot 2 | `1491067064373735424` |
+- `valr-grid-bot-v2.service` — STOPPED
+- `valr-grid-bot-v2-eth.service` — STOPPED
 
 **Why Deprecated:**
 - Replaced by v3's OKX/Bybit-style grid mechanics
 - v3 has superior cycle tracking, range management, and state persistence
 - v2 uses simpler linear grid model without geometric mode support
 
-**Migration:** SOL bot migrated to v3. ETH bot can be migrated when needed.
+**Migration:** ✅ COMPLETE — Both SOL and ETH migrated to v3
 
 ---
 
 ### ⚠️ DEPRECATED: Grid Bot v1 (Original Rust Bot)
 
-**Status:** DEPRECATED — Legacy, should be stopped
+**Status:** DEPRECATED — Stopped and disabled
 
-**Service:** `valr-grid-bot.service`
+**Service:** `valr-grid-bot.service` — STOPPED
 
 **Why Deprecated:**
 - Original Rust implementation, superseded by TypeScript versions
@@ -83,32 +96,11 @@
 - Unrealized PnL tracked separately
 - Fee-aware cycle profit calculation
 
-### Current Configuration (SOLUSDTPERP)
-
-```json
-{
-  "pair": "SOLUSDTPERP",
-  "subaccountId": "1432690254033137664",
-  "mode": "neutral",
-  "lowerBound": "82.00",
-  "upperBound": "92.00",
-  "gridCount": 30,
-  "gridMode": "arithmetic",
-  "referencePrice": "86.00",
-  "leverage": 10,
-  "capitalAllocationPercent": 100,
-  "dynamicSizing": true,
-  "quantityPerLevel": "0.165",
-  "stopLossMode": "percent",
-  "stopLossValue": "3.0",
-  "postOnly": true,
-  "dryRun": false
-}
-```
-
 ### State Persistence
 
-SQLite database: `logs/solusdtperp-state.db`
+SQLite databases:
+- `logs/solusdtperp-state.db` (SOL bot)
+- `logs/ethusdtperp-state.db` (ETH bot)
 
 Query completed cycles:
 ```sql
@@ -116,13 +108,17 @@ SELECT * FROM cycles ORDER BY completedAt DESC LIMIT 10;
 SELECT SUM(realizedProfit) FROM cycles;
 ```
 
-### Systemd Service
+### Systemd Services
 
 ```bash
+# SOL bot
 systemctl --user status valr-grid-bot-v3.service
+
+# ETH bot
+systemctl --user status valr-grid-bot-v3-eth.service
 ```
 
-Auto-restarts on failure.
+Both auto-restart on failure.
 
 ### Safety Features
 
@@ -135,3 +131,4 @@ Auto-restarts on failure.
 ---
 
 *Created: 2026-04-21 — v3 deployment notes*
+*Updated: 2026-04-21 — ETH migrated to v3, v1/v2 deprecated*
