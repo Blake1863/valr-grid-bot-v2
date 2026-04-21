@@ -217,6 +217,21 @@ async function placeOrder(order: any, constraints: any): Promise<void> {
       log.warn({ result }, 'No order ID returned');
       return;
     }
+
+    // Verify order was actually created by fetching it
+    await sleep(100); // Brief delay to allow exchange to process
+    const openOrders = await restClient.getOpenOrders();
+    const confirmedOrder = openOrders.find((o: any) => 
+      (o.orderId === exchangeOrderId || o.id === exchangeOrderId) &&
+      o.customerOrderId === order.customerOrderId
+    );
+
+    if (!confirmedOrder) {
+      log.error({ level: order.levelIndex, side: order.side, exchangeOrderId }, 'Order placement FAILED - order not found on exchange');
+      order.state = 'missing';
+      return;
+    }
+
     markOrderActive(gridState, order.customerOrderId, exchangeOrderId);
     order.state = 'active';
     order.exchangeOrderId = exchangeOrderId;

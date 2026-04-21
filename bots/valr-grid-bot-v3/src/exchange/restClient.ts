@@ -102,6 +102,13 @@ export class ValrRestClient {
     const bodyStr = body ? JSON.stringify(body) : '';
     
     const headers = this.getHeaders(method, path, bodyStr);
+    
+    // Debug: log request details
+    if (method === 'POST') {
+      console.log(`[DEBUG POST] ${path}`);
+      console.log(`[DEBUG POST] Body: ${bodyStr}`);
+      console.log(`[DEBUG POST] Headers:`, JSON.stringify(headers, null, 2));
+    }
 
     if (this.dryRun && method !== 'GET') {
       console.log(`[DRY RUN] ${method} ${path}`, body);
@@ -113,9 +120,11 @@ export class ValrRestClient {
       : await httpsRequest(method, url, headers, bodyStr);
 
     if (res.statusCode < 200 || res.statusCode >= 300) {
+      console.log(`[DEBUG RESPONSE] Error: ${res.statusCode} - ${res.data}`);
       throw new Error(`[REST ${method} ${path}] HTTP ${res.statusCode}: ${res.data}`);
     }
 
+    console.log(`[DEBUG RESPONSE] ${res.statusCode} - ${res.data.slice(0, 200)}`);
     return JSON.parse(res.data) as T;
   }
 
