@@ -48,6 +48,16 @@ async function main(): Promise<void> {
     dryRun: config.dryRun,
   });
 
+  // Cancel any existing orders from previous runs
+  log.info('Cleaning up existing orders...');
+  try {
+    await restClient.cancelAllOrders(config.pair);
+    await sleep(500); // Wait for cancels to process
+    log.info('Cleanup complete');
+  } catch (err: any) {
+    log.warn({ err: err.message }, 'Cleanup failed - continuing anyway');
+  }
+
   // Initialize state store
   store = createStore(config.pair.toLowerCase());
   log.info('State store initialized');
