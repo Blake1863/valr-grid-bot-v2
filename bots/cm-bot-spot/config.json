@@ -127,6 +127,14 @@
     "XAUTUSDT": {
       "enabled": true,
       "type": "spot"
+    },
+    "XAUTZAR": {
+      "enabled": true,
+      "type": "spot"
+    },
+    "USDCZAR": {
+      "enabled": true,
+      "type": "spot"
     }
   },
   "cycle_interval_ms": 15000,
