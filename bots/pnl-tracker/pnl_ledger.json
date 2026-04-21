@@ -597,6 +597,26 @@
           "net_pnl": -0.4033999999999998
         }
       }
+    },
+    {
+      "date": "2026-04-21",
+      "net_pnl": -0.6666,
+      "realised_pnl": -0.6628,
+      "trading_fees": 0.0,
+      "funding": -0.0038,
+      "positions_closed": 22,
+      "closing_balance": 41.2375,
+      "pairs": {
+        "SOLUSDTPERP": {
+          "pair": "SOLUSDTPERP",
+          "realised_pnl": -0.6628000000000001,
+          "trading_fees": 0.0,
+          "funding": -0.0038,
+          "avg_funding_rate": 2.1111111111111114e-06,
+          "positions_closed": 22,
+          "net_pnl": -0.6666000000000001
+        }
+      }
     }
   ],
   "inception_balance": 35.130608876634
