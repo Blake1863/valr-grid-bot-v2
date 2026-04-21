@@ -5,9 +5,6 @@
 import crypto from 'crypto';
 import https from 'https';
 import type { ValrOrder, ValrPosition, ValrBalance, ValrTicker, ValrMarkPrice, OrderPlacement } from './types.js';
-import { createLogger } from '../app/logger.js';
-
-const log = createLogger('restClient');
 
 const BASE_URL = 'https://api.valr.com';
 
@@ -103,11 +100,6 @@ export class ValrRestClient {
   private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
     const url = `${BASE_URL}${path}`;
     const bodyStr = body ? JSON.stringify(body) : '';
-    
-    // Debug logging for POST requests
-    if (method === 'POST') {
-      log.info({ path, body: bodyStr, subacct: this.subaccountId }, 'REST POST request');
-    }
     
     const headers = this.getHeaders(method, path, bodyStr);
 
