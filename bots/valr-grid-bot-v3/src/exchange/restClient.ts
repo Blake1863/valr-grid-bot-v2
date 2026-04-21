@@ -166,8 +166,10 @@ export class ValrRestClient {
     return this.request<ValrOrder>('POST', '/v1/orders/limit', payload);
   }
 
-  async cancelOrder(orderId: string): Promise<void> {
-    await this.request('DELETE', `/v1/orders/${orderId}`);
+  async cancelOrder(orderId: string, pair?: string): Promise<void> {
+    const path = `/v1/orders/${orderId}`;
+    const body = pair ? JSON.stringify({ currencyPair: pair }) : '';
+    await this.request('DELETE', path, body ? { currencyPair: pair } : undefined);
   }
 
   async cancelAllOrders(pair: string): Promise<void> {
@@ -175,9 +177,9 @@ export class ValrRestClient {
     const orders = await this.getOpenOrders();
     for (const order of orders) {
       const orderId = order.orderId || order.id;
-      if (order.pair === pair && orderId) {
+      if (orderId) {
         try {
-          await this.cancelOrder(orderId);
+          await this.cancelOrder(orderId, pair);
         } catch (err) {
           // Ignore errors
         }
