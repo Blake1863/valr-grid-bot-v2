@@ -131,7 +131,9 @@ async function main(): Promise<void> {
  * Handle price updates from WebSocket.
  */
 function handlePriceUpdate(update: PriceUpdate): void {
-  if (update.pair !== config.pair) return;
+  // WS uses spot pair names (SOLUSDT), config uses perp names (SOLUSDTPERP)
+  const wsPair = config.pair.replace('PERP', '');
+  if (update.pair !== wsPair) return;
 
   const constraints = getPairConstraints(config.pair);
   const { inRange, toPlace, toCancel } = updateGridState(gridState, config, update.markPrice);

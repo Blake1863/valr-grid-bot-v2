@@ -154,7 +154,16 @@ export class ValrRestClient {
   }
 
   async placeLimitOrder(order: OrderPlacement): Promise<ValrOrder> {
-    return this.request<ValrOrder>('POST', '/v1/orders/limit', order);
+    const payload = {
+      pair: order.pair,
+      side: order.side,
+      type: 'LIMIT',
+      quantity: order.quantity,
+      price: order.price,
+      customerOrderId: order.customerOrderId,
+      timeInForce: 'GTC',
+    };
+    return this.request<ValrOrder>('POST', '/v1/orders/limit', payload);
   }
 
   async cancelOrder(orderId: string): Promise<void> {
