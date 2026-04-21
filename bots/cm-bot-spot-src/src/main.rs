@@ -446,7 +446,21 @@ async fn execute_cycle(
             true
         }
         Err(e) => {
+            let err_str = e.to_string();
             eprintln!("[ERROR] ❌ {} Taker failed: {}", taker_account, e);
+            // Track taker failures too (not just maker)
+            if err_str.contains("Insufficient Balance") || err_str.contains("insufficient") {
+                let should_liquidate = liquidator.record_failure(taker_account, &pair_info.symbol).await;
+                if should_liquidate {
+                    println!("[LIQUIDATE] Auto-liquidation for {} {} ({} failures)",
+                        taker_account, pair_info.symbol, FAILURE_THRESHOLD);
+                    let _ = liquidator.maybe_liquidate(
+                        taker_account, &pair_info.symbol,
+                        &pair_info.base_currency, &pair_info.quote_currency,
+                        pair_info.price_precision
+                    ).await;
+                }
+            }
             false
         }
     }

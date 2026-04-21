@@ -5,7 +5,8 @@
 /// 2. Account has excess base asset (>60% of combined CMS1+CMS2)
 /// 3. Account is low on quote currency (< min_quote_threshold)
 ///
-/// Uses REST API to place IOC sell orders at aggressive prices.
+/// PRIORITY 1: Internal transfer from other account (no spread loss)
+/// PRIORITY 2: External market sell at -0.5% (reduced from -2%)
 use anyhow::{Context, Result};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -20,6 +21,9 @@ const MIN_QUOTE_THRESHOLD: f64 = 50.0;
 
 /// Keep this reserve of base asset after liquidation
 const BASE_RESERVE_PCT: f64 = 0.10;
+
+/// Liquidation sell discount — 0.5% below best bid (reduced from 2%)
+const LIQUIDATION_DISCOUNT: f64 = 0.005;
 
 /// Track failure counts per (account, pair)
 pub struct Liquidator {
@@ -164,10 +168,55 @@ impl Liquidator {
         Ok(result.id)
     }
 
-    /// Check if liquidation is needed and execute it
+    /// Transfer currency between subaccounts
+    async fn transfer_between_subaccounts(
+        &self,
+        from: u64,
+        to: u64,
+        currency: &str,
+        amount: f64,
+    ) -> Result<bool> {
+        let path = "/v1/account/subaccounts/transfer";
+        let body = serde_json::json!({
+            "fromId": from,
+            "toId": to,
+            "currencyCode": currency,
+            "amount": format!("{:.8}", amount),
+            "allowBorrow": false
+        });
+        let body_str = serde_json::to_string(&body)?;
+
+        let (ts, sig) = self.sign("POST", path, &body_str, 0);
+
+        let resp = self.client
+            .post(format!("https://api.valr.com{}", path))
+            .header("X-VALR-API-KEY", &self.api_key)
+            .header("X-VALR-SIGNATURE", sig)
+            .header("X-VALR-TIMESTAMP", ts.to_string())
+            .header("Content-Type", "application/json")
+            .body(body_str)
+            .send()
+            .await
+            .context("Failed to transfer")?;
+
+        if resp.status().is_success() || resp.status().as_u16() == 202 {
+            Ok(true)
+        } else {
+            let status = resp.status();
+            let text = resp.text().await.unwrap_or_default();
+            eprintln!("[TRANSFER] Failed: {} - {}", status, text);
+            Ok(false)
+        }
+    }
+
+    /// Check if liquidation is needed and execute it.
+    /// 
+    /// PRIORITY 1: Internal transfer from other account (no spread loss)
+    /// PRIORITY 2: External market sell (incurs ~0.5% spread loss)
     pub async fn maybe_liquidate(&self, account: &str, pair: &str, base_currency: &str, quote_currency: &str, price_precision: u8) -> Result<bool> {
         let subaccount = if account == "CMS1" { self.cms1_id } else { self.cms2_id };
         let other_subaccount = if account == "CMS1" { self.cms2_id } else { self.cms1_id };
+        let other_account = if account == "CMS1" { "CMS2" } else { "CMS1" };
 
         // Check quote balance
         let quote_balance = self.get_balance(subaccount, quote_currency).await?;
@@ -190,7 +239,31 @@ impl Liquidator {
             return Ok(false); // Not imbalanced
         }
 
-        // Get current price
+        // PRIORITY 1: Try internal transfer if other account has excess
+        if other_base > combined * 0.40 {
+            // Other account has enough to share — transfer instead of selling
+            let transfer_amt = (base_balance - other_base) / 2.0;
+            if transfer_amt > 0.001 {
+                println!("[LIQUIDATE] {} {}: Transferring {:.4} {} from {} (internal, no spread loss)",
+                    account, pair, transfer_amt, base_currency, other_account);
+                
+                match self.transfer_between_subaccounts(other_subaccount, subaccount, base_currency, transfer_amt).await {
+                    Ok(true) => {
+                        println!("[LIQUIDATE] ✅ {} {}: Internal transfer successful", account, pair);
+                        self.reset_failure(account, pair).await;
+                        return Ok(true);
+                    }
+                    Ok(false) => {
+                        eprintln!("[LIQUIDATE] ⚠️ {} {}: Transfer failed, falling back to market sell", account, pair);
+                    }
+                    Err(e) => {
+                        eprintln!("[LIQUIDATE] ⚠️ {} {}: Transfer error: {}, falling back to market sell", account, pair, e);
+                    }
+                }
+            }
+        }
+
+        // PRIORITY 2: External market sell (last resort — incurs spread loss)
         let price = match self.get_price(pair).await {
             Ok(p) => p,
             Err(_) => return Ok(false),
@@ -202,12 +275,12 @@ impl Liquidator {
             return Ok(false); // Too small to sell
         }
 
-        // Aggressive pricing: 2% below best bid
+        // Reduced discount: 0.5% below best bid (was 2%)
         let factor = 10f64.powi(price_precision as i32);
-        let sell_price = (price * 0.98 * factor).round() / factor;
+        let sell_price = (price * (1.0 - LIQUIDATION_DISCOUNT) * factor).round() / factor;
 
-        println!("[LIQUIDATE] {} {}: Selling {:.4} @ {} (balance: {:.4}, other: {:.4}, quote: {:.2})",
-            account, pair, sell_qty, sell_price, base_balance, other_base, quote_balance);
+        println!("[LIQUIDATE] {} {}: Selling {:.4} @ {} (balance: {:.4}, other: {:.4}, quote: {:.2}, discount: {:.1}%)",
+            account, pair, sell_qty, sell_price, base_balance, other_base, quote_balance, LIQUIDATION_DISCOUNT * 100.0);
 
         match self.place_sell(subaccount, pair, sell_qty, sell_price).await {
             Ok(order_id) => {
