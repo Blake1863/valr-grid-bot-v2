@@ -5,6 +5,9 @@
 import crypto from 'crypto';
 import https from 'https';
 import type { ValrOrder, ValrPosition, ValrBalance, ValrTicker, ValrMarkPrice, OrderPlacement } from './types.js';
+import { createLogger } from '../app/logger.js';
+
+const log = createLogger('restClient');
 
 const BASE_URL = 'https://api.valr.com';
 
@@ -40,6 +43,11 @@ function httpsRequest(method: string, url: string, headers: Record<string, strin
       method,
       headers,
     };
+    
+    // Add Content-Length header
+    if (body) {
+      (options.headers as any)['Content-Length'] = Buffer.byteLength(body).toString();
+    }
     
     const req = https.request(options, (res) => {
       let data = '';
@@ -98,7 +106,7 @@ export class ValrRestClient {
     
     // Debug logging for POST requests
     if (method === 'POST') {
-      console.log(`[DEBUG] POST ${path} body:`, bodyStr);
+      log.info({ path, body: bodyStr, subacct: this.subaccountId }, 'REST POST request');
     }
     
     const headers = this.getHeaders(method, path, bodyStr);
