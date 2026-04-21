@@ -156,14 +156,15 @@ export class ValrRestClient {
   async placeLimitOrder(order: OrderPlacement): Promise<ValrOrder> {
     const payload = {
       pair: order.pair,
-      side: order.side,
-      type: 'LIMIT',
+      side: order.side.toUpperCase(),
       quantity: order.quantity,
       price: order.price,
       customerOrderId: order.customerOrderId,
       timeInForce: 'GTC',
+      postOnly: order.postOnly ?? false,
     };
-    return this.request<ValrOrder>('POST', '/v1/orders/limit', payload);
+    // Use v2 endpoint for synchronous order placement
+    return this.request<ValrOrder>('POST', '/v2/orders/limit', payload);
   }
 
   async cancelOrder(orderId: string, pair?: string): Promise<void> {

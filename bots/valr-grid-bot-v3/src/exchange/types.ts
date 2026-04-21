@@ -78,6 +78,7 @@ export interface OrderPlacement {
   customerOrderId?: string;
   allowMargin?: boolean;
   reduceOnly?: boolean;
+  postOnly?: boolean;
 }
 
 export interface ConditionalPlacement {
