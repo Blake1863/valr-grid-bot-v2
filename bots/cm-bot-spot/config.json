@@ -123,6 +123,10 @@
     "USDPCUSDT": {
       "enabled": false,
       "type": "spot"
+    },
+    "XAUTUSDT": {
+      "enabled": true,
+      "type": "spot"
     }
   },
   "cycle_interval_ms": 15000,
