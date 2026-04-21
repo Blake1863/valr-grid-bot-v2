@@ -218,20 +218,7 @@ async function placeOrder(order: any, constraints: any): Promise<void> {
       return;
     }
 
-    // Verify order was actually created by fetching it
-    await sleep(100); // Brief delay to allow exchange to process
-    const openOrders = await restClient.getOpenOrders();
-    const confirmedOrder = openOrders.find((o: any) => 
-      (o.orderId === exchangeOrderId || o.id === exchangeOrderId) &&
-      o.customerOrderId === order.customerOrderId
-    );
-
-    if (!confirmedOrder) {
-      log.error({ level: order.levelIndex, side: order.side, exchangeOrderId }, 'Order placement FAILED - order not found on exchange');
-      order.state = 'missing';
-      return;
-    }
-
+    // Mark as active immediately - reconciliation will verify
     markOrderActive(gridState, order.customerOrderId, exchangeOrderId);
     order.state = 'active';
     order.exchangeOrderId = exchangeOrderId;
@@ -241,7 +228,13 @@ async function placeOrder(order: any, constraints: any): Promise<void> {
 
     log.info({ level: order.levelIndex, side: order.side, price: order.priceStr }, 'Order placed');
   } catch (err: any) {
-    log.error({ err: err.message, level: order.levelIndex }, 'Failed to place order');
+    // Check if rate limited
+    if (err.message?.includes('429')) {
+      log.warn({ level: order.levelIndex }, 'Rate limited - will retry');
+      order.state = 'pending'; // Mark for retry
+    } else {
+      log.error({ err: err.message, level: order.levelIndex }, 'Failed to place order');
+    }
   }
 }
 
@@ -249,43 +242,67 @@ async function placeOrder(order: any, constraints: any): Promise<void> {
  * Reconcile bot state with exchange.
  */
 async function reconcile(): Promise<void> {
-  log.debug('Reconciliation started');
+  log.info('Reconciliation started');
 
   try {
-    // Fetch open orders
+    // Fetch open orders from exchange
     const openOrders = await restClient.getOpenOrders();
+    const exchangeOrderIds = new Set(openOrders.map((o: any) => o.customerOrderId));
     
-    // Map exchange orders to grid orders
-    for (const exOrder of openOrders) {
-      const allOrders = Array.from(gridState.orders.values()) as GridOrder[];
-      const gridOrder = allOrders.find(
-        (o) => o.customerOrderId === exOrder.customerOrderId
-      );
-      
-      if (gridOrder && !gridOrder.exchangeOrderId) {
-        gridOrder.exchangeOrderId = exOrder.orderId;
-        gridOrder.state = 'active';
-        const exId = exOrder.orderId || exOrder.id;
-        if (exId) {
-          markOrderActive(gridState, gridOrder.customerOrderId, exId);
-        }
-      }
-    }
+    let placed = 0;
+    let missing = 0;
 
-    // Check for missing orders
+    // Check each grid order
     for (const [levelIdx, order] of gridState.orders) {
-      if (order.state === 'active' && !order.exchangeOrderId) {
-        // Order marked active but no exchange ID — reconcile
-        const exOrder = openOrders.find((o: any) => o.customerOrderId === order.customerOrderId);
-        if (exOrder) {
-          order.exchangeOrderId = exOrder.orderId;
-        } else {
+      const existsOnExchange = exchangeOrderIds.has(order.customerOrderId);
+      
+      if (order.state === 'active' || order.state === 'pending') {
+        if (!existsOnExchange) {
+          // Order missing from exchange - re-place it
+          log.warn({ level: levelIdx, side: order.side, customerOrderId: order.customerOrderId }, 'Order missing from exchange - re-placing');
+          missing++;
+          
+          // Clear the old exchange ID and re-place
+          order.exchangeOrderId = undefined;
           order.state = 'missing';
+          
+          // Re-place the order
+          try {
+            const result = await restClient.placeLimitOrder({
+              pair: config.pair,
+              side: order.side,
+              price: order.priceStr,
+              quantity: order.quantityStr,
+              customerOrderId: order.customerOrderId,
+              allowMargin: config.allowMargin,
+              reduceOnly: order.role === 'exit',
+            });
+            
+            const exchangeOrderId = result.id || result.orderId;
+            if (exchangeOrderId) {
+              markOrderActive(gridState, order.customerOrderId, exchangeOrderId);
+              order.state = 'active';
+              order.exchangeOrderId = exchangeOrderId;
+              placed++;
+              log.info({ level: levelIdx }, 'Order re-placed successfully');
+            }
+          } catch (err: any) {
+            if (err.message?.includes('429')) {
+              log.warn({ level: levelIdx }, 'Rate limited during reconciliation');
+              order.state = 'pending';
+            } else {
+              log.error({ err: err.message, level: levelIdx }, 'Failed to re-place order');
+            }
+          }
         }
+      } else if (order.state === 'missing' && !existsOnExchange) {
+        // Order was never placed - place it now
+        log.info({ level: levelIdx, side: order.side }, 'Placing missing order');
+        // Will be picked up by handlePriceUpdate
       }
     }
 
-    log.debug('Reconciliation complete');
+    log.info({ placed, missing, total: openOrders.length }, `Reconciliation complete`);
   } catch (err: any) {
     log.error({ err: err.message }, 'Reconciliation failed');
   }
