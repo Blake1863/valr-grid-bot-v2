@@ -1,5 +1,49 @@
 # MEMORY.md - Long-Term Memory
 
+## 🛑 CORE RULE: Never Guess VALR Endpoints
+
+**Always use endpoints EXACTLY as documented. Never infer, guess, or probe blindly.**
+
+**Source of truth (bookmarked by Blake 2026-04-22):**
+- Full docs: https://api-docs.rooibos.dev/llms-full.txt
+- Index: https://api-docs.rooibos.dev/llms.txt
+- Local mirror: `~/.openclaw/workspace/skills/valr-exchange/references/valr-llms-full.txt` (~15k lines)
+- Local index: `~/.openclaw/workspace/skills/valr-exchange/references/valr-llms-index.txt` (~400 lines)
+
+**Workflow before using any VALR endpoint:**
+1. Grep the local mirror first: `grep -niE "^# |path|url:" ~/.openclaw/workspace/skills/valr-exchange/references/valr-llms-full.txt | grep -i <keyword>`
+2. If not found, refetch live docs (they regenerate on every deploy)
+3. Use the path EXACTLY — version prefix (`/v1/` vs `/v2/`), path params, body shape, header names
+4. If unsure, ASK — never invent
+
+**Confirmed key endpoints (grid bot):**
+| Purpose | Endpoint | Notes |
+|---------|----------|-------|
+| Batch cancel all | `DELETE /v1/orders` | Returns array of cancelled orderIds — works on subaccount |
+| Cancel by pair | `DELETE /v1/orders/{currencyPair}` | e.g. `/v1/orders/SOLUSDTPERP` |
+| Cancel single (current) | `DELETE /v2/orders/order` | Body: `{orderId\|customerOrderId, pair}` — **preferred** |
+| Cancel single (legacy) | `DELETE /v1/orders/order` | 202 Accepted |
+| Cancel all conditionals | `DELETE /v1/orders/conditionals` | TP/SL |
+| Cancel conditionals by pair | `DELETE /v1/orders/conditionals/{currencyPair}` | |
+| Account balances | `GET /v1/account/balances` | Subaccount header supported |
+| Open positions | `GET /v1/positions/open` | Subaccount header supported |
+| **Margin info** | **WS ONLY** — `MARGIN_INFO` event on `/ws/account` (Beta, every 5s, needs SUBSCRIBE) | ❌ No REST endpoint exists |
+
+**Authentication:**
+- Signature payload: `timestamp + VERB + path + body + subaccountId`
+- HMAC-SHA512, hex output
+- Headers: `X-VALR-API-KEY`, `X-VALR-SIGNATURE`, `X-VALR-TIMESTAMP`, `X-VALR-SUB-ACCOUNT-ID` (when impersonating sub)
+- When `X-VALR-SUB-ACCOUNT-ID` header is sent, the subaccountId MUST also be included in the signature payload (else `-11252 invalid signature`)
+- WebSocket auth: `HMAC-SHA512(secret, timestamp + "GET" + "/ws/account")` via handshake headers OR in-band `AUTHENTICATE` message
+
+**WebSocket endpoints:**
+- Trade data: `wss://api.valr.com/ws/trade`
+- Account events: `wss://api.valr.com/ws/account`
+
+**Lesson learned (2026-04-22):** v4 grid bot subagent invented `/v1/account/margin/futures` and 5 other variants — all 404. Probing endpoints is slow, rate-limit risky, and wrong. Read the docs.
+
+---
+
 ## Grid Bot v4 — PERPETUAL BOT (2026-04-22) 🆕
 
 **Status:** Built, tested, NOT YET DEPLOYED. Awaiting user go-live.
