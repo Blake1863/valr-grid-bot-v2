@@ -70,19 +70,26 @@
 | Leverage | 10x | 10x |
 | Stop Loss | 3% | 3% |
 | postOnly | true | true |
-| allowMargin | true | true |
+| allowMargin | **false** | **false** |
 
 **Repo:** https://github.com/Blake1863/valr-perpetual-grid-bot (main)
 
 **Deployment history:**
 - 2026-04-22 19:34: Configs written (ranges centered on live mark ±6%)
 - 2026-04-22 19:38: Both services started, v3 stopped/inactive
-- 2026-04-22 19:41: ETH hit tick-size bug, fixed in 2ca32b5
-- 2026-04-22 19:46: ETH restarted, 30 orders placed
+- 2026-04-22 19:41: ETH hit tick-size bug (tickSize 0.01 → 0.1), fixed in 2ca32b5
+- 2026-04-22 19:46: ETH restarted, 30 orders placed (but allowMargin:true was still broken)
+- 2026-04-22 19:50: Discovered allowMargin:true = -19219 on these subs
+- 2026-04-22 19:53: Closed stray ETH position, flipped allowMargin:false, both bots clean
+- **LIVE and reconciling** — SOL 30 orders, ETH 30 orders, 0 errors
 
-**Known issues:**
-- Both bots get transient 400 Bad Request (HTML body) on first reconcile tick before WS fully connected. Self-heals next tick. Not a real issue — just noise. Could add 2s delay before first reconcile.
-- Dry-run output shows qty=1 (hardcoded placeholder), not real computed qty. Misleading but cosmetic — live sizing is correct.
+**Deployment gotchas (learned during launch):**
+- **allowMargin must be FALSE on these subaccounts** — they don't have margin privilege granted via `/v1/account/status`. With `allowMargin:true` every order returns `-19219 'Margin not enabled for given currency pair'`. VALR perpetuals still use leverage (10x set at subaccount level) with `allowMargin:false`. The mysterious HTML 400 'malformed request' errors were actually this JSON error — but under high-frequency retries, VALR sometimes returns its generic HTML error page instead of structured JSON.
+- **ETHUSDTPERP tickSize is 0.1, not 0.01** (fixed in 2ca32b5). Static constraints in `pairMetadata.ts` initially assumed 0.01 across the board.
+- Both bots still get a transient placement failure on first reconcile tick (runs before WS ready). Self-heals within 10s. Not a real issue — just log noise.
+- Dry-run output shows `qty=1` (hardcoded placeholder display). Live sizing computes real qty from balance.
+
+**During launch, one stray ETH SELL (0.005 @ $2395.30) got filled before bugs were found.** Closed with reduceOnly market BUY (`close-stray-eth-001`). No loss (~$0.02 unrealized).
 
 **Emergency commands:**
 ```bash
