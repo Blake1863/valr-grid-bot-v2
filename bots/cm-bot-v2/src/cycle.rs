@@ -72,33 +72,35 @@ pub async fn execute_cycle_with_qty_range(
     // ── Freshness check (Fix B) ───────────────────────────────────────────
     let age = prices.updated_at.elapsed();
     if age > MAX_ORDERBOOK_AGE {
+        let reason = format!(
+            "skip: stale orderbook for {} ({}ms old)",
+            pair_info.symbol, age.as_millis()
+        );
+        eprintln!("[WARN] {}", reason);
         return CycleResult {
             success: false,
             maker_order_id: None,
             taker_order_id: None,
             external_fill: false,
-            error: Some(format!(
-                "skip: stale orderbook for {} ({}ms old)",
-                pair_info.symbol, age.as_millis()
-            )),
+            error: Some(reason),
         };
     }
 
     // ── Jitter check (Fix E) ──────────────────────────────────────────────
-    // If the book ticked very recently, give it a beat — otherwise our maker
-    // may land right as another tick flips best-bid/ask.
     if let Some(prev) = prices.prev_updated_at {
         let since_prev = prices.updated_at.duration_since(prev);
         if since_prev < MIN_STABLE_WINDOW {
+            let reason = format!(
+                "skip: book jittering for {} (tick gap {}ms)",
+                pair_info.symbol, since_prev.as_millis()
+            );
+            eprintln!("[WARN] {}", reason);
             return CycleResult {
                 success: false,
                 maker_order_id: None,
                 taker_order_id: None,
                 external_fill: false,
-                error: Some(format!(
-                    "skip: book jittering for {} (tick gap {}ms)",
-                    pair_info.symbol, since_prev.as_millis()
-                )),
+                error: Some(reason),
             };
         }
     }
@@ -163,15 +165,17 @@ pub async fn execute_cycle_with_qty_range(
     if (maker_side == OrderSide::Buy && maker_price >= prices.ask)
         || (maker_side == OrderSide::Sell && maker_price <= prices.bid)
     {
+        let reason = format!(
+            "skip: no safe maker price for {} (bid={} ask={} maker={})",
+            pair_info.symbol, prices.bid, prices.ask, maker_price
+        );
+        eprintln!("[WARN] {}", reason);
         return CycleResult {
             success: false,
             maker_order_id: None,
             taker_order_id: None,
             external_fill: false,
-            error: Some(format!(
-                "skip: no safe maker price for {} (bid={} ask={} maker={})",
-                pair_info.symbol, prices.bid, prices.ask, maker_price
-            )),
+            error: Some(reason),
         };
     }
 

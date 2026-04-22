@@ -184,10 +184,10 @@ impl WsClient {
 
         // Timeout: maker can take a bit to hit book; taker IOC is immediate
         // but VALR may take a moment to emit the terminal ORDER_STATUS_UPDATE.
-        // 3s is plenty.
-        tokio::time::timeout(tokio::time::Duration::from_secs(3), reply_rx)
+        // 10s is generous; if VALR still doesn't respond, something is wrong.
+        tokio::time::timeout(tokio::time::Duration::from_secs(10), reply_rx)
             .await
-            .context("WS order placement timed out after 3s")?
+            .context("WS order placement timed out after 10s")?
             .context("WS reply channel dropped")?
     }
 }
