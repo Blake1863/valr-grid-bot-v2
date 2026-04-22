@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::time::Instant;
 use tokio::sync::RwLock;
 use anyhow::Result;
 use futures_util::{SinkExt, StreamExt};
@@ -15,7 +16,13 @@ pub struct OrderbookPrices {
     pub bid: f64,
     pub ask: f64,
     pub mid: f64,
-    pub mark_price: Option<f64>, // from MARKET_SUMMARY_UPDATE, used when spread > 50bps
+    pub mark_price: Option<f64>,
+    /// Local monotonic clock timestamp of the last update.
+    /// Used to detect stale books (e.g. WS delay, gap between ticks).
+    pub updated_at: Instant,
+    /// Local monotonic timestamp of the previous bid/ask change.
+    /// Used to detect mid-flight "jitter" — i.e. the book just moved.
+    pub prev_updated_at: Option<Instant>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -26,23 +33,9 @@ struct WsResponse {
     currency_pair_symbol: Option<String>,
     #[serde(default)]
     data: Option<serde_json::Value>,
-    #[serde(default, rename = "payload")]
-    payload: Option<serde_json::Value>,
-}
-
-#[derive(Debug, Deserialize)]
-struct OrderbookData {
-    Bids: Option<Vec<OrderbookEntry>>,
-    Asks: Option<Vec<OrderbookEntry>>,
-}
-
-#[derive(Debug, Deserialize)]
-struct OrderbookEntry {
-    price: String,
+    // `d` key is used by OB_L1_DIFF/SNAPSHOT events
     #[serde(default)]
-    quantity: Option<String>,
-    #[serde(default)]
-    orderCount: Option<u64>,
+    d: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -61,16 +54,41 @@ impl PriceFeed {
         }
     }
 
+    /// Subscribe to real-time L1 (top of book) updates for each pair via OB_L1_DIFF.
+    ///
+    /// Each pair needs its own WS connection because OB_L1_DIFF subscriptions are
+    /// per-pair. We also open ONE extra connection for MARKET_SUMMARY_UPDATE on all
+    /// pairs to track mark price as a fallback.
     pub async fn connect_and_subscribe(&self, symbols: &[&str]) -> Result<()> {
         let ws_url = self.ws_url.clone();
         let prices = self.prices.clone();
-        let symbols: Vec<String> = symbols.iter().map(|s| s.to_string()).collect();
+        let symbols_owned: Vec<String> = symbols.iter().map(|s| s.to_string()).collect();
 
+        // One OB_L1_DIFF connection per pair
+        for sym in &symbols_owned {
+            let pair = sym.clone();
+            let ws_url = ws_url.clone();
+            let prices = prices.clone();
+            tokio::spawn(async move {
+                loop {
+                    match run_ob_l1_diff_loop(&ws_url, &pair, prices.clone()).await {
+                        Ok(_) => println!("[WARN] OB_L1_DIFF for {} closed, reconnecting in 3s...", pair),
+                        Err(e) => eprintln!("[ERROR] OB_L1_DIFF for {}: {} - reconnecting in 3s...", pair, e),
+                    }
+                    tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
+                }
+            });
+        }
+
+        // One MARKET_SUMMARY_UPDATE connection for mark prices across all pairs
+        let ws_url2 = ws_url.clone();
+        let prices2 = prices.clone();
+        let symbols2 = symbols_owned.clone();
         tokio::spawn(async move {
             loop {
-                match run_price_ws_loop(&ws_url, &symbols, prices.clone()).await {
-                    Ok(_) => println!("[WARN] Trade WS connection closed, reconnecting in 3s..."),
-                    Err(e) => eprintln!("[ERROR] Trade WS error: {} - reconnecting in 3s...", e),
+                match run_market_summary_loop(&ws_url2, &symbols2, prices2.clone()).await {
+                    Ok(_) => println!("[WARN] MARKET_SUMMARY_UPDATE closed, reconnecting in 3s..."),
+                    Err(e) => eprintln!("[ERROR] MARKET_SUMMARY_UPDATE: {} - reconnecting in 3s...", e),
                 }
                 tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
             }
@@ -84,213 +102,206 @@ impl PriceFeed {
         prices.get(symbol).cloned()
     }
 
-    // Backwards compat
     pub async fn get_price(&self, symbol: &str) -> Option<f64> {
         self.get_orderbook(symbol).await.map(|p| p.mid)
     }
-
-    pub async fn update_price(&self, symbol: &str, price: f64) {
-        let mut prices = self.prices.write().await;
-        prices.insert(symbol.to_string(), OrderbookPrices { bid: price, ask: price, mid: price, mark_price: None });
-    }
 }
 
-/// Main WebSocket loop for price feed - connects, subscribes, and listens for orderbook updates
-async fn run_price_ws_loop(
+/// Real-time L1 feed. Each message (`OB_L1_SNAPSHOT` or `OB_L1_DIFF`) carries
+/// the full top-of-book in compact array form under key `d`:
+///   `{ "a": [["price","qty"], ...], "b": [["price","qty"], ...] }`
+async fn run_ob_l1_diff_loop(
     ws_url: &str,
-    symbols: &[String],
+    pair: &str,
     prices: Arc<RwLock<HashMap<String, OrderbookPrices>>>,
 ) -> Result<()> {
-    // Connect to WebSocket (no auth required for public trade stream)
-    let (ws_stream, _response) = tokio_tungstenite::connect_async(ws_url)
+    let (ws_stream, _resp) = tokio_tungstenite::connect_async(ws_url)
         .await
-        .map_err(|e| anyhow::anyhow!("Failed to connect to {}: {}", ws_url, e))?;
-
-    println!("[INFO] Trade WS connected, subscribed to {} pairs", symbols.len());
-
+        .map_err(|e| anyhow::anyhow!("Failed to connect WS for {}: {}", pair, e))?;
     let (mut write, mut read) = ws_stream.split::<tokio_tungstenite::tungstenite::Message>();
 
-    // Subscribe to AGGREGATED_ORDERBOOK_UPDATE
-    let subscribe_msg = serde_json::json!({
+    let sub = serde_json::json!({
         "type": "SUBSCRIBE",
-        "subscriptions": [
-            {
-                "event": "AGGREGATED_ORDERBOOK_UPDATE",
-                "pairs": symbols
-            }
-        ]
+        "subscriptions": [{ "event": "OB_L1_DIFF", "pairs": [pair] }]
     });
+    write
+        .send(tokio_tungstenite::tungstenite::Message::Text(sub.to_string().into()))
+        .await
+        .map_err(|e| anyhow::anyhow!("subscribe send failed: {}", e))?;
 
-    let subscribe_json = serde_json::to_string(&subscribe_msg)?;
-    write.send(tokio_tungstenite::tungstenite::Message::Text(subscribe_json.into())).await
-        .map_err(|e| anyhow::anyhow!("Failed to send subscribe message: {}", e))?;
+    println!("[INFO] OB_L1_DIFF subscribed for {}", pair);
 
-    // Also subscribe to MARKET_SUMMARY_UPDATE as fallback for thin books
-    let summary_msg = serde_json::json!({
-        "type": "SUBSCRIBE",
-        "subscriptions": [
-            {
-                "event": "MARKET_SUMMARY_UPDATE",
-                "pairs": symbols
-            }
-        ]
-    });
+    let mut ping = tokio::time::interval(tokio::time::Duration::from_secs(20));
+    ping.tick().await; // consume immediate
 
-    let summary_json = serde_json::to_string(&summary_msg)?;
-    write.send(tokio_tungstenite::tungstenite::Message::Text(summary_json.into())).await
-        .map_err(|e| anyhow::anyhow!("Failed to send summary subscribe message: {}", e))?;
-
-    println!("[INFO] Subscribed to AGGREGATED_ORDERBOOK_UPDATE and MARKET_SUMMARY_UPDATE");
-
-    // Listen for messages
     loop {
-        match read.next().await {
-            Some(Ok(msg)) => {
-                match msg {
-                    tokio_tungstenite::tungstenite::Message::Text(text) => {
-                        match serde_json::from_str::<WsResponse>(&text) {
-                            Ok(response) => {
-                                match response.msg_type.as_str() {
-                                    "AGGREGATED_ORDERBOOK_UPDATE" => {
-                                        if let (Some(symbol), Some(data)) = 
-                                            (response.currency_pair_symbol, response.data) 
-                                        {
-                                            if let Ok(orderbook_data) = serde_json::from_value::<OrderbookData>(data) {
-                                                if let (Some(bids), Some(asks)) = 
-                                                    (orderbook_data.Bids, orderbook_data.Asks) 
-                                                {
-                                                    if let (Some(best_bid), Some(best_ask)) = (bids.first(), asks.first()) {
-                                                        if let (Ok(bid), Ok(ask)) = (
-                                                            best_bid.price.parse::<f64>(),
-                                                            best_ask.price.parse::<f64>()
-                                                        ) {
-                                                            let mid = (bid + ask) / 2.0;
-                                                            // Preserve existing mark_price if we already have it
-                                                            let existing_mark = {
-                                                                let r = prices.read().await;
-                                                                r.get(&symbol).and_then(|p| p.mark_price)
-                                                            };
-                                                            let orderbook_prices = OrderbookPrices { bid, ask, mid, mark_price: existing_mark };
-                                                            
-                                                            let mut prices_write = prices.write().await;
-                                                            prices_write.insert(symbol.clone(), orderbook_prices);
-                                                            
-                                                            // Log occasionally (every 100th update or so)
-                                                            if prices_write.len() % 100 == 0 {
-                                                                println!("[INFO] Updated {} for {}: bid={:.6}, ask={:.6}, mid={:.6}", 
-                                                                    "orderbook", symbol, bid, ask, mid);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    "MARKET_SUMMARY_UPDATE" => {
-                                        if let (Some(symbol), Some(data)) = 
-                                            (response.currency_pair_symbol, response.data) 
-                                        {
-                                            if let Ok(summary_data) = serde_json::from_value::<MarketSummaryData>(data) {
-                                                let mark = summary_data.mark_price
-                                                    .as_deref()
-                                                    .and_then(|s| s.parse::<f64>().ok());
-                                                let last = summary_data.last_traded_price
-                                                    .as_deref()
-                                                    .and_then(|s| s.parse::<f64>().ok());
-
-                                                let mut prices_write = prices.write().await;
-                                                if let Some(existing) = prices_write.get_mut(&symbol) {
-                                                    // Already have orderbook — just update mark_price
-                                                    if mark.is_some() {
-                                                        existing.mark_price = mark;
-                                                    }
-                                                } else if let Some(p) = mark.or(last) {
-                                                    // No orderbook yet — bootstrap with summary price
-                                                    prices_write.insert(symbol, OrderbookPrices {
-                                                        bid: p, ask: p, mid: p, mark_price: mark,
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    }
-                                    _ => {
-                                        // Ignore other message types
-                                    }
-                                }
-                            }
-                            Err(e) => {
-                                // Silently ignore parse errors for unknown message types
-                                if cfg!(debug_assertions) {
-                                    eprintln!("[WARN] Failed to parse WS message: {} - {}", text, e);
+        tokio::select! {
+            msg = read.next() => match msg {
+                Some(Ok(tokio_tungstenite::tungstenite::Message::Text(text))) => {
+                    if let Ok(resp) = serde_json::from_str::<WsResponse>(&text) {
+                        if resp.msg_type == "OB_L1_SNAPSHOT" || resp.msg_type == "OB_L1_DIFF" {
+                            if let Some(d) = resp.d.as_ref() {
+                                let bid = first_price(&d["b"]);
+                                let ask = first_price(&d["a"]);
+                                if let (Some(b), Some(a)) = (bid, ask) {
+                                    let mid = (b + a) / 2.0;
+                                    let now = Instant::now();
+                                    let mut w = prices.write().await;
+                                    let (existing_mark, prev_updated) = w.get(pair)
+                                        .map(|p| (p.mark_price, Some(p.updated_at)))
+                                        .unwrap_or((None, None));
+                                    w.insert(pair.to_string(), OrderbookPrices {
+                                        bid: b,
+                                        ask: a,
+                                        mid,
+                                        mark_price: existing_mark,
+                                        updated_at: now,
+                                        prev_updated_at: prev_updated,
+                                    });
                                 }
                             }
                         }
                     }
-                    tokio_tungstenite::tungstenite::Message::Ping(data) => {
-                        // Respond to ping with pong
-                        let _: Result<(), _> = write.send(tokio_tungstenite::tungstenite::Message::Pong(data)).await;
-                    }
-                    tokio_tungstenite::tungstenite::Message::Close(_) => {
-                        println!("[INFO] Trade WS closed by server");
-                        break;
-                    }
-                    _ => {}
                 }
-            }
-            Some(Err(e)) => {
-                eprintln!("[ERROR] Trade WS read error: {}", e);
-                return Err(anyhow::anyhow!(e));
-            }
-            None => {
-                println!("[INFO] Trade WS stream ended");
-                break;
+                Some(Ok(tokio_tungstenite::tungstenite::Message::Ping(d))) => {
+                    let _ = write.send(tokio_tungstenite::tungstenite::Message::Pong(d)).await;
+                }
+                Some(Ok(tokio_tungstenite::tungstenite::Message::Close(_))) => {
+                    println!("[INFO] OB_L1_DIFF WS closed by server for {}", pair);
+                    return Ok(());
+                }
+                Some(Err(e)) => return Err(anyhow::anyhow!("WS read error: {}", e)),
+                None => return Ok(()),
+                _ => {}
+            },
+            _ = ping.tick() => {
+                if let Err(e) = write
+                    .send(tokio_tungstenite::tungstenite::Message::Ping(vec![].into()))
+                    .await
+                {
+                    return Err(anyhow::anyhow!("ping failed: {}", e));
+                }
             }
         }
     }
+}
 
-    Ok(())
+/// Secondary stream: mark price for wide-spread fallback.
+async fn run_market_summary_loop(
+    ws_url: &str,
+    symbols: &[String],
+    prices: Arc<RwLock<HashMap<String, OrderbookPrices>>>,
+) -> Result<()> {
+    let (ws_stream, _resp) = tokio_tungstenite::connect_async(ws_url)
+        .await
+        .map_err(|e| anyhow::anyhow!("MARKET_SUMMARY_UPDATE connect failed: {}", e))?;
+    let (mut write, mut read) = ws_stream.split::<tokio_tungstenite::tungstenite::Message>();
+
+    let sub = serde_json::json!({
+        "type": "SUBSCRIBE",
+        "subscriptions": [{ "event": "MARKET_SUMMARY_UPDATE", "pairs": symbols }]
+    });
+    write
+        .send(tokio_tungstenite::tungstenite::Message::Text(sub.to_string().into()))
+        .await?;
+
+    println!("[INFO] MARKET_SUMMARY_UPDATE subscribed for {} pairs", symbols.len());
+
+    let mut ping = tokio::time::interval(tokio::time::Duration::from_secs(20));
+    ping.tick().await;
+
+    loop {
+        tokio::select! {
+            msg = read.next() => match msg {
+                Some(Ok(tokio_tungstenite::tungstenite::Message::Text(text))) => {
+                    if let Ok(resp) = serde_json::from_str::<WsResponse>(&text) {
+                        if resp.msg_type == "MARKET_SUMMARY_UPDATE" {
+                            if let (Some(symbol), Some(data)) = (resp.currency_pair_symbol, resp.data) {
+                                if let Ok(sd) = serde_json::from_value::<MarketSummaryData>(data) {
+                                    let mark = sd.mark_price
+                                        .as_deref().and_then(|s| s.parse::<f64>().ok());
+                                    let last = sd.last_traded_price
+                                        .as_deref().and_then(|s| s.parse::<f64>().ok());
+
+                                    let mut w = prices.write().await;
+                                    if let Some(p) = w.get_mut(&symbol) {
+                                        if mark.is_some() { p.mark_price = mark; }
+                                    } else if let Some(px) = mark.or(last) {
+                                        let now = Instant::now();
+                                        w.insert(symbol, OrderbookPrices {
+                                            bid: px, ask: px, mid: px,
+                                            mark_price: mark,
+                                            updated_at: now,
+                                            prev_updated_at: None,
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Some(Ok(tokio_tungstenite::tungstenite::Message::Ping(d))) => {
+                    let _ = write.send(tokio_tungstenite::tungstenite::Message::Pong(d)).await;
+                }
+                Some(Ok(tokio_tungstenite::tungstenite::Message::Close(_))) => return Ok(()),
+                Some(Err(e)) => return Err(anyhow::anyhow!("WS read error: {}", e)),
+                None => return Ok(()),
+                _ => {}
+            },
+            _ = ping.tick() => {
+                if let Err(e) = write
+                    .send(tokio_tungstenite::tungstenite::Message::Ping(vec![].into()))
+                    .await
+                {
+                    return Err(anyhow::anyhow!("ping failed: {}", e));
+                }
+            }
+        }
+    }
+}
+
+fn first_price(arr: &serde_json::Value) -> Option<f64> {
+    arr.as_array()?
+        .first()?
+        .as_array()?
+        .first()?
+        .as_str()
+        .and_then(|s| s.parse::<f64>().ok())
 }
 
 // Fallback REST function using public orderbook (no auth needed)
-// Returns bid, ask, and mid prices
 pub async fn fetch_orderbook_prices(
     symbol: &str,
     _api_base_url: &str,
 ) -> Result<OrderbookPrices> {
     let client = reqwest::Client::new();
     let url = format!("https://api.valr.com/v1/public/{}/orderbook", symbol);
-    
     let response = client.get(&url).send().await?;
-    
-    if response.status().is_success() {
-        let json: serde_json::Value = response.json().await?;
-        
-        let bids = &json["Bids"];
-        let asks = &json["Asks"];
-        
-        if bids.is_array() && asks.is_array() {
-            if let (Some(best_bid), Some(best_ask)) = (
-                bids.as_array().unwrap().first(),
-                asks.as_array().unwrap().first()
-            ) {
-                let bid = best_bid["price"].as_str()
-                    .ok_or_else(|| anyhow::anyhow!("No bid price in orderbook"))?
-                    .parse::<f64>()?;
-                
-                let ask = best_ask["price"].as_str()
-                    .ok_or_else(|| anyhow::anyhow!("No ask price in orderbook"))?
-                    .parse::<f64>()?;
-                
-                Ok(OrderbookPrices { bid, ask, mid: (bid + ask) / 2.0, mark_price: None })
-            } else {
-                anyhow::bail!("Empty orderbook for {}", symbol);
-            }
-        } else {
-            anyhow::bail!("Invalid orderbook format for {}", symbol);
-        }
-    } else {
-        anyhow::bail!("Failed to fetch price: {}", response.status())
+    if !response.status().is_success() {
+        anyhow::bail!("Failed to fetch price: {}", response.status());
     }
+    let json: serde_json::Value = response.json().await?;
+    let bids = &json["Bids"];
+    let asks = &json["Asks"];
+    if !(bids.is_array() && asks.is_array()) {
+        anyhow::bail!("Invalid orderbook format for {}", symbol);
+    }
+    let best_bid = bids.as_array().unwrap().first()
+        .ok_or_else(|| anyhow::anyhow!("Empty bids for {}", symbol))?;
+    let best_ask = asks.as_array().unwrap().first()
+        .ok_or_else(|| anyhow::anyhow!("Empty asks for {}", symbol))?;
+    let bid = best_bid["price"].as_str()
+        .ok_or_else(|| anyhow::anyhow!("No bid price"))?
+        .parse::<f64>()?;
+    let ask = best_ask["price"].as_str()
+        .ok_or_else(|| anyhow::anyhow!("No ask price"))?
+        .parse::<f64>()?;
+    Ok(OrderbookPrices {
+        bid, ask, mid: (bid + ask) / 2.0,
+        mark_price: None,
+        updated_at: Instant::now(),
+        prev_updated_at: None,
+    })
 }
 
 // Backwards compat: just return the mid

@@ -3,6 +3,16 @@ use crate::price_feed::OrderbookPrices;
 use crate::types::OrderSide;
 use crate::ws_client::WsClient;
 use rand::Rng;
+use std::time::{Duration, Instant};
+
+/// Max age for the orderbook snapshot before we skip a cycle.
+/// Our OB_L1_DIFF feed pushes on every tick — anything older than this
+/// probably means the WS is delayed / hiccuping.
+const MAX_ORDERBOOK_AGE: Duration = Duration::from_millis(500);
+
+/// If the book was updated within this window before we fire, the price is
+/// jittery — skip this cycle so we don't race against our own update.
+const MIN_STABLE_WINDOW: Duration = Duration::from_millis(20);
 
 pub fn calculate_order_qty(
     min_qty: f64,
@@ -59,6 +69,40 @@ pub async fn execute_cycle_with_qty_range(
     qty_range_min: f64,
     qty_range_max: f64,
 ) -> CycleResult {
+    // ── Freshness check (Fix B) ───────────────────────────────────────────
+    let age = prices.updated_at.elapsed();
+    if age > MAX_ORDERBOOK_AGE {
+        return CycleResult {
+            success: false,
+            maker_order_id: None,
+            taker_order_id: None,
+            external_fill: false,
+            error: Some(format!(
+                "skip: stale orderbook for {} ({}ms old)",
+                pair_info.symbol, age.as_millis()
+            )),
+        };
+    }
+
+    // ── Jitter check (Fix E) ──────────────────────────────────────────────
+    // If the book ticked very recently, give it a beat — otherwise our maker
+    // may land right as another tick flips best-bid/ask.
+    if let Some(prev) = prices.prev_updated_at {
+        let since_prev = prices.updated_at.duration_since(prev);
+        if since_prev < MIN_STABLE_WINDOW {
+            return CycleResult {
+                success: false,
+                maker_order_id: None,
+                taker_order_id: None,
+                external_fill: false,
+                error: Some(format!(
+                    "skip: book jittering for {} (tick gap {}ms)",
+                    pair_info.symbol, since_prev.as_millis()
+                )),
+            };
+        }
+    }
+
     let mut rng = rand::thread_rng();
     let multiplier = rng.gen_range(qty_range_min..=qty_range_max);
 
@@ -70,51 +114,90 @@ pub async fn execute_cycle_with_qty_range(
         multiplier,
     );
 
-    // Use mid price from WS orderbook.
-    // If spread > 50bps, fall back to mark price — wide spreads mean mid is unreliable
-    // and postOnlyReprice may reprice far from where the taker can self-match.
+    // Spread guard: VALR perps frequently have 5–25bps spreads, so the old
+    // 50bps threshold effectively never triggered the mark-price fallback.
+    // Drop to 25bps so wide-spread pairs fall back safely.
     let spread_bps = if prices.mid > 0.0 {
         ((prices.ask - prices.bid) / prices.mid) * 10_000.0
     } else {
         0.0
     };
 
-    let base_price = if spread_bps > 50.0 {
+    let base_price = if spread_bps > 25.0 {
         if let Some(mark) = prices.mark_price {
-            println!("[INFO] Spread {:.1}bps > 50bps for {} — using mark price {}", spread_bps, pair_info.symbol, mark);
+            println!("[INFO] Spread {:.1}bps > 25bps for {} — using mark price {}",
+                spread_bps, pair_info.symbol, mark);
             mark
         } else {
-            println!("[INFO] Spread {:.1}bps > 50bps for {} — no mark price available, using mid", spread_bps, pair_info.symbol);
             prices.mid
         }
     } else {
         prices.mid
     };
 
-    let maker_price = round_price(base_price, pair_info.price_precision);
+    // Round to tick. If rounding lands on best-bid or best-ask, the maker would
+    // cross the book — nudge the maker INSIDE the spread by one tick on its own
+    // side so post-only is guaranteed to rest.
+    let rounded = round_price(base_price, pair_info.price_precision);
+    let tick = 10_f64.powi(-(pair_info.price_precision as i32));
+
+    let maker_price = match maker_side {
+        OrderSide::Buy => {
+            // Buyer maker must be <= best_bid (else post-only rejects).
+            // Strictly better: below best_ask, at or below best_bid.
+            let mut p = rounded;
+            if p >= prices.ask { p = prices.ask - tick; }
+            if p > prices.bid { p = prices.bid; }
+            round_price(p, pair_info.price_precision)
+        }
+        OrderSide::Sell => {
+            // Seller maker must be >= best_ask.
+            let mut p = rounded;
+            if p <= prices.bid { p = prices.bid + tick; }
+            if p < prices.ask { p = prices.ask; }
+            round_price(p, pair_info.price_precision)
+        }
+    };
     let taker_price = maker_price;
 
-    println!("[INFO] Cycle: {} {:?} @ {} vs {} {:?} @ {} | Qty: {}",
+    // Sanity: if after adjustment the maker_price crosses, skip.
+    if (maker_side == OrderSide::Buy && maker_price >= prices.ask)
+        || (maker_side == OrderSide::Sell && maker_price <= prices.bid)
+    {
+        return CycleResult {
+            success: false,
+            maker_order_id: None,
+            taker_order_id: None,
+            external_fill: false,
+            error: Some(format!(
+                "skip: no safe maker price for {} (bid={} ask={} maker={})",
+                pair_info.symbol, prices.bid, prices.ask, maker_price
+            )),
+        };
+    }
+
+    println!("[INFO] Cycle: {} {:?} @ {} vs {} {:?} @ {} | Qty: {} | book age={}ms bid={} ask={}",
         maker_account, maker_side, maker_price,
-        taker_account, maker_side.opposite(), taker_price, qty);
+        taker_account, maker_side.opposite(), taker_price, qty,
+        age.as_millis(), prices.bid, prices.ask);
 
     let maker_side_str = maker_side.to_string();
     let taker_side_str = maker_side.opposite().to_string();
 
-    // Step 1: Place maker via WS and await ORDER_PLACED confirmation.
-    // Use plain postOnly (no reprice) to ensure maker rests at exact price.
-    // postOnlyReprice would reprice the order away from our calculated price,
-    // causing the taker to miss it and fill externally.
-    let maker_order_id = match maker_ws.place_order(
+    // Step 1: Place maker via WS and wait for ORDER_STATUS_UPDATE confirming
+    // the order actually rested on the book (Fix C — place_maker resolves
+    // on status update, not on the bare ACK).
+    let t_maker = Instant::now();
+    let maker_order_id = match maker_ws.place_maker(
         &pair_info.symbol,
         &maker_side_str,
         qty,
         maker_price,
-        true,  // post_only
-        "GTC",
     ).await {
         Ok(id) => {
-            println!("[INFO] {} Maker placed: {} {} @ {} → {}", maker_account, maker_side, qty, maker_price, &id[..8]);
+            println!("[INFO] {} Maker placed: {} {} @ {} → {} ({}ms)",
+                maker_account, maker_side, qty, maker_price,
+                &id[..8.min(id.len())], t_maker.elapsed().as_millis());
             id
         }
         Err(e) => {
@@ -129,29 +212,24 @@ pub async fn execute_cycle_with_qty_range(
         }
     };
 
-    // Step 2: Maker is confirmed on book — immediately send taker IOC via WS.
-    let taker_order_id = match taker_ws.place_order(
+    // Step 2: Maker is confirmed on book — send taker IOC.
+    let t_taker = Instant::now();
+    let taker_order_id = match taker_ws.place_taker(
         &pair_info.symbol,
         &taker_side_str,
         qty,
         taker_price,
-        false, // not post_only
-        "IOC",
     ).await {
         Ok(id) => {
-            println!("[INFO] {} Taker placed: {} {} @ {} → {}", taker_account, maker_side.opposite(), qty, taker_price, &id[..8]);
+            println!("[INFO] {} Taker placed: {} {} @ {} → {} ({}ms)",
+                taker_account, maker_side.opposite(), qty, taker_price,
+                &id[..8.min(id.len())], t_taker.elapsed().as_millis());
             Some(id)
         }
         Err(e) => {
             eprintln!("[ERROR] {} Taker failed: {}", taker_account, e);
-            // Cancel the resting maker to avoid orphaned GTC
-            for attempt in 1..=3 {
-                // Use REST for cancel since we don't have WS cancel wired up yet
-                // (cancel is rare — only on taker failure)
-                eprintln!("[WARN] Taker failed — maker {} left resting (attempt {} cancel not implemented via WS, leaving for cleanup)",
-                    &maker_order_id[..8], attempt);
-                break;
-            }
+            eprintln!("[WARN] Taker failed — maker {} left resting for cleanup",
+                &maker_order_id[..8.min(maker_order_id.len())]);
             return CycleResult {
                 success: false,
                 maker_order_id: Some(maker_order_id),
