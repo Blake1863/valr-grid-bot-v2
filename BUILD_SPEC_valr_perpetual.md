@@ -476,4 +476,213 @@ CREATE TABLE cycles (
   entry_level       INTEGER NOT NULL,
   exit_level        INTEGER NOT NULL,
   entry_side        TEXT NOT NULL,
-  entry_price       TE
+  entry_price       TEXT NOT NULL,
+  exit_price        TEXT NOT NULL,
+  quantity          TEXT NOT NULL,
+  realised_profit   TEXT NOT NULL,
+  completed_at      TEXT NOT NULL
+);
+
+CREATE TABLE metrics (
+  key               TEXT PRIMARY KEY,
+  value             TEXT NOT NULL,
+  updated_at        TEXT NOT NULL
+);
+
+CREATE INDEX idx_orders_state ON orders(state, updated_at);
+CREATE INDEX idx_cycles_run ON cycles(run_id, completed_at);
+```
+
+**Auto-prune** on startup and every hour: delete rows from `orders` where `state IN ('cancelled','rejected')` older than 7 days, and `state='filled'` older than 30 days.
+
+DB file: `./logs/{pair-lowercase}-state.db`
+
+Metrics keys to track:
+- `total_realised_pnl`
+- `total_fills`
+- `total_cycles`
+- `last_reconcile_ts`
+- `current_active_orders`
+- `last_supervisor_state`
+- `bot_started_at`
+
+## 10. README.md (must be comprehensive)
+
+Sections required:
+
+1. **Banner** — one-liner description, badges (Node 22, MIT, "Built with OpenClaw")
+2. **What this is** — plain-English explanation of grid trading, what the bot does, what it's good for, what it's NOT good for
+3. **Quick start** (5 steps max):
+   - Clone
+   - `npm install && npm run build`
+   - Copy `.env.example` → `.env`, add API keys
+   - Copy `configs/sol.example.json` → `configs/sol.json`, set `pair`, `subaccountId`, `gridCount`, `lowerBound`, `upperBound`
+   - `npm start -- configs/sol.json`
+4. **Configuration** — full table of every config field with defaults + meaning
+5. **Required inputs** — N, range, stop-loss (highlight these as the 3 decisions the user must make)
+6. **Strategy explanation** — copy the spec from this file verbatim, add a diagram of a grid (ASCII art is fine)
+7. **Risk management** — explain stop-loss, range exit, margin watch, circuit breaker
+8. **Running as a service** — systemd instructions, log file locations
+9. **Monitoring** — `npm run status -- configs/sol.json` to print current state
+10. **Troubleshooting** — common issues: insufficient balance, stale price data, leverage tier mismatch
+11. **How to add a new pair** — step-by-step: create config, set leverage tier on VALR, verify pair constraints, start service
+12. **Architecture** — mermaid diagram or ASCII of module dependencies
+13. **Development** — npm scripts, how to run tests (if any), how to contribute
+14. **License** — MIT link
+15. **Credits** — "Originally commissioned for VALR perpetual futures trading"
+
+## 11. Alert system (`src/alerts/telegram.ts`)
+
+OpenClaw exposes a local HTTP gateway for sending telegram messages. The bot should:
+
+- Send a startup banner: pair, gridCount, range, leverage, stop-loss
+- Send alerts on: stop-loss triggered, range exit, circuit breaker, liquidation warning, supervisor errors
+- Send a daily summary: total cycles, total realised PnL, uptime
+- NO alerts on routine fills (would be spammy)
+
+Implementation: simple POST to `{telegramGatewayUrl}` with `{ chat_id, text }`. If `telegramGatewayUrl` not configured, skip silently.
+
+## 12. Systemd template (`systemd/valr-perpetual-grid-bot@.service`)
+
+```ini
+[Unit]
+Description=VALR Perpetual Grid Bot (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/admin/.openclaw/workspace/bots/valr-perpetual-grid-bot
+EnvironmentFile=/home/admin/.openclaw/workspace/bots/valr-perpetual-grid-bot/.env
+ExecStart=/usr/bin/node dist/app/main.js configs/%i.json
+Restart=always
+RestartSec=10
+StandardOutput=append:%h/.openclaw/workspace/bots/valr-perpetual-grid-bot/logs/%i.log
+StandardError=append:%h/.openclaw/workspace/bots/valr-perpetual-grid-bot/logs/%i.log
+
+[Install]
+WantedBy=default.target
+```
+
+User enables instance: `systemctl --user enable --now valr-perpetual-grid-bot@sol.service`
+(with `configs/sol.json` existing)
+
+`install.sh` script: copies unit file to `~/.config/systemd/user/`, runs `systemctl --user daemon-reload`.
+
+## 13. Testing
+
+- **Unit tests (Jest or vitest) for PURE functions:** `buildLevels`, `planDesiredOrders`, `reconcile`, `computeQuantityPerLevel`, stop-loss trigger logic.
+- **Integration test:** boot with `dryRun: true` against a mock REST client, verify it generates the right `placeOrder` calls for a given price sequence.
+- Don't need 100% coverage — hit the critical logic.
+
+At minimum: 5 test files covering the 5 pure functions, 20+ test cases total.
+
+## 14. Quality gates (don't skip these)
+
+Before committing:
+- `tsc --noEmit` must pass with ZERO errors
+- `npm test` must pass
+- `npm run build` must succeed
+- Run `node dist/app/main.js configs/sol.example.json` with dryRun=true — must print desired grid without crashing
+
+## 15. Git
+
+- `git init` in `valr-perpetual-grid-bot/`
+- `.gitignore`: `node_modules/`, `dist/`, `logs/`, `*.db`, `.env`, `configs/*.json` (EXCEPT `*.example.json`)
+- Commit in logical chunks:
+  1. Initial scaffold + package.json + tsconfig + README stub
+  2. Types + config schema
+  3. Pair metadata + REST client
+  4. WS clients
+  5. Strategy (grid, plan, reconciler, cycles)
+  6. State store
+  7. Supervisor + alerts
+  8. Main + CLI scripts
+  9. Systemd template + install.sh
+  10. Tests
+  11. Docs (README, LICENSE)
+- Last commit message: "Initial release: v4 clean rewrite"
+- Suggested remote: `git@github.com:Blake1863/valr-perpetual-grid-bot.git` (don't push — user will handle)
+- Print the final `git log --oneline` and the `git remote add origin` command for the user in your final report
+
+## 16. Configs to create (starting values)
+
+`configs/sol.example.json`:
+```json
+{
+  "pair": "SOLUSDTPERP",
+  "subaccountId": "1432690254033137664",
+  "gridCount": 30,
+  "lowerBound": "82.00",
+  "upperBound": "92.00",
+  "stopLossPercent": 3.0,
+  "gridMode": "geometric",
+  "leverage": 10,
+  "reservePercent": 10,
+  "dryRun": false
+}
+```
+
+`configs/eth.example.json`:
+```json
+{
+  "pair": "ETHUSDTPERP",
+  "subaccountId": "1491067064373735424",
+  "gridCount": 30,
+  "lowerBound": "2228.00",
+  "upperBound": "2463.00",
+  "stopLossPercent": 3.0,
+  "gridMode": "geometric",
+  "leverage": 10,
+  "reservePercent": 10,
+  "dryRun": false
+}
+```
+
+## 17. Known context (for your awareness only — do NOT execute)
+
+- The v3 bot had state drift (DB said 160 orders, exchange had 12), infinite retry on insufficient balance (65k fails/20MB log), stop-loss config ignored, dynamic bias broken.
+- Both target subaccounts are fresh as of the time this spec was written: 0 open orders, 0 positions, ~$40 USDT each.
+- SOL leverage was set to 10x on VALR (was 5x previously).
+- The user's existing secrets are in `/home/admin/.openclaw/secrets/secrets.py`:
+  - SOL subaccount uses `valr_grid_bot_1_api_key`/`valr_grid_bot_1_api_secret`
+  - ETH subaccount uses `valr_main_api_key`/`valr_main_api_secret`
+  - Your `.env.example` should reference these var names: `VALR_API_KEY`, `VALR_API_SECRET`.
+
+## 18. Deliverables (report back)
+
+When you're done, reply with:
+
+1. **Summary** — one paragraph of what you built
+2. **File tree** — output of `find valr-perpetual-grid-bot -type f | grep -v node_modules | sort`
+3. **Test results** — output of `npm test`
+4. **Build check** — confirm `tsc --noEmit` passes
+5. **Dry-run proof** — run the bot in dry-run mode and paste the first 30 lines of output showing the grid was built
+6. **Git log** — `git log --oneline`
+7. **Next steps** — what the user needs to do to go live (create GitHub repo, push, create `configs/sol.json` from example, start service)
+8. **Known limitations** — anything you couldn't finish or that needs follow-up
+
+## 19. Constraints / hard rules
+
+- Do NOT read or import from `/home/admin/.openclaw/workspace/bots/archived/valr-grid-bot-v3-2026-04-22/` — fresh start
+- Do NOT touch anything outside `/home/admin/.openclaw/workspace/bots/valr-perpetual-grid-bot/`
+- Do NOT run the bot against live API (except the dry-run step in §18) — user will do that themselves
+- Do NOT create the GitHub remote yourself (no `gh` CLI, no git push) — just prepare local repo
+- Do NOT modify systemd unit files in `~/.config/systemd/user/` — only ship the template file inside the repo
+- If you hit a technical blocker (e.g. "I don't know the exact VALR margin endpoint"), **document it clearly** in the final report rather than guessing
+- Preserve precision: always use `Decimal` from `decimal.js` for prices, quantities, margins — never native `number`
+- Keep business logic (strategy, reconciliation, stop-loss math) as pure functions. All I/O isolated in `exchange/`, `state/`, `alerts/`.
+
+## 20. Success criteria
+
+✅ `tsc --noEmit` passes
+✅ `npm test` passes
+✅ `npm run build` produces working `dist/`
+✅ Dry-run prints a valid 30-level grid for SOL config
+✅ `README.md` is comprehensive and a new user could clone + configure + run in 10 minutes
+✅ All 4 required user inputs (pair, N, range, stop-loss) are clearly documented
+✅ Code is pushed to a local git repo (no remote yet)
+
+---
+
+**Begin. Report progress milestones as you go. Report final deliverables per §18 when done.**
