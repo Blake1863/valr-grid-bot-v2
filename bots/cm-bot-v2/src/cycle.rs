@@ -6,12 +6,9 @@ use rand::Rng;
 use std::time::{Duration, Instant};
 
 /// Max age for the orderbook snapshot before we skip a cycle.
-///
-/// OB_L1_DIFF only pushes when top-of-book changes. For thin perp pairs
-/// (XRP, DOGE, AVAX) the top of book can sit unchanged for 30+ seconds, so a
-/// short threshold would cause us to skip almost every cycle. We treat the
-/// last known L1 as valid until it's clearly stale (>60s).
-const MAX_ORDERBOOK_AGE: Duration = Duration::from_secs(60);
+/// AGGREGATED_ORDERBOOK_UPDATE cadence is ~100–500ms on active pairs; anything
+/// older than 2s likely means the WS is wedged.
+const MAX_ORDERBOOK_AGE: Duration = Duration::from_secs(2);
 
 /// If the book ticked within this window, the price is jittery — skip so we
 /// don't race against our own tick.
@@ -119,36 +116,24 @@ pub async fn execute_cycle_with_qty_range(
         multiplier,
     );
 
-    // Spread guard: VALR perps frequently have 5–25bps spreads, so the old
-    // 50bps threshold effectively never triggered the mark-price fallback.
-    // Drop to 25bps so wide-spread pairs fall back safely.
+    // Always price the maker one tick INSIDE the current spread so:
+    //   (a) post-only is guaranteed to rest (never crosses),
+    //   (b) our order is the ONLY order at that price,
+    //   (c) our taker can match exclusively against our maker (no external
+    //       liquidity lurks between best-bid/ask and our maker).
+    //
+    // If the spread is only 1 tick wide (no room inside), we fall back to
+    // resting at the best bid/ask — this is inherently racy (another bot on
+    // the book may be first) so we log and accept the risk. We explicitly do
+    // NOT fall back to mark price, because that would place us far from the
+    // true best bid/ask and let the taker route through external liquidity
+    // before hitting our maker.
+    let tick = 10_f64.powi(-(pair_info.price_precision as i32));
     let spread_bps = if prices.mid > 0.0 {
         ((prices.ask - prices.bid) / prices.mid) * 10_000.0
     } else {
         0.0
     };
-
-    let base_price = if spread_bps > 25.0 {
-        if let Some(mark) = prices.mark_price {
-            println!("[INFO] Spread {:.1}bps > 25bps for {} — using mark price {}",
-                spread_bps, pair_info.symbol, mark);
-            mark
-        } else {
-            prices.mid
-        }
-    } else {
-        prices.mid
-    };
-
-    // Place the maker *inside* the spread so that (a) post-only is guaranteed
-    // to rest and (b) OUR order is the only one at that price level — giving
-    // our own taker a fresh, private price to match against.
-    //
-    // We prefer the one-tick-inside position; if the spread is only 1 tick
-    // (no room inside), fall back to resting at the best bid/ask. That case
-    // is inherently racy — another bot on the book can fill ahead of us.
-    let tick = 10_f64.powi(-(pair_info.price_precision as i32));
-    let _ = base_price; // base_price currently unused for placement, but kept for logging
 
     let maker_price = match maker_side {
         OrderSide::Buy => {
@@ -162,6 +147,11 @@ pub async fn execute_cycle_with_qty_range(
             round_price(p, pair_info.price_precision)
         }
     };
+    // Taker price crosses through our maker. For a buy-taker, price = maker_price
+    // (SELL at that price or lower will match). For a sell-taker, same.
+    // Using the SAME price as maker guarantees the IOC will only match against
+    // levels at or better than our maker — which in a 1-tick-inside setup is
+    // ONLY our maker.
     let taker_price = maker_price;
 
     // Sanity: if after adjustment the maker_price crosses, skip.

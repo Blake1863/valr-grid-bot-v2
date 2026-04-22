@@ -54,31 +54,37 @@ impl PriceFeed {
         }
     }
 
-    /// Subscribe to real-time L1 (top of book) updates for each pair via OB_L1_DIFF.
+    /// Subscribe to real-time top-of-book updates via AGGREGATED_ORDERBOOK_UPDATE.
     ///
-    /// Each pair needs its own WS connection because OB_L1_DIFF subscriptions are
-    /// per-pair. We also open ONE extra connection for MARKET_SUMMARY_UPDATE on all
-    /// pairs to track mark price as a fallback.
+    /// Note on event choice: we initially tried OB_L1_DIFF which sends deltas
+    /// (including remove-level updates with qty=0), but maintaining the local
+    /// L1 state correctly is non-trivial and our naive parsing treated deltas
+    /// as full snapshots — producing wildly stale / incorrect prices.
+    ///
+    /// AGGREGATED_ORDERBOOK_UPDATE sends the full top-of-book aggregated by
+    /// price level in each message, which we can treat as a snapshot. Cadence
+    /// is fast enough for wash-trade timing (typically <200ms on active pairs).
+    ///
+    /// We also open ONE extra connection for MARKET_SUMMARY_UPDATE on all
+    /// pairs to track mark price as metadata.
     pub async fn connect_and_subscribe(&self, symbols: &[&str]) -> Result<()> {
         let ws_url = self.ws_url.clone();
         let prices = self.prices.clone();
         let symbols_owned: Vec<String> = symbols.iter().map(|s| s.to_string()).collect();
 
-        // One OB_L1_DIFF connection per pair
-        for sym in &symbols_owned {
-            let pair = sym.clone();
-            let ws_url = ws_url.clone();
-            let prices = prices.clone();
-            tokio::spawn(async move {
-                loop {
-                    match run_ob_l1_diff_loop(&ws_url, &pair, prices.clone()).await {
-                        Ok(_) => println!("[WARN] OB_L1_DIFF for {} closed, reconnecting in 3s...", pair),
-                        Err(e) => eprintln!("[ERROR] OB_L1_DIFF for {}: {} - reconnecting in 3s...", pair, e),
-                    }
-                    tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
+        // One AGGREGATED_ORDERBOOK_UPDATE connection for all pairs
+        let ws_url1 = ws_url.clone();
+        let prices1 = prices.clone();
+        let symbols1 = symbols_owned.clone();
+        tokio::spawn(async move {
+            loop {
+                match run_aggregated_orderbook_loop(&ws_url1, &symbols1, prices1.clone()).await {
+                    Ok(_) => println!("[WARN] AGGREGATED_ORDERBOOK_UPDATE closed, reconnecting in 3s..."),
+                    Err(e) => eprintln!("[ERROR] AGGREGATED_ORDERBOOK_UPDATE: {} - reconnecting in 3s...", e),
                 }
-            });
-        }
+                tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
+            }
+        });
 
         // One MARKET_SUMMARY_UPDATE connection for mark prices across all pairs
         let ws_url2 = ws_url.clone();
@@ -107,57 +113,66 @@ impl PriceFeed {
     }
 }
 
-/// Real-time L1 feed. Each message (`OB_L1_SNAPSHOT` or `OB_L1_DIFF`) carries
-/// the full top-of-book in compact array form under key `d`:
-///   `{ "a": [["price","qty"], ...], "b": [["price","qty"], ...] }`
-async fn run_ob_l1_diff_loop(
+/// Aggregated orderbook feed: each message carries the full top-of-book per
+/// price level. Data key is `data` (uppercase Bids/Asks arrays of objects).
+async fn run_aggregated_orderbook_loop(
     ws_url: &str,
-    pair: &str,
+    symbols: &[String],
     prices: Arc<RwLock<HashMap<String, OrderbookPrices>>>,
 ) -> Result<()> {
     let (ws_stream, _resp) = tokio_tungstenite::connect_async(ws_url)
         .await
-        .map_err(|e| anyhow::anyhow!("Failed to connect WS for {}: {}", pair, e))?;
+        .map_err(|e| anyhow::anyhow!("AGGREGATED_ORDERBOOK_UPDATE connect failed: {}", e))?;
     let (mut write, mut read) = ws_stream.split::<tokio_tungstenite::tungstenite::Message>();
 
     let sub = serde_json::json!({
         "type": "SUBSCRIBE",
-        "subscriptions": [{ "event": "OB_L1_DIFF", "pairs": [pair] }]
+        "subscriptions": [{ "event": "AGGREGATED_ORDERBOOK_UPDATE", "pairs": symbols }]
     });
     write
         .send(tokio_tungstenite::tungstenite::Message::Text(sub.to_string().into()))
         .await
         .map_err(|e| anyhow::anyhow!("subscribe send failed: {}", e))?;
 
-    println!("[INFO] OB_L1_DIFF subscribed for {}", pair);
+    println!("[INFO] AGGREGATED_ORDERBOOK_UPDATE subscribed for {} pairs", symbols.len());
 
     let mut ping = tokio::time::interval(tokio::time::Duration::from_secs(20));
-    ping.tick().await; // consume immediate
+    ping.tick().await;
 
     loop {
         tokio::select! {
             msg = read.next() => match msg {
                 Some(Ok(tokio_tungstenite::tungstenite::Message::Text(text))) => {
                     if let Ok(resp) = serde_json::from_str::<WsResponse>(&text) {
-                        if resp.msg_type == "OB_L1_SNAPSHOT" || resp.msg_type == "OB_L1_DIFF" {
-                            if let Some(d) = resp.d.as_ref() {
-                                let bid = first_price(&d["b"]);
-                                let ask = first_price(&d["a"]);
-                                if let (Some(b), Some(a)) = (bid, ask) {
-                                    let mid = (b + a) / 2.0;
-                                    let now = Instant::now();
-                                    let mut w = prices.write().await;
-                                    let (existing_mark, prev_updated) = w.get(pair)
-                                        .map(|p| (p.mark_price, Some(p.updated_at)))
-                                        .unwrap_or((None, None));
-                                    w.insert(pair.to_string(), OrderbookPrices {
-                                        bid: b,
-                                        ask: a,
-                                        mid,
-                                        mark_price: existing_mark,
-                                        updated_at: now,
-                                        prev_updated_at: prev_updated,
-                                    });
+                        if resp.msg_type == "AGGREGATED_ORDERBOOK_UPDATE" {
+                            if let (Some(symbol), Some(data)) = (resp.currency_pair_symbol, resp.data) {
+                                let bids = data.get("Bids").and_then(|b| b.as_array());
+                                let asks = data.get("Asks").and_then(|a| a.as_array());
+                                if let (Some(bids), Some(asks)) = (bids, asks) {
+                                    let bid = bids.first()
+                                        .and_then(|e| e.get("price"))
+                                        .and_then(|p| p.as_str())
+                                        .and_then(|s| s.parse::<f64>().ok());
+                                    let ask = asks.first()
+                                        .and_then(|e| e.get("price"))
+                                        .and_then(|p| p.as_str())
+                                        .and_then(|s| s.parse::<f64>().ok());
+                                    if let (Some(b), Some(a)) = (bid, ask) {
+                                        let mid = (b + a) / 2.0;
+                                        let now = Instant::now();
+                                        let mut w = prices.write().await;
+                                        let (existing_mark, prev_updated) = w.get(&symbol)
+                                            .map(|p| (p.mark_price, Some(p.updated_at)))
+                                            .unwrap_or((None, None));
+                                        w.insert(symbol, OrderbookPrices {
+                                            bid: b,
+                                            ask: a,
+                                            mid,
+                                            mark_price: existing_mark,
+                                            updated_at: now,
+                                            prev_updated_at: prev_updated,
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -167,7 +182,6 @@ async fn run_ob_l1_diff_loop(
                     let _ = write.send(tokio_tungstenite::tungstenite::Message::Pong(d)).await;
                 }
                 Some(Ok(tokio_tungstenite::tungstenite::Message::Close(_))) => {
-                    println!("[INFO] OB_L1_DIFF WS closed by server for {}", pair);
                     return Ok(());
                 }
                 Some(Err(e)) => return Err(anyhow::anyhow!("WS read error: {}", e)),
@@ -258,15 +272,6 @@ async fn run_market_summary_loop(
             }
         }
     }
-}
-
-fn first_price(arr: &serde_json::Value) -> Option<f64> {
-    arr.as_array()?
-        .first()?
-        .as_array()?
-        .first()?
-        .as_str()
-        .and_then(|s| s.parse::<f64>().ok())
 }
 
 // Fallback REST function using public orderbook (no auth needed)
