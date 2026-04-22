@@ -1,10 +1,55 @@
 # MEMORY.md - Long-Term Memory
 
+## Grid Bot v4 — PERPETUAL BOT (2026-04-22) 🆕
+
+**Status:** Built, tested, NOT YET DEPLOYED. Awaiting user go-live.
+
+**Location:** `bots/valr-perpetual-grid-bot/` — standalone git repo, clean history
+
+**Quality gates (all pass):**
+- ✅ `tsc --noEmit` — zero errors
+- ✅ `npm test` — 32 tests across 5 suites (grid, plan, reconciler, sizing, cycles)
+- ✅ `npm run build` — produces working `dist/`
+- ✅ Dry-run prints valid 30-level SOL grid (15 BUY + 15 SELL, geometric)
+
+**Known v3 bugs FIXED in v4:**
+- postOnly/reduceOnly/timeInForce now pass through restClient (v3 dropped them)
+- Cancel uses `{pair}` body, not `{currencyPair}`
+- Market close uses `baseAmount`, not `quantity`
+- Dynamic inventory bias: plan.ts recomputes BUY/SELL every tick from (level_price, current_price)
+- Stop-loss: config-driven, percent from `averageEntryPrice`, default 3%, triggers cancel-all + market close
+- Range exit: HALT mode (cancel all, pause, wait for re-entry) — no more infinite retry on insufficient margin
+- Reconciliation: pure-function diff(desired, exchangeTruth) — no more state drift
+
+**Config — only 4 required user inputs:**
+- `pair`, `subaccountId`, `gridCount` (N), `lowerBound`/`upperBound` (range)
+- `stopLossPercent` defaults to 3.0
+- Everything else has sensible defaults
+
+**Known limitations (per subagent report):**
+1. State = JSON file, not SQLite (better-sqlite3 build timed out; migration path documented)
+2. decimal.js loaded via `createRequire` shim (ESM typing workaround)
+3. WS subscription format is approximate — may need tweaking vs actual VALR WS docs
+4. `/v1/account/margin/futures` endpoint path may differ
+5. `cancelAllOrders` uses a batch endpoint — fallback = iterate openOrders if that endpoint doesn't exist
+
+**GitHub:** Repo NOT pushed yet. User needs to:
+```bash
+# on github.com: create public repo Blake1863/valr-perpetual-grid-bot
+cd bots/valr-perpetual-grid-bot
+git remote add origin git@github.com:Blake1863/valr-perpetual-grid-bot.git
+git push -u origin master
+```
+
+**Spec file:** `BUILD_SPEC_valr_perpetual.md` (688 lines, in workspace root) — keep for reference.
+
+---
+
 ## Grid Bot Versions — Deprecation Status (2026-04-21)
 
-### ✅ CURRENT: Grid Bot v3 — OKX/Bybit Style Neutral Grid
+### ⚠️ ARCHIVED: Grid Bot v3 — OKX/Bybit Style Neutral Grid
 
-**Status:** ACTIVE — Primary production bot
+**Status:** ARCHIVED 2026-04-22 — replaced by v4 (see top of file)
 
 **Services:**
 - `valr-grid-bot-v3.service` (SOLUSDTPERP)
@@ -30,6 +75,20 @@
 | Stop Loss | 3% | 3% |
 
 **API Credentials:** `primary account` key with subaccount impersonation
+
+---
+
+### ⚠️ DEPRECATED: Grid Bot v3 — Archived 2026-04-22
+
+**Status:** ARCHIVED — moved to `bots/archived/valr-grid-bot-v3-2026-04-22/`
+
+**Services:**
+- `valr-grid-bot-v3.service` — stopped, disabled (file still exists in `~/.config/systemd/user/`, can be removed)
+- `valr-grid-bot-v3-eth.service` — stopped, disabled
+
+**Replacement:** v4 (see above)
+
+**Why retired:** 4 critical bugs + state drift + infinite retry on insufficient margin (65k failed orders logged in ~20MB window). See v4 section for fixes.
 
 ---
 
