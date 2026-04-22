@@ -11,9 +11,9 @@ use std::time::{Duration, Instant};
 /// ceiling — anything older likely means the WS is wedged.
 const MAX_ORDERBOOK_AGE: Duration = Duration::from_secs(15);
 
-/// If the book ticked within this window, the price is jittery — skip so we
-/// don't race against our own tick.
-const MIN_STABLE_WINDOW: Duration = Duration::from_millis(20);
+// Jitter guard removed: inside-spread maker pricing + fresh book snapshot
+// already protect against tick races. Over-filtering was losing ~60% of
+// cycles to false positives.
 
 pub fn calculate_order_qty(
     min_qty: f64,
@@ -85,25 +85,6 @@ pub async fn execute_cycle_with_qty_range(
             external_fill: false,
             error: Some(reason),
         };
-    }
-
-    // ── Jitter check (Fix E) ──────────────────────────────────────────────
-    if let Some(prev) = prices.prev_updated_at {
-        let since_prev = prices.updated_at.duration_since(prev);
-        if since_prev < MIN_STABLE_WINDOW {
-            let reason = format!(
-                "skip: book jittering for {} (tick gap {}ms)",
-                pair_info.symbol, since_prev.as_millis()
-            );
-            eprintln!("[WARN] {}", reason);
-            return CycleResult {
-                success: false,
-                maker_order_id: None,
-                taker_order_id: None,
-                external_fill: false,
-                error: Some(reason),
-            };
-        }
     }
 
     let mut rng = rand::thread_rng();
