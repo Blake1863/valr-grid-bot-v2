@@ -1,19 +1,4 @@
-/// Account WebSocket client for perp bot.
-/// Handles order placement via PLACE_LIMIT_ORDER and balance updates.
-///
-/// Order placement is *two-stage*:
-///   1. We send PLACE_LIMIT_ORDER with a `clientMsgId`.
-///   2. VALR replies with `PLACE_LIMIT_WS_RESPONSE` (our ACK → we learn `orderId`).
-///   3. VALR then emits `ORDER_STATUS_UPDATE` messages for that `orderId`. We
-///      resolve the `place_order` future from the *status update*, not from the
-///      ACK. This guarantees:
-///        * Post-only maker: reply is Ok only if the order actually rested
-///          (Placed/PartiallyFilled/Filled) rather than being rejected with
-///          "Post only cancelled as it would have matched".
-///        * IOC taker: reply is Ok only if the order actually matched (Filled
-///          or PartiallyFilled) rather than dying on an empty price level.
-///
-/// `PlaceMode` drives the classification.
+
 use anyhow::{Context, Result};
 use futures_util::{SinkExt, StreamExt};
 use hmac::{Hmac, Mac};
@@ -182,9 +167,8 @@ impl WsClient {
             .await
             .context("WS actor channel closed")?;
 
-        // Timeout: maker can take a bit to hit book; taker IOC is immediate
-        // but VALR may take a moment to emit the terminal ORDER_STATUS_UPDATE.
-        // 10s is generous; if VALR still doesn't respond, something is wrong.
+        // Upper bound for VALR to emit SOMETHING (ACK, ORDER_STATUS_UPDATE, or
+        // the grace-timer fired inside the actor). 10s is generous.
         tokio::time::timeout(tokio::time::Duration::from_secs(10), reply_rx)
             .await
             .context("WS order placement timed out after 10s")?
@@ -394,7 +378,16 @@ impl WsActor {
             }
 
             // Stage 1: VALR ACKs our PLACE_LIMIT_ORDER. We learn `orderId`.
-            // We do NOT resolve the reply yet — we wait for an ORDER_STATUS_UPDATE.
+            //
+            // For a post-only maker, VALR does NOT emit an ORDER_STATUS_UPDATE
+            // when the order rests successfully — only when it fails. So we
+            // start a short grace timer; if a Failed/Cancelled status arrives
+            // within the grace window, we resolve Err. Otherwise we assume it
+            // rested and resolve Ok.
+            //
+            // For a taker (IOC), VALR emits a terminal ORDER_STATUS_UPDATE
+            // (Filled/PartiallyFilled/Failed) reliably, so we wait indefinitely
+            // for it (up to the outer 10s timeout).
             "PLACE_LIMIT_WS_RESPONSE" => {
                 let order_id = msg.data.as_ref()
                     .and_then(|d| d.get("orderId"))
@@ -414,10 +407,33 @@ impl WsActor {
                 }
 
                 // Move entry from msg-keyed map to orderId-keyed map.
-                if let Some(cid) = &msg.client_msg_id {
-                    if let Some(entry) = self.pending_by_msg.write().await.remove(cid) {
-                        self.pending_by_order.write().await.insert(order_id.clone(), entry);
+                let entry_opt = if let Some(cid) = &msg.client_msg_id {
+                    self.pending_by_msg.write().await.remove(cid)
+                } else {
+                    None
+                };
+
+                if let Some(entry) = entry_opt {
+                    let mode = entry.mode;
+                    self.pending_by_order.write().await.insert(order_id.clone(), entry);
+
+                    // Maker: spawn a grace timer. If nothing terminal arrives,
+                    // assume the order rested and resolve Ok.
+                    if matches!(mode, PlaceMode::Maker) {
+                        let pending = self.pending_by_order.clone();
+                        let oid = order_id.clone();
+                        tokio::spawn(async move {
+                            // 250ms grace is plenty for VALR to emit a Failed
+                            // status if the post-only is going to be rejected.
+                            // In historical logs the Failed status arrives
+                            // within ~5-10ms of the ACK.
+                            tokio::time::sleep(tokio::time::Duration::from_millis(250)).await;
+                            if let Some(entry) = pending.write().await.remove(&oid) {
+                                let _ = entry.reply.send(Ok(oid));
+                            }
+                        });
                     }
+                    // Taker: do nothing; ORDER_STATUS_UPDATE will resolve it.
                 }
 
                 println!("[INFO] [{}] WS order ACK: {}",
