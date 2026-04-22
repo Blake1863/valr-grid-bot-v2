@@ -132,3 +132,28 @@ Both auto-restart on failure.
 
 *Created: 2026-04-21 — v3 deployment notes*
 *Updated: 2026-04-21 — ETH migrated to v3, v1/v2 deprecated*
+
+---
+
+## Bot Log Management (2026-04-22)
+
+**Unified logrotate** covers all active bot logs with **7-day TTL**:
+- Config: `~/.config/logrotate/bot-logs.conf`
+- Service + timer: `cm-bot-logrotate.{service,timer}` (daily, +15min jitter, persistent)
+- State: `~/.config/logrotate/bot-logs.state`
+- Strategy: `copytruncate` (safe for pino fileStream, systemd append, python tail -F)
+- Triggers: daily OR size > 200MB, keeps 7 compressed rotations
+
+**Covered paths** (all via wildcard):
+- `bots/cm-bot-spot/logs/*.log` — wash trading bot (CMS1/CMS2)
+- `bots/cm-bot-v2/logs/*.log` — futures offset bot
+- `bots/valr-grid-bot-v3/logs/*.log` — grid bots (SOL + ETH)
+
+**Quarantine auto-purge:** `~/.openclaw/workspace/.log-quarantine/YYYY-MM-DD/` — deleted after 14 days by the same timer.
+
+**Restored `cm-bot-spot-monitor.service`** (auto-replenish) — had been dead since Apr 16. Triggers `quote_replenish.py` + `spot_rebalance_manual.py` after 3 consecutive Insufficient Balance failures on any pair.
+
+**Known issue to follow up:** grid-v3 logs every `Insufficient Balance` at `level:50` with full error payload — generates most of the bot.log volume. Consider dedupe/throttle in `src/app/logger.ts` or raise HTTP-error level in the REST client.
+
+**Heartbeat checks** added to `HEARTBEAT.md` — weekly log sanity, daily grid + wash bot health.
+
