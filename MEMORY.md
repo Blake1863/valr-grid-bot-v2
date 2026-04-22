@@ -44,9 +44,54 @@
 
 ---
 
-## Grid Bot v4 — PERPETUAL BOT (2026-04-22) 🆕
+## Grid Bot v4 — PERPETUAL BOT (2026-04-22) 🟢 LIVE
 
-**Status:** Built, tested, NOT YET DEPLOYED. Awaiting user go-live.
+**Status:** LIVE on both subaccounts since 2026-04-22 19:38 SGT
+
+**Services:**
+- `valr-perpetual-grid-bot@sol.service` — SOLUSDTPERP — 30 orders live ✅
+- `valr-perpetual-grid-bot@eth.service` — ETHUSDTPERP — 30 orders live ✅
+
+**Subaccounts:**
+| Bot | Subaccount | Orders | Capital |
+|-----|------------|--------|---------|
+| SOL | Grid Bot 1 | 15 BUY + 15 SELL | $40.56 USDT |
+| ETH | Grid Bot 2 | 15 BUY + 15 SELL | $45.81 USDT |
+
+**Configuration:**
+| Parameter | SOL | ETH |
+|-----------|-----|-----|
+| Pair | SOLUSDTPERP | ETHUSDTPERP |
+| Range | $82.98–$93.58 | $2250–$2540 |
+| Ref Price | $88.28 | $2395.00 |
+| Grid | 30 geometric | 30 geometric |
+| Tick Size | 0.01 | 0.1 |
+| Qty/Level | 0.13 SOL | 0.005 ETH |
+| Leverage | 10x | 10x |
+| Stop Loss | 3% | 3% |
+| postOnly | true | true |
+| allowMargin | true | true |
+
+**Repo:** https://github.com/Blake1863/valr-perpetual-grid-bot (main)
+
+**Deployment history:**
+- 2026-04-22 19:34: Configs written (ranges centered on live mark ±6%)
+- 2026-04-22 19:38: Both services started, v3 stopped/inactive
+- 2026-04-22 19:41: ETH hit tick-size bug, fixed in 2ca32b5
+- 2026-04-22 19:46: ETH restarted, 30 orders placed
+
+**Known issues:**
+- Both bots get transient 400 Bad Request (HTML body) on first reconcile tick before WS fully connected. Self-heals next tick. Not a real issue — just noise. Could add 2s delay before first reconcile.
+- Dry-run output shows qty=1 (hardcoded placeholder), not real computed qty. Misleading but cosmetic — live sizing is correct.
+
+**Emergency commands:**
+```bash
+# Stop both bots
+systemctl --user stop valr-perpetual-grid-bot@sol.service valr-perpetual-grid-bot@eth.service
+
+# Cancel all orders on a subaccount (from skill)
+# python3 skills/valr-exchange/scripts/valr_request.py DELETE /v1/orders --subaccount-id <ID>
+```
 
 **Location:** `bots/valr-perpetual-grid-bot/` — standalone git repo, clean history
 
