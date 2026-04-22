@@ -135,26 +135,25 @@ pub async fn execute_cycle_with_qty_range(
         prices.mid
     };
 
-    // Round to tick. If rounding lands on best-bid or best-ask, the maker would
-    // cross the book — nudge the maker INSIDE the spread by one tick on its own
-    // side so post-only is guaranteed to rest.
-    let rounded = round_price(base_price, pair_info.price_precision);
+    // Place the maker *inside* the spread so that (a) post-only is guaranteed
+    // to rest and (b) OUR order is the only one at that price level — giving
+    // our own taker a fresh, private price to match against.
+    //
+    // We prefer the one-tick-inside position; if the spread is only 1 tick
+    // (no room inside), fall back to resting at the best bid/ask. That case
+    // is inherently racy — another bot on the book can fill ahead of us.
     let tick = 10_f64.powi(-(pair_info.price_precision as i32));
+    let _ = base_price; // base_price currently unused for placement, but kept for logging
 
     let maker_price = match maker_side {
         OrderSide::Buy => {
-            // Buyer maker must be <= best_bid (else post-only rejects).
-            // Strictly better: below best_ask, at or below best_bid.
-            let mut p = rounded;
-            if p >= prices.ask { p = prices.ask - tick; }
-            if p > prices.bid { p = prices.bid; }
+            let inside = prices.bid + tick;
+            let p = if inside < prices.ask { inside } else { prices.bid };
             round_price(p, pair_info.price_precision)
         }
         OrderSide::Sell => {
-            // Seller maker must be >= best_ask.
-            let mut p = rounded;
-            if p <= prices.bid { p = prices.bid + tick; }
-            if p < prices.ask { p = prices.ask; }
+            let inside = prices.ask - tick;
+            let p = if inside > prices.bid { inside } else { prices.ask };
             round_price(p, pair_info.price_precision)
         }
     };
