@@ -6,12 +6,15 @@ use rand::Rng;
 use std::time::{Duration, Instant};
 
 /// Max age for the orderbook snapshot before we skip a cycle.
-/// Our OB_L1_DIFF feed pushes on every tick — anything older than this
-/// probably means the WS is delayed / hiccuping.
-const MAX_ORDERBOOK_AGE: Duration = Duration::from_millis(500);
+///
+/// OB_L1_DIFF only pushes when top-of-book changes. For thin perp pairs
+/// (XRP, DOGE, AVAX) the top of book can sit unchanged for 30+ seconds, so a
+/// short threshold would cause us to skip almost every cycle. We treat the
+/// last known L1 as valid until it's clearly stale (>60s).
+const MAX_ORDERBOOK_AGE: Duration = Duration::from_secs(60);
 
-/// If the book was updated within this window before we fire, the price is
-/// jittery — skip this cycle so we don't race against our own update.
+/// If the book ticked within this window, the price is jittery — skip so we
+/// don't race against our own tick.
 const MIN_STABLE_WINDOW: Duration = Duration::from_millis(20);
 
 pub fn calculate_order_qty(
