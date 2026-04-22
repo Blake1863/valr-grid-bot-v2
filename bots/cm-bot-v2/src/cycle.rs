@@ -6,9 +6,10 @@ use rand::Rng;
 use std::time::{Duration, Instant};
 
 /// Max age for the orderbook snapshot before we skip a cycle.
-/// AGGREGATED_ORDERBOOK_UPDATE cadence is ~100–500ms on active pairs; anything
-/// older than 2s likely means the WS is wedged.
-const MAX_ORDERBOOK_AGE: Duration = Duration::from_secs(2);
+/// AGGREGATED_ORDERBOOK_UPDATE cadence is ~100–500ms on active pairs, but can
+/// exceed 10s on thin perps when top-of-book doesn't change. 15s is a safe
+/// ceiling — anything older likely means the WS is wedged.
+const MAX_ORDERBOOK_AGE: Duration = Duration::from_secs(15);
 
 /// If the book ticked within this window, the price is jittery — skip so we
 /// don't race against our own tick.
