@@ -21,6 +21,9 @@ pub enum PlaceMode {
     /// Post-only maker: must *rest* on book. Any Failed status = error.
     /// Filled/PartiallyFilled/Placed = Ok (it's on the book or already matched).
     Maker,
+    /// Maker with immediate resolution (no grace timer). Use for wash cycles
+    /// where taker follows immediately — resolves on ACK, assumes order will rest.
+    MakerFast,
     /// IOC taker: must *match*. Filled/PartiallyFilled = Ok. Any Failed or
     /// Cancelled status = error.
     Taker,
@@ -48,6 +51,20 @@ pub enum WsCommand {
 pub struct WsClient {
     pub account_name: String,
     cmd_tx: mpsc::Sender<WsCommand>,
+    /// Shared handle to the actor's latest trade event (for fill verification).
+    last_trade: Arc<RwLock<Option<TradeEvent>>>,
+}
+
+/// Parsed trade event from NEW_ACCOUNT_TRADE.
+#[derive(Clone, Debug)]
+pub struct TradeEvent {
+    pub pair: String,
+    pub side: String,
+    pub price: f64,
+    pub quantity: f64,
+    pub order_id: String,
+    pub trade_id: String,
+    pub timestamp_ms: u128,
 }
 
 #[derive(Debug, Serialize)]
@@ -79,6 +96,7 @@ impl WsClient {
         account_name: String,
     ) -> WsClient {
         let (cmd_tx, cmd_rx) = mpsc::channel::<WsCommand>(64);
+        let last_trade = Arc::new(RwLock::new(None));
 
         let actor = WsActor {
             api_key,
@@ -88,11 +106,18 @@ impl WsClient {
             margin_state,
             pending_by_msg: Arc::new(RwLock::new(HashMap::new())),
             pending_by_order: Arc::new(RwLock::new(HashMap::new())),
+            last_trade: Arc::clone(&last_trade),
         };
 
         tokio::spawn(actor.run(cmd_rx));
 
-        WsClient { account_name, cmd_tx }
+        WsClient { account_name, cmd_tx, last_trade }
+    }
+
+    /// Get the most recent trade event (cleared after reading).
+    /// Use for verifying that our taker matched our maker.
+    pub async fn pop_latest_trade(&self) -> Option<TradeEvent> {
+        self.last_trade.write().await.take()
     }
 
     /// Place a maker (post-only GTC) order. Resolves only once the order is
@@ -105,6 +130,19 @@ impl WsClient {
         price: f64,
     ) -> Result<String> {
         self.place(pair, side, quantity, price, true, "GTC", PlaceMode::Maker).await
+    }
+
+    /// Place a maker order and resolve IMMEDIATELY on ACK (no grace timer).
+    /// Use for wash cycles where taker follows immediately — eliminates the
+    /// 250ms window where external traders could hit our maker first.
+    pub async fn place_maker_fast(
+        &self,
+        pair: &str,
+        side: &str,
+        quantity: f64,
+        price: f64,
+    ) -> Result<String> {
+        self.place(pair, side, quantity, price, true, "GTC", PlaceMode::MakerFast).await
     }
 
     /// Place a taker (IOC, not post-only) order. Resolves with Ok only on
@@ -186,6 +224,8 @@ struct WsActor {
     margin_state: SharedMarginState,
     pending_by_msg: PendingByClientMsg,
     pending_by_order: PendingByOrderId,
+    /// Updated on every NEW_ACCOUNT_TRADE; cleared by pop_latest_trade().
+    last_trade: Arc<RwLock<Option<TradeEvent>>>,
 }
 
 impl WsActor {
@@ -419,6 +459,8 @@ impl WsActor {
 
                     // Maker: spawn a grace timer. If nothing terminal arrives,
                     // assume the order rested and resolve Ok.
+                    // MakerFast: resolve IMMEDIATELY on ACK — used for wash cycles
+                    // where taker follows within milliseconds.
                     if matches!(mode, PlaceMode::Maker) {
                         let pending = self.pending_by_order.clone();
                         let oid = order_id.clone();
@@ -428,6 +470,16 @@ impl WsActor {
                             // In historical logs the Failed status arrives
                             // within ~5-10ms of the ACK.
                             tokio::time::sleep(tokio::time::Duration::from_millis(250)).await;
+                            if let Some(entry) = pending.write().await.remove(&oid) {
+                                let _ = entry.reply.send(Ok(oid));
+                            }
+                        });
+                    } else if matches!(mode, PlaceMode::MakerFast) {
+                        // Resolve immediately — taker is coming in milliseconds
+                        let pending = self.pending_by_order.clone();
+                        let oid = order_id.clone();
+                        tokio::spawn(async move {
+                            tokio::time::sleep(tokio::time::Duration::from_millis(5)).await;
                             if let Some(entry) = pending.write().await.remove(&oid) {
                                 let _ = entry.reply.send(Ok(oid));
                             }
@@ -531,10 +583,31 @@ impl WsActor {
                     let trade_id = data.get("id")
                         .and_then(|v| v.as_str())
                         .unwrap_or("");
+                    let order_id = data.get("orderId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("");
 
-                    println!("[FILL] [{}] {} {} @ {} x {} | fee: {} {} | trade: {}",
+                    println!("[FILL] [{}] {} {} @ {} x {} | fee: {} {} | trade: {} | order: {}",
                         self.account_name, pair, side, price, qty, fee, fee_currency,
-                        &trade_id[..8.min(trade_id.len())]);
+                        &trade_id[..8.min(trade_id.len())],
+                        &order_id[..8.min(order_id.len())]);
+
+                    // Store trade event for fill verification.
+                    let price_f64 = price.parse::<f64>().unwrap_or(0.0);
+                    let qty_f64 = qty.parse::<f64>().unwrap_or(0.0);
+                    let now = std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_millis();
+                    *self.last_trade.write().await = Some(TradeEvent {
+                        pair: pair.to_string(),
+                        side: side.to_string(),
+                        price: price_f64,
+                        quantity: qty_f64,
+                        order_id: order_id.to_string(),
+                        trade_id: trade_id.to_string(),
+                        timestamp_ms: now,
+                    });
                 }
             }
 

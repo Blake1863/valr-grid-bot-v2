@@ -1,0 +1,177 @@
+{
+  "sells": [
+    {
+      "sub": "CMS1",
+      "currency": "XAUT",
+      "pair": "XAUTUSDT",
+      "side": "SELL",
+      "qty_native": 0.026,
+      "usd_value": 117.93599999999999,
+      "into": "USDT"
+    },
+    {
+      "sub": "CMS1",
+      "currency": "NVDAX",
+      "pair": "NVDAXUSDT",
+      "side": "SELL",
+      "qty_native": 0.15,
+      "usd_value": 29.37,
+      "into": "USDT"
+    },
+    {
+      "sub": "CMS1",
+      "currency": "TRUMP",
+      "pair": "TRUMPUSDT",
+      "side": "SELL",
+      "qty_native": 9.0,
+      "usd_value": 18.45,
+      "into": "USDT"
+    },
+    {
+      "sub": "CMS1",
+      "currency": "SPYX",
+      "pair": "SPYXUSDT",
+      "side": "SELL",
+      "qty_native": 0.015,
+      "usd_value": 11.1282,
+      "into": "USDT"
+    },
+    {
+      "sub": "CMS2",
+      "currency": "XAUT",
+      "pair": "XAUTUSDT",
+      "side": "SELL",
+      "qty_native": 0.02,
+      "usd_value": 90.72,
+      "into": "USDT"
+    },
+    {
+      "sub": "CMS2",
+      "currency": "NVDAX",
+      "pair": "NVDAXUSDT",
+      "side": "SELL",
+      "qty_native": 0.08,
+      "usd_value": 15.664000000000001,
+      "into": "USDT"
+    },
+    {
+      "sub": "CMS2",
+      "currency": "SPYX",
+      "pair": "SPYXUSDT",
+      "side": "SELL",
+      "qty_native": 0.01,
+      "usd_value": 7.4188,
+      "into": "USDT"
+    }
+  ],
+  "usdt_to_zar": [
+    {
+      "sub": "CMS1",
+      "pair": "USDTZAR",
+      "side": "SELL",
+      "qty_native": 110.0,
+      "usd_value": 110.0,
+      "into": "ZAR"
+    },
+    {
+      "sub": "CMS2",
+      "pair": "USDTZAR",
+      "side": "SELL",
+      "qty_native": 100.0,
+      "usd_value": 100.0,
+      "into": "ZAR"
+    }
+  ],
+  "base_buys": [
+    {
+      "pair": "EURCUSDC",
+      "sub": "CMS2",
+      "base": "EURC",
+      "quote": "USDC",
+      "side": "BUY",
+      "qty_native": 4.5,
+      "usd_value": 5.2379999999999995
+    },
+    {
+      "pair": "EURCUSDC",
+      "sub": "CMS1",
+      "base": "EURC",
+      "quote": "USDC",
+      "side": "BUY",
+      "qty_native": 4.5,
+      "usd_value": 5.2379999999999995
+    },
+    {
+      "pair": "ETHZAR",
+      "sub": "CMS1",
+      "base": "ETH",
+      "quote": "ZAR",
+      "side": "BUY",
+      "qty_native": 0.003,
+      "usd_value": 6.42
+    },
+    {
+      "pair": "ETHZAR",
+      "sub": "CMS2",
+      "base": "ETH",
+      "quote": "ZAR",
+      "side": "BUY",
+      "qty_native": 0.003,
+      "usd_value": 6.42
+    },
+    {
+      "pair": "SOLZAR",
+      "sub": "CMS1",
+      "base": "SOL",
+      "quote": "ZAR",
+      "side": "BUY",
+      "qty_native": 0.2,
+      "usd_value": 17.06
+    },
+    {
+      "pair": "SOLZAR",
+      "sub": "CMS2",
+      "base": "SOL",
+      "quote": "ZAR",
+      "side": "BUY",
+      "qty_native": 0.2,
+      "usd_value": 17.06
+    },
+    {
+      "pair": "COINXUSDT",
+      "sub": "CMS1",
+      "base": "COINX",
+      "quote": "USDT",
+      "side": "BUY",
+      "qty_native": 0.04,
+      "usd_value": 7.632000000000001
+    },
+    {
+      "pair": "COINXUSDT",
+      "sub": "CMS2",
+      "base": "COINX",
+      "quote": "USDT",
+      "side": "BUY",
+      "qty_native": 0.04,
+      "usd_value": 7.632000000000001
+    },
+    {
+      "pair": "JUPUSDT",
+      "sub": "CMS2",
+      "base": "JUP",
+      "quote": "USDT",
+      "side": "BUY",
+      "qty_native": 55.0,
+      "usd_value": 10.835
+    },
+    {
+      "pair": "PUMPUSDT",
+      "sub": "CMS2",
+      "base": "PUMP",
+      "quote": "USDT",
+      "side": "BUY",
+      "qty_native": 3000.0,
+      "usd_value": 5.07
+    }
+  ]
+}

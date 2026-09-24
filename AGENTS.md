@@ -41,7 +41,7 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - **Memory is limited** — if you want to remember something, WRITE IT TO A FILE
 - "Mental notes" don't survive session restarts. Files do.
 - When someone says "remember this" → update `memory/YYYY-MM-DD.md` or relevant file
-- When you learn a lesson → update AGENTS.md, TOOLS.md, or the relevant skill
+- When you learn a lesson → update AGENTS.md or the relevant skill
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
@@ -115,7 +115,9 @@ Reactions are lightweight social signals. Humans use them constantly — they sa
 
 ## Tools
 
-Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
+### Local notes
+
+Skills define how tools work. Keep environment-specific local notes in this section.
 
 **🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 
@@ -124,6 +126,62 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 - **Discord/WhatsApp:** No markdown tables! Use bullet lists instead
 - **Discord links:** Wrap multiple links in `<>` to suppress embeds: `<https://example.com>`
 - **WhatsApp:** No headers — use **bold** or CAPS for emphasis
+
+### Local notes (migrated from TOOLS.md)
+
+# TOOLS.md - Local Notes
+
+Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
+
+## What Goes Here
+
+Things like:
+
+- Camera names and locations
+- SSH hosts and aliases
+- Preferred voices for TTS
+- Speaker/room names
+- Device nicknames
+- Anything environment-specific
+
+## Examples
+
+```markdown
+### Cameras
+
+- living-room → Main area, 180° wide angle
+- front-door → Entrance, motion-triggered
+
+### SSH
+
+- home-server → 192.168.1.100, user: admin
+
+### TTS
+
+- Preferred voice: "Nova" (warm, slightly British)
+- Default speaker: Kitchen HomePod
+```
+
+## Why Separate?
+
+Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
+
+---
+
+Add whatever helps you do your job. This is your cheat sheet.
+
+### Messaging
+
+- Telegram direct replies from this Codex/OpenClaw setup should use the `openclaw.message` tool with `action="send"` and the real `chatId`/`replyTo` when the user must definitely receive the message.
+- Avoid relying on `openclaw.sessions_send` for Telegram delivery here. On 2026-05-29 it repeatedly hit an internal "Agent-to-agent announce step." marker and never reached Telegram, even though Telegram transport itself was healthy.
+
+### OpenClaw Watchdog + Remote-Restart Bot (updated 2026-08-19)
+- Service: `openclaw-watchdog.service` (systemd --user), script `~/openclaw-watchdog/oc-watchdog.py`, env `~/openclaw-watchdog/watchdog.env` (chmod 600, holds bot token — never print)
+- Watchdog: polls `http://127.0.0.1:18789/healthz` + unit state every 30s. **Two thresholds:** unit dead → restart after 3 fails (`OCW_FAIL_THRESHOLD`); unit alive but healthz failing (hung model call / network blip) → restart only after 10 fails (`OCW_HUNG_THRESHOLD`). 5-min cooldown; log `~/openclaw-watchdog/watchdog.log`
+- Remote bot: @Herman_remotecontrol_bot (separate from main OpenClaw bot). Commands: /status /restart /logs **/doctor** (runs `openclaw doctor --fix --non-interactive`) — locked to chat 7018990694
+- Model-call fast-fail: `models.providers.modelstudio.timeoutSeconds: 90` (hot-reloaded 2026-08-19) — caps connect/body/stream-idle so hung calls fail over instead of hanging the turn
+- KNOWN BENIGN: transient `tg getUpdates HTTP 502` bursts at ~09:11–09:13 daily (observed Sep 20/21/22, 2026) — Telegram-side blip, self-recovers in <2 min, never triggers watchdog restarts. Ignore unless duration grows or restarts appear.
+- NOTE: bot must be /start-ed by owner before it can push proactive messages (else "chat not found")
 
 ## 💓 Heartbeats - Be Proactive!
 
@@ -206,6 +264,19 @@ Periodically (every few days), use a heartbeat to:
 Think of it like a human reviewing their journal and updating their mental model. Daily files are raw notes; MEMORY.md is curated wisdom.
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.
+
+## 🔌 Resilience: assume the gateway can restart at any time
+
+This box has flaky DNS/network spells and a watchdog that auto-restarts the
+gateway when model calls hang (2026-08-19: 17 restarts in one evening). Design
+work to survive restarts:
+
+- **Long jobs (> ~30s): always detach.** `setsid nohup cmd > logfile 2>&1 &`, then poll the log. Never hold multi-minute jobs (ffmpeg, trade scripts) in a foreground turn.
+- **Make jobs idempotent + checkpointed.** Re-read live state each step instead of assuming the previous step succeeded. A restart mid-job must be safe to re-run — with money, re-run must not double-spend.
+- **Money moves: dry-run first, verify live balances/orders after.** No assumptions.
+- **Commit progress to disk early and often** (memory notes, plan files) so a dropped turn loses nothing.
+- **Prefer small focused turns over giant batches** when the host is flaky.
+- Diagnose hangs: `tail ~/openclaw-watchdog/watchdog.log` (DNS errors = network spell, `RESTART gateway` lines = watchdog kill).
 
 ## Make It Yours
 

@@ -311,8 +311,8 @@ def main():
     # Build position maps with sign: positive = long, negative = short
     def signed_qty(pos):
         qty = float(pos.get("quantity", 0) or 0)
-        side = pos.get("side", "Buy")
-        return qty if side == "Buy" else -qty
+        side = pos.get("side", "").lower()
+        return qty if side == "buy" else -qty
     
     cm1_map = {pos["pair"]: signed_qty(pos) for pos in cm1_positions if isinstance(pos, dict)}
     cm2_map = {pos["pair"]: signed_qty(pos) for pos in cm2_positions if isinstance(pos, dict)}

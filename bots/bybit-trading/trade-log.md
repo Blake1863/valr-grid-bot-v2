@@ -6,38 +6,35 @@
 
 ---
 
-## Trade #1 - SOLUSDT Buy ❌ CLOSED
+## Trade #1 - PUMPFUNUSDT Buy
 | Field | Value |
 |-------|-------|
 | Opened | 2026-03-25 14:42 UTC |
-| Closed | 2026-03-30 18:33 UTC |
 | Direction | Buy |
-| Size | 1.2 SOL |
-| Entry | $84.00 |
-| Exit | ~$84.02 (market) |
+| Size | 377100.0 |
+| Entry | $0.0 |
 | Leverage | 5x |
-| Realized PnL | ~$0.02 |
-| Status | CLOSED ✅ |
+| Position Value | $815.11 |
+| Stop Loss | None |
+| Take Profit | None |
+| Current Price | $0.0 |
+| Unrealized PnL | $11.15 (1.37%) |
+| Status | OPEN (partially protected ⚠️) |
 
 ---
 
 ## Performance Summary
 | Metric | Value |
 |--------|-------|
-| Total Trades | 1 (closed) |
-| Realized PnL (this trade) | +$0.02 |
-| Total Realized PnL | $-25.23 |
-| Total Equity | $96.58 |
-| Available Balance | ~$96.65 |
-| Win Rate | 0% (1 trade, breakeven) |
+| Total Trades | 1 |
+| Open PnL | $11.15 |
+| Realized PnL | $-61.24 |
+| Total Equity | $177.95 |
+| Available Balance | $12.34 |
+| Win Rate | - |
 
 ---
 
 ## Notes
-- **2026-03-30 18:33:** Position closed per user request, all grid orders canceled
-- **2026-03-30 18:33:** Grid bot service disabled
-- Bot shutdown complete - no open positions or orders
-
----
-
-*Last updated: 2026-03-30T18:33 UTC*
+- Position protected with TP/SL via `/v5/position/trading-stop`
+- Auto-updated: 2026-05-10T22:15:03.389693

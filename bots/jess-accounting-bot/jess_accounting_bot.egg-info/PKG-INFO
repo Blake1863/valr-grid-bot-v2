@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: jess-accounting-bot
+Version: 0.1.0
+Summary: Telegram receipt bot for Jess Lombard Junior Dance Centre accounting workbook
+Requires-Python: >=3.12
+Requires-Dist: openai>=1.93.0
+Requires-Dist: openpyxl>=3.1.5
+Requires-Dist: pillow>=10.4.0
+Requires-Dist: pypdfium2>=4.30.0
+Requires-Dist: pydantic>=2.11.7
+Requires-Dist: python-dotenv>=1.1.0
+Requires-Dist: python-telegram-bot>=22.1
+Provides-Extra: dev
+Requires-Dist: pytest>=9.0.0; extra == "dev"

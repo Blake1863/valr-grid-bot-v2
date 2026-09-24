@@ -42,3 +42,15 @@ Thumbs.db
 # Test coverage
 coverage/
 .nyc_output/
+
+# 2026-09-24 cleanup
+.secrets/
+.trash/
+backups/
+movies/
+media/
+.config/
+.openclaw/
+__pycache__/
+bots/*/target/
+*.migrated.*

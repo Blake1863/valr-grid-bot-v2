@@ -27,6 +27,7 @@ const API_BASE_URL: &str = "https://api.valr.com";
 const WS_TRADE_URL: &str = "wss://api.valr.com/ws/trade";
 
 const MIN_BALANCE: f64 = 2.0;  // Minimum availableInReference in USDT
+const RECONCILE_EVERY: u64 = 30;  // Reconcile position delta every N cycles
 
 /// Load a secret from the encrypted vault via secrets.py
 fn load_secret(name: &str) -> Result<String> {
@@ -172,6 +173,9 @@ async fn main() -> Result<()> {
     let cycle_interval = state.read().await.config.cycle_interval_ms;
     println!("[INFO] Starting cycle loop (interval: {}ms)", cycle_interval);
     println!("[INFO] Min balance: ${} | Rotation: Full flip every 3 cycles, 6-cycle net=0 (90s)", MIN_BALANCE);
+    println!("[INFO] Position reconciliation: every {} cycles (REST /v1/positions/open)", RECONCILE_EVERY);
+    
+    let mut reconcile_counter: u64 = 0;
     
     loop {
         let state = state.read().await;
@@ -223,12 +227,17 @@ async fn main() -> Result<()> {
             // Uses Option B: Random with balance tracking
             // - Tracks last 10 cycles, biases toward underrepresented account
             // - Hard cap: max 5 consecutive same-side cycles
-            // This makes wash trades look like organic two-way trading
+            // - POSITION CORRECTION: tracks net position bias per pair and
+            //   biases maker side to reduce drift (new in v2.1)
             let (is_cm1_maker, maker_sells, cms1, cms2) = {
                 let mut selector = random_maker.lock().await;
                 let is_cm1 = selector.select_maker();
-                let sells = selector.select_maker_side(); // true = maker sells, false = maker buys
+                let sells = selector.select_maker_side(is_cm1, &pair_info.symbol);
                 let (c1, c2, _) = selector.get_stats();
+                let delta = selector.get_position_delta(&pair_info.symbol);
+                if delta.abs() > 5.0 {
+                    println!("[INFO] 📊 Position delta for {}: {:.4} (CORRECTING)", pair_info.symbol, delta);
+                }
                 (is_cm1, sells, c1, c2)
             };
             
@@ -261,7 +270,16 @@ async fn main() -> Result<()> {
             let maker_ws = if maker_account == "CM1" { &state.cm1_ws } else { &state.cm2_ws };
             let taker_ws = if taker_account == "CM1" { &state.cm1_ws } else { &state.cm2_ws };
 
-            // REST clients still used by cleanup task — not needed here
+            // Cancel all open orders on the maker account before placing a new one
+            // This prevents order accumulation and ensures a clean slate each cycle
+            let maker_rest = if maker_account == "CM1" { &state.cm1_client } else { &state.cm2_client };
+            match maker_rest.cancel_all_orders().await {
+                Ok(count) if count > 0 => println!("[INFO] 🧹 Cancelled {} stale order(s) on {} before new placement", count, maker_account),
+                Ok(_) => {}, // 0 orders to cancel — quiet
+                Err(e) => eprintln!("[WARN] Cancel-all on {} failed: {}", maker_account, e),
+            }
+
+            // REST clients still used by cleanup task
             let result = cycle::execute_cycle_with_qty_range(
                 maker_ws,
                 taker_ws,
@@ -275,13 +293,47 @@ async fn main() -> Result<()> {
             ).await;
             
             if result.success {
+                // Only update position bias on confirmed success — this was the
+                // root cause of position drift (bias was updated before cycle ran).
+                {
+                    let mut selector = random_maker.lock().await;
+                    selector.record_cycle_result(is_cm1_maker, maker_sells, &pair_info.symbol);
+                }
                 state.state_manager.record_cycle(&pair_info.symbol, result.external_fill).await;
                 let _ = state.state_manager.save_state().await;
             }
         }
         
+        // ── Periodic position reconciliation ──────────────────────────────
+        reconcile_counter += 1;
+        if reconcile_counter % RECONCILE_EVERY == 0 {
+            println!("[RECONCILE] Fetching live positions for delta reconciliation...");
+
+            // Collect deltas outside the state lock (REST calls are slow)
+            let cm1_positions = state.cm1_client.get_open_positions().await.unwrap_or_default();
+            let cm2_positions = state.cm2_client.get_open_positions().await.unwrap_or_default();
+
+            let mut deltas: std::collections::HashMap<String, f64> = std::collections::HashMap::new();
+            for pair_info in &state.pair_infos {
+                let sym = &pair_info.symbol;
+                let cm1_qty = cm1_positions.get(sym).copied().unwrap_or(0.0);
+                let cm2_qty = cm2_positions.get(sym).copied().unwrap_or(0.0);
+                let delta = cm1_qty - cm2_qty; // positive = CM1 more long
+                deltas.insert(sym.clone(), delta);
+            }
+
+            // Apply deltas to the random maker selector
+            {
+                let mut selector = random_maker.lock().await;
+                for pair_info in &state.pair_infos {
+                    let delta = deltas.get(&pair_info.symbol).copied().unwrap_or(0.0);
+                    selector.reconcile_delta(&pair_info.symbol, delta);
+                }
+            }
+        }
+
         drop(state);
-        
+
         // Wait for next cycle
         tokio::time::sleep(tokio::time::Duration::from_millis(cycle_interval)).await;
     }

@@ -1,0 +1,2 @@
+"""Jess accounting bot package."""
+

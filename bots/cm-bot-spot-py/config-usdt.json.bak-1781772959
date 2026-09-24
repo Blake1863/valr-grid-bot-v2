@@ -1,0 +1,120 @@
+{
+  "_comment": "USDT quote bucket for valr-cm-spot@usdt. Account IDs are patched during deployment.",
+  "global": {
+    "instance_name": "valr-cm-spot-usdt",
+    "account_a_id": "1513524297399840768",
+    "account_b_id": "1513524305939443712",
+    "account_a_name": "CMSUSDT1",
+    "account_b_name": "CMSUSDT2",
+    "rate_limit_per_sec": 35,
+    "summary_interval_seconds": 300,
+    "rebalance_interval_cycles": 6,
+    "rebalance_threshold_pct": 0.6,
+    "min_transfer_value_usd": 1.0,
+    "external_fill_alert_threshold": 0.1,
+    "leak_window_size": 100,
+    "leak_min_samples": 20,
+    "alert_cooldown_seconds": 1800,
+    "stagger_seconds": 1.5,
+    "use_account_ws": true,
+    "telegram_chat_id": "telegram:7018990694",
+    "cancel_all_on_startup": true
+  },
+  "defaults": {
+    "cycle_interval_seconds": 20.0,
+    "min_spread_ticks": 2,
+    "max_spread_bps": 200,
+    "print_value_usd_min": 1.5,
+    "print_value_usd_max": 4.0,
+    "inventory_floor_usd": 5.0,
+    "max_consecutive_same_maker": 5,
+    "quote_to_usd": 1.0
+  },
+  "pairs": {
+    "XAUTUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.8,
+      "print_value_usd_max": 2.5
+    },
+    "SPYXUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0
+    },
+    "NVDAXUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0
+    },
+    "COINXUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0
+    },
+    "TRUMPUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0
+    },
+    "MSTRXUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "HOODXUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "TSLAXUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "CRCLXUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "BITGOLDUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "VALR10USDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "JUPUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "PUMPUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    },
+    "USDPCUSDT": {
+      "enabled": true,
+      "cycle_interval_seconds": 20.0,
+      "print_value_usd_min": 0.6,
+      "print_value_usd_max": 2.0,
+      "min_spread_ticks": 1
+    }
+  }
+}

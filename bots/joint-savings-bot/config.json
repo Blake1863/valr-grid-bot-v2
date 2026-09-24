@@ -1,0 +1,12 @@
+{
+  "api_key": "",
+  "api_secret": "",
+  "buy_asset": "SOL",
+  "quote_currency": "ZAR",
+  "pair": "SOLZAR",
+  "min_buy_amount_zar": 10.0,
+  "poll_interval_sec": 30,
+  "log_file": "logs/bot.log",
+  "state_file": "state.json",
+  "base_url": "https://api.valr.com"
+}

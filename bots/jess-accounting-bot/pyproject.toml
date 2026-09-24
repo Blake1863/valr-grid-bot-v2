@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jess-accounting-bot"
+version = "0.1.0"
+description = "Telegram receipt bot for Jess Lombard Junior Dance Centre accounting workbook"
+requires-python = ">=3.12"
+dependencies = [
+  "openai>=1.93.0",
+  "openpyxl>=3.1.5",
+  "pillow>=10.4.0",
+  "pypdfium2>=4.30.0",
+  "pydantic>=2.11.7",
+  "python-dotenv>=1.1.0",
+  "python-telegram-bot>=22.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=9.0.0",
+]
+
+[tool.setuptools]
+packages = ["bot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

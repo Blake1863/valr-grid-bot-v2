@@ -1,0 +1,17 @@
+[Unit]
+Description=VALR spot wash bot (%i quote bucket)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/admin/.openclaw/workspace/bots/cm-bot-spot-py
+ExecStart=/usr/bin/python3 /home/admin/.openclaw/workspace/bots/cm-bot-spot-py/bot.py --config /home/admin/.openclaw/workspace/bots/cm-bot-spot-py/config-%i.json --name valr-cm-spot-%i
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/admin/.openclaw/workspace/bots/cm-bot-spot-py/logs/valr-cm-spot-%i.stdout.log
+StandardError=append:/home/admin/.openclaw/workspace/bots/cm-bot-spot-py/logs/valr-cm-spot-%i.stderr.log
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target

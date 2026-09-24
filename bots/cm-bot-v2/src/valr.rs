@@ -321,6 +321,38 @@ impl ValrClient {
         }
     }
 
+    /// Cancel all open orders on this subaccount.
+    /// Returns the count of cancelled order IDs.
+    pub async fn cancel_all_orders(&self) -> Result<usize> {
+        let path = "/v1/orders";
+
+        let body = "{}";
+        let response = self.add_auth_headers(
+            self.client
+                .delete(format!("{}{}", self.base_url, path))
+                .header("Content-Type", "application/json")
+                .body(body.to_string()),
+            "DELETE",
+            path,
+            body
+        )
+        .send()
+        .await
+        .context("Failed to send cancel all orders request")?;
+
+        if response.status().is_success() || response.status() == 202 {
+            // Response is an array of cancelled order IDs
+            let raw: Vec<serde_json::Value> = response.json().await
+                .context("Failed to parse cancel-all response")?;
+            Ok(raw.len())
+        } else {
+            let status = response.status();
+            let text = response.text().await
+                .context("Failed to read error response")?;
+            anyhow::bail!("Cancel all orders failed ({}): {}", status, text)
+        }
+    }
+
     pub async fn get_balances(&self) -> Result<Vec<Balance>> {
         let path = "/v1/account/balances";
 
@@ -390,6 +422,41 @@ impl ValrClient {
                 .context("Failed to parse price as f64")
         } else {
             anyhow::bail!("Failed to get ticker: {}", response.status())
+        }
+    }
+
+    /// Fetch open positions for this subaccount.
+    /// Returns a map of pair → quantity (signed: positive = long, negative = short).
+    pub async fn get_open_positions(&self) -> Result<std::collections::HashMap<String, f64>> {
+        let path = "/v1/positions/open";
+
+        let response = self.add_auth_headers(
+            self.client.get(format!("{}{}", self.base_url, path)),
+            "GET",
+            path,
+            ""
+        )
+        .send()
+        .await
+        .context("Failed to send get open positions request")?;
+
+        if response.status().is_success() {
+            let raw: Vec<serde_json::Value> = response.json().await
+                .context("Failed to parse open positions response")?;
+
+            let mut positions = std::collections::HashMap::new();
+            for pos in raw {
+                if let Some(pair) = pos["pair"].as_str() {
+                    let qty = pos["quantity"].as_f64().unwrap_or(0.0);
+                    let side = pos["side"].as_str().unwrap_or("long").to_lowercase();
+                    let signed_qty = if side == "short" { -qty } else { qty };
+                    positions.insert(pair.to_string(), signed_qty);
+                }
+            }
+
+            Ok(positions)
+        } else {
+            anyhow::bail!("Failed to get open positions: {}", response.status())
         }
     }
 

@@ -43,6 +43,93 @@ pub struct CycleResult {
     pub error: Option<String>,
 }
 
+/// Verify that both maker and taker filled against each other (not external).
+/// Waits up to 3s for NEW_ACCOUNT_TRADE events on both sides.
+async fn verify_internal_fill(
+    maker_ws: &crate::ws_client::WsClient,
+    taker_ws: &crate::ws_client::WsClient,
+    expected_price: f64,
+    expected_qty: f64,
+) -> bool {
+    let timeout = tokio::time::Duration::from_secs(3);
+    let tolerance_bps = 5; // 0.05% price tolerance for rounding
+
+    let maker_start = Instant::now();
+    let taker_start = Instant::now();
+
+    let mut maker_trade = None;
+    let mut taker_trade = None;
+
+    // Poll both sides for their NEW_ACCOUNT_TRADE events
+    while maker_trade.is_none() || taker_trade.is_none() {
+        let elapsed = maker_start.elapsed();
+        if elapsed > timeout {
+            break;
+        }
+
+        if maker_trade.is_none() {
+            if let Some(trade) = maker_ws.pop_latest_trade().await {
+                maker_trade = Some(trade);
+            }
+        }
+        if taker_trade.is_none() {
+            if let Some(trade) = taker_ws.pop_latest_trade().await {
+                taker_trade = Some(trade);
+            }
+        }
+
+        if maker_trade.is_none() || taker_trade.is_none() {
+            tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
+        }
+    }
+
+    // Analyze results
+    match (maker_trade, taker_trade) {
+        (Some(mt), Some(tt)) => {
+            let dt_ms = (mt.timestamp_ms as i64 - tt.timestamp_ms as i64).abs();
+            let price_diff_bps = if expected_price > 0.0 {
+                ((mt.price - tt.price).abs() / expected_price) * 10_000.0
+            } else {
+                999.0
+            };
+            let qty_match = (mt.quantity - expected_qty).abs() < expected_qty * 0.01; // 1% tolerance
+            let price_match = price_diff_bps < tolerance_bps as f64;
+
+            if price_match && qty_match && dt_ms < 500 {
+                println!("[INFO] ✅ Internal fill verified: {} @ {} x {} (Δ={}ms)",
+                    mt.pair, mt.price, mt.quantity, dt_ms);
+                true
+            } else {
+                eprintln!("[WARN] 🚨 MISMATCH DETECTED on {} | maker: {} @ {} x {} | taker: {} @ {} x {} | Δ={}ms | price_diff={}bps",
+                    mt.pair,
+                    mt.side, mt.price, mt.quantity,
+                    tt.side, tt.price, tt.quantity,
+                    dt_ms, price_diff_bps);
+                false
+            }
+        }
+        (Some(mt), None) => {
+            eprintln!("[WARN] 🚨 EXTERNAL FILL: maker {} filled ({} @ {} x {}) but taker {} has no matching trade within {}ms",
+                mt.pair, mt.side, mt.price, mt.quantity,
+                taker_ws.account_name,
+                maker_start.elapsed().as_millis());
+            false
+        }
+        (None, Some(tt)) => {
+            eprintln!("[WARN] 🚨 EXTERNAL FILL: taker {} filled ({} @ {} x {}) but maker {} has no matching trade within {}ms",
+                tt.pair, tt.side, tt.price, tt.quantity,
+                maker_ws.account_name,
+                taker_start.elapsed().as_millis());
+            false
+        }
+        (None, None) => {
+            eprintln!("[WARN] 🚨 NO TRADES on either side within {}ms — orders may still be resting",
+                timeout.as_millis());
+            false
+        }
+    }
+}
+
 pub async fn execute_cycle(
     maker_ws: &WsClient,
     taker_ws: &WsClient,
@@ -162,11 +249,10 @@ pub async fn execute_cycle_with_qty_range(
     let maker_side_str = maker_side.to_string();
     let taker_side_str = maker_side.opposite().to_string();
 
-    // Step 1: Place maker via WS and wait for ORDER_STATUS_UPDATE confirming
-    // the order actually rested on the book (Fix C — place_maker resolves
-    // on status update, not on the bare ACK).
+    // Step 1: Place maker via WS and resolve immediately on ACK (no grace timer).
+    // This minimizes the window for external fills — taker follows in ~5ms.
     let t_maker = Instant::now();
-    let maker_order_id = match maker_ws.place_maker(
+    let maker_order_id = match maker_ws.place_maker_fast(
         &pair_info.symbol,
         &maker_side_str,
         qty,
@@ -222,7 +308,12 @@ pub async fn execute_cycle_with_qty_range(
         success: true,
         maker_order_id: Some(maker_order_id),
         taker_order_id,
-        external_fill: false,
+        external_fill: !verify_internal_fill(
+            maker_ws,
+            taker_ws,
+            maker_price,
+            qty,
+        ).await,
         error: None,
     }
 }
