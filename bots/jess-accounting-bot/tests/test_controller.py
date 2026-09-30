@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from openpyxl import load_workbook
 
 from bot.models import UploadedReceipt
 
@@ -70,6 +71,19 @@ def test_dry_run_does_not_write_to_production(controller, tmp_path: Path) -> Non
     assert result.write_result.preview is True
     raw = controller.workbook_writer._get_raw_sheet(__import__("openpyxl").load_workbook(controller.workbook_writer.workbook_path))
     assert raw["C4"].value is None
+
+
+def test_missing_date_requires_manual_date_and_confirmation(controller, tmp_path: Path) -> None:
+    controller.ocr_client.extraction = controller.ocr_client.extraction.model_copy(update={"transaction_date": None})
+    with pytest.raises(ValueError, match="Reply with the date"):
+        controller.process_upload(make_upload(tmp_path))
+    with pytest.raises(ValueError, match="YYYY-MM-DD"):
+        controller.complete_missing_date(12345, "not a date")
+    result = controller.complete_missing_date(12345, "2026-06-10")
+    assert result.pending.proposed.transaction_date.isoformat() == "2026-06-10"
+    assert result.pending.proposed.needs_user_review is True
+    assert load_workbook(controller.workbook_writer.workbook_path)["Transactions Raw"]["C4"].value is None
+    assert controller.confirm_pending(12345).write_result.workbook_row_number == 4
 
 
 def test_batch_mode_exports_only_when_requested(controller, tmp_path: Path) -> None:

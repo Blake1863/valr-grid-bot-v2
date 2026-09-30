@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -87,6 +88,30 @@ class ReceiptBotController:
         self.ensure_authorized(upload.telegram_user_id)
         self.register_upload(upload.telegram_user_id)
         extraction = self.ocr_client.extract(upload.file_path, upload.mime_type)
+        if extraction.transaction_date is None:
+            session = self.get_session(upload.telegram_user_id)
+            session.missing_date_upload = upload
+            session.missing_date_extraction = extraction
+            raise ValueError("I couldn't read the receipt date. Reply with the date as YYYY-MM-DD; nothing has been written yet.")
+        return self._queue_extraction(upload, extraction)
+
+    def complete_missing_date(self, telegram_user_id: int, date_text: str) -> UploadProcessResult:
+        session = self.get_session(telegram_user_id)
+        if session.missing_date_upload is None or session.missing_date_extraction is None:
+            raise ValueError("No receipt is waiting for a date. Please upload it again.")
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_text.strip()):
+            raise ValueError("Please send the date as YYYY-MM-DD.")
+        try:
+            transaction_date = datetime.fromisoformat(date_text.strip()).date()
+        except ValueError:
+            raise ValueError("Please send the date as YYYY-MM-DD.") from None
+        extraction = session.missing_date_extraction.model_copy(update={"transaction_date": transaction_date, "needs_user_review": True})
+        result = self._queue_extraction(session.missing_date_upload, extraction)
+        session.missing_date_upload = None
+        session.missing_date_extraction = None
+        return result
+
+    def _queue_extraction(self, upload: UploadedReceipt, extraction: ReceiptExtraction) -> UploadProcessResult:
         proposed = self.classifier.classify(extraction)
         audit_id = self.audit_log.create_entry(
             telegram_user_id=upload.telegram_user_id,

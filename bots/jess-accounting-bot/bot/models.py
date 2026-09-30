@@ -52,7 +52,17 @@ class ReceiptExtraction(BaseModel):
             return None
         if isinstance(value, date):
             return value
-        return date.fromisoformat(str(value))
+        text = str(value).strip()
+        try:
+            return date.fromisoformat(text)
+        except ValueError:
+            patterns = ("%d.%m.%Y", "%d.%m.%y", "%d/%m/%Y", "%d/%m/%y", "%Y/%m/%d", "%d-%m-%Y")
+            for pattern in patterns:
+                try:
+                    return datetime.strptime(text, pattern).date()
+                except ValueError:
+                    continue
+            raise ValueError("Unrecognized receipt date; use YYYY-MM-DD") from None
 
     @field_validator("total_amount_zar", "vat_amount", mode="before")
     @classmethod
@@ -178,6 +188,8 @@ class UserSession:
     batch_mode: bool
     pending: PendingReceipt | None = None
     pending_queue: list[PendingReceipt] = field(default_factory=list)
+    missing_date_upload: UploadedReceipt | None = None
+    missing_date_extraction: ReceiptExtraction | None = None
     edit_field: str | None = None
     undo_candidate_audit_id: int | None = None
     last_completed_audit_id: int | None = None

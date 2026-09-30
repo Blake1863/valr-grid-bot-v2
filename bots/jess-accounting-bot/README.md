@@ -9,6 +9,7 @@ Telegram receipt bot that accepts receipt images or PDFs, extracts accounting de
 - Uses OpenAI Responses API vision/file input for OCR and structured extraction
 - Applies deterministic account classification safeguards against the approved account list
 - Requires explicit confirmation before any workbook write
+- If the receipt date cannot be read, asks for a manual YYYY-MM-DD date before showing the confirmation preview
 - Creates timestamped backups before writes
 - Supports dry-run preview workbooks and batch mode
 - Queues multiple uploaded receipts per user and automatically advances to the next one after confirm/cancel

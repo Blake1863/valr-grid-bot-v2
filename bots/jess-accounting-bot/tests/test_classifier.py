@@ -54,6 +54,27 @@ def test_unknown_receipt_requires_review() -> None:
     assert proposed.needs_user_review is True
 
 
+def test_restaurant_with_wine_maps_to_entertainment() -> None:
+    proposed = ReceiptClassifier().classify(make_extraction("The Library", "2x glass red wine, steak, dessert, tip"))
+    assert proposed.account == "Entertainment"
+    assert proposed.needs_user_review is False
+
+
+def test_restaurant_beats_stray_sweet_keyword() -> None:
+    proposed = ReceiptClassifier().classify(make_extraction("The Library", "sweet potato fries, wine, burger, gratuity"))
+    assert proposed.account == "Entertainment"
+
+
+def test_keywords_match_word_starts_only() -> None:
+    proposed = ReceiptClassifier().classify(make_extraction("Unknown Merchant", "multiple items"))
+    assert proposed.account != "Entertainment"
+
+
+def test_ocr_prompt_lists_approved_accounts() -> None:
+    from bot.ocr_client import OCR_PROMPT
+    assert "- Entertainment" in OCR_PROMPT and "wine" in OCR_PROMPT
+
+
 def test_income_defaults_to_fees() -> None:
     proposed = ReceiptClassifier().classify(make_extraction("Jess Dance", "Student fees", direction=Direction.INCOME))
     assert proposed.account == "Fees earned"

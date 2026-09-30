@@ -10,6 +10,7 @@ from typing import Any
 from openai import OpenAI
 from pydantic import ValidationError
 
+from .accounts import EXPENSE_ACCOUNTS, INCOME_ACCOUNTS
 from .models import ReceiptExtraction
 
 OCR_PROMPT = """
@@ -19,12 +20,27 @@ proofs of payment, and income receipts for a dance centre.
 Return only the schema fields. Do not invent missing values.
 - Currency should be ZAR when the receipt clearly uses rand.
 - Direction must be Expense or Income.
-- Account must be one exact approved account name when you are confident, otherwise leave it null.
-- Notes should be concise and spreadsheet-friendly.
+- Account must be one exact approved account name (lists below) when you are confident, otherwise leave it null.
+- Restaurants, cafés, bars, coffee shops and takeaways are "Entertainment". Treat a receipt as a
+  restaurant bill when it shows food or drinks (wine, beer, cocktails, coffee, meals, starters,
+  desserts), a table or waiter number, a tip/gratuity, or a service charge - even when the
+  merchant name itself (e.g. "The Library") does not sound like a restaurant.
+- line_items_summary must always list the main items actually printed on the receipt
+  (e.g. "2x glass red wine, steak, dessert, tip"). Only leave it empty if no items are printed,
+  and then say in notes that it is a card slip without line items.
+- Notes should be concise and spreadsheet-friendly, e.g. "The Library - dinner and wine".
+- Return dates as YYYY-MM-DD; South African numeric dates are day/month/year.
 - confidence must be between 0 and 1.
 - needs_user_review should be true unless the receipt is very clear.
 - reasoning_summary should be brief and non-sensitive.
 """.strip()
+
+OCR_PROMPT = (
+    f"{OCR_PROMPT}\n\nApproved expense accounts:\n"
+    + "\n".join(f"- {name}" for name in EXPENSE_ACCOUNTS)
+    + "\n\nApproved income accounts:\n"
+    + "\n".join(f"- {name}" for name in INCOME_ACCOUNTS)
+)
 
 JSON_SCHEMA_HINT = """
 Return JSON only with these keys:

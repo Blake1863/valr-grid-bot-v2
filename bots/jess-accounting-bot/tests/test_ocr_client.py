@@ -43,6 +43,24 @@ def test_parse_missing_date() -> None:
     assert extraction.transaction_date is None
 
 
+@pytest.mark.parametrize(
+    ("input_date", "expected_date"),
+    [("11.08.23", "2023-08-11"), ("11/08/2026", "2026-08-11"), ("2026/08/11", "2026-08-11")],
+)
+def test_parse_receipt_date_formats(input_date: str, expected_date: str) -> None:
+    extraction = parse_extraction_payload(json.dumps({"transaction_date": input_date}))
+    assert extraction.transaction_date.isoformat() == expected_date
+
+
+@pytest.mark.parametrize(
+    ("input_date", "expected_date"),
+    [("11.08.23", "2023-08-11"), ("11/08/2026", "2026-08-11"), ("2026/08/11", "2026-08-11")],
+)
+def test_parse_receipt_date_formats(input_date: str, expected_date: str) -> None:
+    extraction = parse_extraction_payload(json.dumps({"transaction_date": input_date}))
+    assert extraction.transaction_date.isoformat() == expected_date
+
+
 def test_parse_missing_amount() -> None:
     extraction = parse_extraction_payload(
         '{"document_type":"receipt","transaction_date":"2026-06-10","total_amount_zar":null,"currency":"ZAR","direction":"Expense","line_items_summary":"","notes":"","confidence":0.4,"needs_user_review":true,"reasoning_summary":""}'

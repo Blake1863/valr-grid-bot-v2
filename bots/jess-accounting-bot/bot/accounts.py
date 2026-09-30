@@ -88,7 +88,18 @@ KEYWORD_RULES: list[KeywordRule] = [
     KeywordRule(account="Public Liability Insurance", keywords=("public liability", "liability insurance")),
     KeywordRule(account="Accounting Fees", keywords=("accountant", "accounting", "bookkeeper", "tax practitioner")),
     KeywordRule(account="Advertising", keywords=("advert", "advertising", "marketing", "boosted post", "social media")),
-    KeywordRule(account="Entertainment", keywords=("meal", "restaurant", "hospitality", "entertainment")),
+    KeywordRule(
+        account="Entertainment",
+        keywords=(
+            "meal", "restaurant", "hospitality", "entertainment", "bistro", "brasserie", "trattoria",
+            "pizzeria", "steakhouse", "grill", "tavern", "cafe", "café", "eatery", "diner",
+            "wine", "red blend", "sauvignon", "chardonnay", "merlot", "shiraz", "pinotage", "rosé",
+            "champagne", "prosecco", "cocktail", "beer", "lager", "cider", "whisky", "brandy",
+            "coffee", "cappuccino", "latte", "espresso", "dinner", "lunch", "breakfast", "brunch",
+            "dessert", "main course", "burger", "pizza", "sushi", "tapas", "steak",
+            "gratuity", "tip", "service charge", "waiter", "waitron",
+        ),
+    ),
     KeywordRule(account="Storage for Costumes and Props", keywords=("storage",)),
     KeywordRule(account="Retirement Annuity", keywords=("retirement annuity",)),
 ]

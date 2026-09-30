@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import re
 from decimal import Decimal
 
 from .accounts import CONTRACTOR_RULES, KEYWORD_RULES, is_valid_account, resolve_account_alias
 from .models import Direction, ProposedTransaction, ReceiptExtraction
+
+
+def _has_keyword(text: str, keyword: str) -> bool:
+    return re.search(r"(?<![a-z0-9])" + re.escape(keyword), text) is not None
 
 
 class ReceiptClassifier:
@@ -54,20 +59,20 @@ class ReceiptClassifier:
             if keyword in text:
                 return account, f"Matched contractor keyword '{keyword}'", False
 
-        matches = [
-            rule.account
-            for rule in KEYWORD_RULES
-            if (
-                all(keyword in text for keyword in rule.keywords)
-                if rule.match_mode == "all"
-                else any(keyword in text for keyword in rule.keywords)
-            )
-        ]
-        unique_matches = list(dict.fromkeys(matches))
-        if len(unique_matches) == 1:
-            return unique_matches[0], f"Matched keyword rule for {unique_matches[0]}", False
-        if len(unique_matches) > 1:
-            return unique_matches[0], "Multiple possible account matches found", True
+        # Count keyword hits per account (word-start matching, so "tip" doesn't hit "multiple").
+        hits: dict[str, int] = {}
+        for rule in KEYWORD_RULES:
+            found = [keyword for keyword in rule.keywords if _has_keyword(text, keyword)]
+            matched = len(found) == len(rule.keywords) if rule.match_mode == "all" else bool(found)
+            if matched:
+                hits[rule.account] = hits.get(rule.account, 0) + len(found)
+        if len(hits) == 1:
+            account = next(iter(hits))
+            return account, f"Matched keyword rule for {account}", False
+        if len(hits) > 1:
+            # Most keyword hits wins (e.g. wine + dinner + tip beats one stray "sweet"); still ask for review.
+            account = max(hits, key=hits.get)
+            return account, "Multiple possible account matches found", True
         return "Accounting Fees", "No confident account match; defaulted to review-required expense bucket", True
 
     def _combined_text(self, extraction: ReceiptExtraction) -> str:

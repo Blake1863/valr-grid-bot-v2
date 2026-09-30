@@ -282,7 +282,15 @@ async def edit_text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     if update.message is None or update.effective_user is None:
         return
     await ensure_authorized(update, context)
-    pending = get_controller(context).apply_edit(update.effective_user.id, update.message.text)
+    controller = get_controller(context)
+    if controller.get_session(update.effective_user.id).missing_date_extraction is not None:
+        result = controller.complete_missing_date(update.effective_user.id, update.message.text)
+        if result.queued:
+            await update.message.reply_text(f"Date saved. Receipt queued at position {result.queue_position}; nothing written yet.")
+            return
+        pending = result.pending
+    else:
+        pending = controller.apply_edit(update.effective_user.id, update.message.text)
     await update.message.reply_text(pending.proposed.preview_text(), reply_markup=preview_keyboard())
 
 
@@ -365,9 +373,9 @@ async def ensure_authorized(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.exception("unhandled Jess bot error", exc_info=context.error)
     message = "Something went wrong while processing that receipt."
-    if context.error is not None:
+    if isinstance(context.error, ValueError):
         text = str(context.error)
         if text:
-            message = f"{message}\n{text}"
+            message = text
     if isinstance(update, Update) and update.effective_message is not None:
         await update.effective_message.reply_text(message)
