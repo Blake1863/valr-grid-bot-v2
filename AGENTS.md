@@ -177,6 +177,7 @@ Add whatever helps you do your job. This is your cheat sheet.
 
 ### OpenClaw Watchdog + Remote-Restart Bot (updated 2026-08-19)
 - Service: `openclaw-watchdog.service` (systemd --user), script `~/openclaw-watchdog/oc-watchdog.py`, env `~/openclaw-watchdog/watchdog.env` (chmod 600, holds bot token — never print)
+- Watchdog (upgraded 2026-09-30): never restarts during updates/doctor/backup processes (<1h old) or a manual `/hold`; defers a *hung* restart up to 30 min while important jobs (git push, ffmpeg, rsync, npm/pip install...) run in the gateway cgroup; on exit-78 lock contention it clears leftover OpenClaw workers only and retries immediately (was: 30-min backoff). Bot: /status /restart /logs /doctor /hold /unhold. Gateway memory guard drop-in: `~/.config/systemd/user/openclaw-gateway.service.d/10-memory-guard.conf` (High 2.3G / Max 2.7G / OOMPolicy=stop). vm.swappiness=10 (/etc/sysctl.conf).
 - Watchdog: polls `http://127.0.0.1:18789/healthz` + unit state every 30s. **Two thresholds:** unit dead → restart after 3 fails (`OCW_FAIL_THRESHOLD`); unit alive but healthz failing (hung model call / network blip) → restart only after 10 fails (`OCW_HUNG_THRESHOLD`). 5-min cooldown; log `~/openclaw-watchdog/watchdog.log`
 - Remote bot: @Herman_remotecontrol_bot (separate from main OpenClaw bot). Commands: /status /restart /logs **/doctor** (runs `openclaw doctor --fix --non-interactive`) — locked to chat 7018990694
 - Model-call fast-fail: `models.providers.modelstudio.timeoutSeconds: 90` (hot-reloaded 2026-08-19) — caps connect/body/stream-idle so hung calls fail over instead of hanging the turn
@@ -271,7 +272,9 @@ This box has flaky DNS/network spells and a watchdog that auto-restarts the
 gateway when model calls hang (2026-08-19: 17 restarts in one evening). Design
 work to survive restarts:
 
-- **Long jobs (> ~30s): always detach.** `setsid nohup cmd > logfile 2>&1 &`, then poll the log. Never hold multi-minute jobs (ffmpeg, trade scripts) in a foreground turn.
+- **Long jobs (> ~30s): always detach with `oc-job`.** `oc-job <name> [--mem 1G] [--log FILE] -- cmd...` runs it as its own systemd unit OUTSIDE the gateway cgroup (gateway/watchdog restarts can't kill it) with a memory cap. `setsid nohup` is NOT restart-safe: it stays in the gateway cgroup and dies with it. Never hold multi-minute jobs in a foreground turn.
+- **Memory is tight (3.4G box, gateway capped at 2.7G).** Never full-scan big logs/journals: use `tail`, `grep -m N`, `journalctl --since/--until` narrow windows. A heavy scan on 2026-09-30 froze the host for 5h.
+- **Before an OpenClaw update or other gateway maintenance:** `touch`-style hold via remote bot `/hold [min]` (or write an expiry epoch to `~/openclaw-watchdog/HOLD`) so the watchdog won't restart mid-work; `/unhold` after.
 - **Make jobs idempotent + checkpointed.** Re-read live state each step instead of assuming the previous step succeeded. A restart mid-job must be safe to re-run — with money, re-run must not double-spend.
 - **Money moves: dry-run first, verify live balances/orders after.** No assumptions.
 - **Commit progress to disk early and often** (memory notes, plan files) so a dropped turn loses nothing.

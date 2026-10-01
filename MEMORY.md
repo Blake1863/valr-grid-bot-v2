@@ -16,6 +16,7 @@ Keep this file SHORT — it's injected into every turn. Details go in
 - 🪵 Log hygiene: unified logrotate (`cm-bot-logrotate.timer`, 7d) + quarantine auto-purge (14d).
 - 🩺 Infra (2026-08-19): two-threshold watchdog (dead=3, hung=10 fails), model timeout 90s (`models.providers.modelstudio.timeoutSeconds`), remote bot has /doctor. Details in TOOLS.md.
 - 📹 Video projects CLOSED — do not resume.
+- 🧊 **2026-09-30 host freeze (04:40–09:41):** memory starvation (swappiness 0, gateway ~2.8G/3.4G) → OOM → leftover workers blocked restart. Fixed: swappiness 10, gateway memory cap drop-in, watchdog holds/protection/contention-cleanup, `oc-job` for long jobs. Also found + disabled 10 SYSTEM-level wash-bot units (`/etc/systemd/system/{valr-mm,valr-mm2,valr-altmm,arb-hunter,arb-monitor,trump-mm*,inv-mm-sub*}`) that were restart-looping — do NOT re-enable. Backups: `backups/crash-fix-20260930-211744/`.
 
 ## Reference Index
 - `memory/reference/valr-ops.md` — VALR API lessons, endpoints, sub IDs, wash-bot workflows (historical)
