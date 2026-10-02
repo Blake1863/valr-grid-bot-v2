@@ -1,9 +1,8 @@
 {
   "lastChecks": {
-    "dailyHealth": "2026-10-01T20:13+08:00",
-    "weeklyLogs": "2026-09-28"
-  },
-  "notes": {
-    "2026-10-01T20:13": "All green 25h after crash-fixes: units active, healthz live, no host OOM since fix, gateway RSS ~2.33G at MemoryHigh (7692 reclaim events, 0 oom_kill — cap working as designed), 681Mi swap used (swappiness fix active), 0 zombie wash-bot units, disk 53%, watchdog quiet since 21:20 restart, jess bot up; no new receipts since row 1367 (Sep 30)."
+    "dailyHealth": 1790835180,
+    "dailyHealthNote": "Oct 1 22:13 CST: gateway/watchdog/jess bot active, healthz ok; RAM 1.4G avail, swap 666Mi used (swappiness fix working); gateway RSS 1376MB, cgroup memory.events max=0; watchdog 0 errors/24h; no OOM kills; no zombie-bot spam; disk 53% (18G free). Sep 30 crash-fixes holding.",
+    "weeklyLogs": 1790582400,
+    "weeklyLogsNote": "last checked Sep 28; next due ~Oct 5"
   }
 }
